@@ -52,8 +52,10 @@ Int : 'int';
 If : 'if';
 Else : 'else';
 Return : 'return';
-// For : 'for';
-// While : 'while'
+For : 'for';
+While : 'while';
+Continue : 'continue';
+Break : 'break';
 
 LeftParen : '(';
 RightParen : ')';
