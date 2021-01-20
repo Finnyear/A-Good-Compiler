@@ -1,4 +1,4 @@
-grammar Rx;
+grammar Mx;
 
 program: 'int main()' suite EOF;
 
@@ -27,7 +27,7 @@ expression
     : primary                                               #atomExpr
     | expression op = ('++' | '--')                         #suffixExpr
     | <assoc=right> op = ('++' | '--') expression           #prefixExpr
-    | op=('!') expression                                   #prefixExpr
+    | '!' expression                                        #prefixExpr
     | expression op=('*' | '/') expression                  #binaryExpr
     | expression op=('+' | '-') expression                  #binaryExpr
     | expression op=('>' | '<') expression                  #binaryExpr
