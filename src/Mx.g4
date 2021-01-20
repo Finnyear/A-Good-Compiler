@@ -20,42 +20,39 @@ This : 'this';
 
 DecimalInteger : [1-9] [0-9]* | '0' ;
 Identifier : [a-zA-Z] [a-zA-Z_0-9]* ;
-LBracket : '[';
-RBracket : ']';
-Bracket : LBracket RBracket ;
-Blank : [ \t\r\n] + -> skip;
+Blank : [ \t\r\n]+ -> skip;
 LineComment : '//' ~[\r\n]* -> skip;
 BlockComment : '/*' .*? '*/' -> skip;
 
 
 
-program : (section)* EOF;
+program : (part)* EOF;
 
-section : class_def | fun_def | var_def;
+part : class_def | fun_def | var_def;
 
 class_def : Class Identifier '{' (var_def | fun_def | class_con )*  '}' ';';
 
 class_con : Identifier '(' fun_par_list ')' suite;
 
-fun_def : (var_type | Void) Identifier '(' fun_par_list ')' suite;
+fun_def : (type | Void) Identifier '(' fun_par_list ')' suite;
 
-var_def :  var_type single_var_def (',' single_var_def)*;
+var_def :  type variable (',' variable)* ';' ;
 
-single_var_def : Identifier ('=' expression)? ;
+variable : Identifier ('=' expression)? ;
 
-var_type : basic_type | array_type;
+type : basic_type | array_type;
 
 basic_type : Int | Bool | String | Identifier;
 
-array_type : basic_type (Bracket)+;
+array_type : basic_type ('[]')+;
 
-fun_par_list : var_type single_var_def (',' var_type single_var_def)*;
+fun_par_list : (type variable (',' type variable)*)?;
 
 suite : '{' statement* '}';
 
 
-statement :
-      suite                                                 #block
+statement
+    : suite                                                 #block
     | var_def                                               #vardefStmt
     | If '(' ifcondition=expression ')' ifbody=statement
         (Else elsebody=statement)?                          #ifStmt
@@ -72,8 +69,14 @@ statement :
     | ';'                                                   #emptyStmt
     ;
 
-expression :
-      primary                                               #atomExpr
+expression
+    : primary                                               #atomExpr
+    | New basic_type ('[' expression ']')* ('[]')* ('[' expression ']')*        #newExpr
+    | New basic_type '(' ')'                                #newExpr
+    | New basic_type                                        #newExpr
+    | expression '.' Identifier                             #memberExpr
+    | expression '(' expression (',' expression)* ')'       #funcalExpr
+    | expression '[' expression ']'                         #arrayExpr
     | <assoc=right> op = ('!' | '~') expression             #prefixExpr
     | <assoc=right> op = ('++' | '--') expression           #prefixExpr
     | expression op = ('++' | '--')                         #suffixExpr
@@ -90,11 +93,12 @@ expression :
 primary
     : '(' expression ')'
     | Identifier
+    | This
+    | True
     | literal 
     ;
 
-literal :
-      DecimalInteger
-    |
+literal
+    : DecimalInteger
     ;
 
