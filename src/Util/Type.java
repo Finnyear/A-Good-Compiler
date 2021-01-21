@@ -1,13 +1,14 @@
 package Util;
 
 public class Type {
-    public enum type{Int, String, Bool, Class};
+    public enum type{Int, String, Bool, Class, Void, Null};
     public String class_name;
     public int dimension;
     type type;
-    public Type(type type){
+    public Type(type type, String class_name, int dimension){
         this.type = type;
-        this.dimension = 0;
+        this.class_name = class_name;
+        this.dimension = dimension;
     }
     public Type(Type other){
         this.type = other.type;

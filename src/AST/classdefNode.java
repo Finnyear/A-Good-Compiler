@@ -1,6 +1,6 @@
 package AST;
 
-import Util.position
+import Util.position;
 import java.util.ArrayList;
 
 public class classdefNode extends PartNode{
@@ -12,4 +12,7 @@ public class classdefNode extends PartNode{
         super(pos);
         this.name = name;
     }
+
+    @Override
+    public void accept(ASTVisitor visitor){visitor.visit(this);}
 }

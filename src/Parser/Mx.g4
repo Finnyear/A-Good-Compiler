@@ -18,9 +18,12 @@ New : 'new';
 Class : 'class';
 This : 'this';
 
-DecimalInteger : [1-9] [0-9]* | '0' ;
+ConstInteger : [1-9] [0-9]* | '0' ;
+ConstBool : True | False;
+ConstString : '"' (~["\\\r\n] | '\\' ["\\nr])* '"';
+
 Identifier : [a-zA-Z] [a-zA-Z_0-9]* ;
-Blank : [ \t\r\n]+ -> skip;
+WhiteSpace : [ \t\r\n]+ -> skip;
 LineComment : '//' ~[\r\n]* -> skip;
 BlockComment : '/*' .*? '*/' -> skip;
 
@@ -40,16 +43,19 @@ var_def :  type variable (',' variable)* ';' ;
 
 variable : Identifier ('=' expression)? ;
 
-type : basic_type | array_type;
-
 basic_type : Int | Bool | String | Identifier;
 
-array_type : basic_type ('[]')+;
+type : basic_type ('[]')*;
 
 fun_par_list : (type variable (',' type variable)*)?;
 
 suite : '{' statement* '}';
 
+creator
+    : basic_type ('[' expression? ']')+                     #arraycreator
+    | basic_type '(' ')'                                    #classcreator
+    | basic_type                                            #basiccreator
+    ;
 
 statement
     : suite                                                 #block
@@ -71,9 +77,7 @@ statement
 
 expression
     : primary                                               #atomExpr
-    | New basic_type ('[' expression ']')* ('[]')* ('[' expression ']')*        #newExpr
-    | New basic_type '(' ')'                                #newExpr
-    | New basic_type                                        #newExpr
+    | New creator                                           #newExpr
     | expression '.' Identifier                             #memberExpr
     | expression '(' expression (',' expression)* ')'       #funcalExpr
     | expression '[' expression ']'                         #arrayExpr
@@ -94,11 +98,12 @@ primary
     : '(' expression ')'
     | Identifier
     | This
-    | True
     | literal 
     ;
 
 literal
-    : DecimalInteger
+    : ConstInteger
+    | ConstBool
+    | ConstString
     ;
 

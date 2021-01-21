@@ -106,7 +106,7 @@ public class MxLexer extends Lexer {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "Mx.g4"; }
+	public String getGrammarFileName() { return "Parser/Mx.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
