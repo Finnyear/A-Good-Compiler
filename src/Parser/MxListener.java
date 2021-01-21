@@ -1,5 +1,5 @@
+// Generated from D:/GitHub/A-Good-Compiler/src/Parser\Mx.g4 by ANTLR 4.9
 package Parser;
-// Generated from D:/GitHub/A-Good-Compiler/src\Mx.g4 by ANTLR 4.9
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -130,6 +130,18 @@ public interface MxListener extends ParseTreeListener {
 	 */
 	void exitArraycreator(MxParser.ArraycreatorContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code invalidcreator}
+	 * labeled alternative in {@link MxParser#creator}.
+	 * @param ctx the parse tree
+	 */
+	void enterInvalidcreator(MxParser.InvalidcreatorContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code invalidcreator}
+	 * labeled alternative in {@link MxParser#creator}.
+	 * @param ctx the parse tree
+	 */
+	void exitInvalidcreator(MxParser.InvalidcreatorContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code classcreator}
 	 * labeled alternative in {@link MxParser#creator}.
 	 * @param ctx the parse tree
@@ -141,18 +153,6 @@ public interface MxListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitClasscreator(MxParser.ClasscreatorContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code basiccreator}
-	 * labeled alternative in {@link MxParser#creator}.
-	 * @param ctx the parse tree
-	 */
-	void enterBasiccreator(MxParser.BasiccreatorContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code basiccreator}
-	 * labeled alternative in {@link MxParser#creator}.
-	 * @param ctx the parse tree
-	 */
-	void exitBasiccreator(MxParser.BasiccreatorContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code block}
 	 * labeled alternative in {@link MxParser#statement}.
@@ -273,6 +273,16 @@ public interface MxListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitEmptyStmt(MxParser.EmptyStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MxParser#expressionlist}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionlist(MxParser.ExpressionlistContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MxParser#expressionlist}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionlist(MxParser.ExpressionlistContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code newExpr}
 	 * labeled alternative in {@link MxParser#expression}.

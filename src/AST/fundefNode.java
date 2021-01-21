@@ -5,10 +5,15 @@ import Util.position;
 
 public class fundefNode extends PartNode{
     public typeNode type;
+    public String name;
     public funparlistNode fun_par_list;
-    public fundefNode(position pos, typeNode type){
+    public suiteNode suite;
+    public fundefNode(position pos, typeNode type, String name, funparlistNode fun_par_list, suiteNode suite){
         super(pos);
         this.type = type;
+        this.name = name;
+        this.fun_par_list = fun_par_list;
+        this.suite = suite;
     }
 
     @Override

@@ -1,4 +1,4 @@
 package AST;
 
-public class emptyStmtNode {
+public class emptyStmtNode{
 }

@@ -6,6 +6,7 @@ public interface ASTVisitor {
     void visit(assignExprNode it);
     void visit(atomExprNode it);
     void visit(basiccrtNode it);
+    void visit(basictypeNode it);
     void visit(binaryExprNode it);
     void visit(blockNode it);
     void visit(breakStmtNode it);
@@ -15,6 +16,7 @@ public interface ASTVisitor {
     void visit(continueStmtNode it);
     void visit(creatorNode it);
     void visit(emptyStmtNode it);
+    void visit(exprlistNode it);
     void visit(ExprNode it);
     void visit(forStmtNode it);
     void visit(funcalExprNode it);

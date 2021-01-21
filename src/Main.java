@@ -26,7 +26,7 @@ public class Main {
             parser.removeErrorListeners();
             parser.addErrorListener(new MxErrorListener());
             ParseTree parseTree = parser.program();
-            ASTbuilder astBuilder = new ASTbuilder();
+            ASTbuilder astBuilder = new ASTbuilder(global_scope);
             rt = (ProgramNode) astBuilder.visit(parseTree);
             Scope global = new Scope(null);
             new SymbolCollector(global_scope).visit(rt);

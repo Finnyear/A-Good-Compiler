@@ -2,7 +2,7 @@ package AST;
 
 import Util.position;
 
-public abstract class PartNode extends ASTNode{
+public class PartNode extends ASTNode{
     public vardefNode vardef;
     public fundefNode fundef;
     public classdefNode classdef;

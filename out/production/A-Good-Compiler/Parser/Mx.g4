@@ -17,6 +17,8 @@ Return : 'return';
 New : 'new';
 Class : 'class';
 This : 'this';
+LBracket : '[';
+RBracket : ']';
 
 ConstInteger : [1-9] [0-9]* | '0' ;
 ConstBool : True | False;
@@ -37,13 +39,13 @@ class_def : Class Identifier '{' (var_def | fun_def | class_con )*  '}' ';';
 
 class_con : Identifier '(' fun_par_list ')' suite;
 
-fun_def : (type | Void) Identifier '(' fun_par_list ')' suite;
+fun_def : type Identifier '(' fun_par_list ')' suite;
 
 var_def :  type variable (',' variable)* ';' ;
 
 variable : Identifier ('=' expression)? ;
 
-basic_type : Int | Bool | String | Identifier;
+basic_type : Int | Bool | String | Void | Identifier;
 
 type : basic_type ('[]')*;
 
@@ -52,9 +54,9 @@ fun_par_list : (type variable (',' type variable)*)?;
 suite : '{' statement* '}';
 
 creator
-    : basic_type ('[' expression? ']')+                     #arraycreator
-    | basic_type '(' ')'                                    #classcreator
-    | basic_type                                            #basiccreator
+    : basic_type ('[' expression ']')+ (('['']') | ('[]'))*                         #arraycreator
+    | basic_type ('[' expression ']')* (('['']') | ('[]'))+ ('[' expression ']')+   #invalidcreator
+    | basic_type ('(' ')')?                                 #classcreator
     ;
 
 statement
@@ -75,11 +77,13 @@ statement
     | ';'                                                   #emptyStmt
     ;
 
+expressionlist: expression (',' expression)* ;
+
 expression
     : primary                                               #atomExpr
-    | New creator                                           #newExpr
+    | <assoc=right> New creator                             #newExpr
     | expression '.' Identifier                             #memberExpr
-    | expression '(' expression (',' expression)* ')'       #funcalExpr
+    | expression '(' expressionlist? ')'                    #funcalExpr
     | expression '[' expression ']'                         #arrayExpr
     | <assoc=right> op = ('!' | '~') expression             #prefixExpr
     | <assoc=right> op = ('++' | '--') expression           #prefixExpr
@@ -97,7 +101,6 @@ expression
 primary
     : '(' expression ')'
     | Identifier
-    | This
     | literal 
     ;
 
@@ -105,5 +108,7 @@ literal
     : ConstInteger
     | ConstBool
     | ConstString
+    | This
+    | Null
     ;
 
