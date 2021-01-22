@@ -1,5 +1,6 @@
 import Frontend.ASTbuilder;
 import Frontend.ClassCreator;
+import Frontend.SemanticCheck;
 import Frontend.SymbolCollector;
 import Parser.MxLexer;
 import Parser.MxParser;
@@ -34,6 +35,7 @@ public class Main {
             Scope global = new Scope(null);
             new SymbolCollector(global_scope).visit(rt);
             new ClassCreator(global_scope).visit(rt);
+            new SemanticCheck(global_scope).visit(rt);
         } catch (Error error){
             System.err.println(error.toString());
             throw new RuntimeException();

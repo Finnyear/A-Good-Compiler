@@ -44,7 +44,7 @@ public class ClassCreator implements ASTVisitor {
         for(variableNode var: it.variables){
             String varname = var.name;
             if(classType.vars.containsKey(varname))
-                throw new SemanticError("variable redefination", it.pos);
+                throw new SemanticError("variable redefined", it.pos);
             if(varname.equals(name))
                 throw new SemanticError("variable named wrong", it.pos);
             classType.vars.put(varname, vartype);

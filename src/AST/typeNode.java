@@ -1,6 +1,8 @@
 package AST;
 
 import Util.position;
+import Util.globalScope;
+import Util.Type;
 
 public class typeNode extends ASTNode{
     public basictypeNode basictype;
@@ -9,6 +11,10 @@ public class typeNode extends ASTNode{
         super(pos);
         this.basictype = basictype;
         this.dim = dim;
+    }
+
+    public Type getType(globalScope global_scope){
+        return global_scope.getType(basictype.name, pos);
     }
 
     @Override

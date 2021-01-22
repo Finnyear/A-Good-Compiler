@@ -39,14 +39,14 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitFun_def(MxParser.Fun_defContext ctx){
-        fundefNode node = new fundefNode(new position(ctx), (typeNode) visit(ctx.type()), ctx.Identifier().toString(),
+        fundefNode node = new fundefNode(new position(ctx), (typeNode) visit(ctx.type()), ctx.Identifier().getText(),
         (funparlistNode) visit(ctx.fun_par_list()), (suiteNode) visit(ctx.suite()));
         return node;
     }
 
     @Override
     public ASTNode visitClass_def(MxParser.Class_defContext ctx) {
-        classdefNode node = new classdefNode(new position(ctx), ctx.Identifier().toString());
+        classdefNode node = new classdefNode(new position(ctx), ctx.Identifier().getText());
         ctx.var_def().forEach(var_defContext -> node.vardefs.add((vardefNode) visit(var_defContext)));
         ctx.fun_def().forEach(fun_defContext -> node.fundefs.add((fundefNode) visit(fun_defContext)));
         ctx.class_con().forEach(class_conContext -> node.classcons.add((classconNode) visit(class_conContext)));
@@ -55,7 +55,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitClass_con(MxParser.Class_conContext ctx) {
-        classconNode node = new classconNode(new position(ctx), ctx.Identifier().toString(),
+        classconNode node = new classconNode(new position(ctx), ctx.Identifier().getText(),
                             (funparlistNode) visit(ctx.fun_par_list()), (suiteNode) visit(ctx.suite()));
         return node;
     }
@@ -70,7 +70,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitVariable(MxParser.VariableContext ctx) {
-        variableNode node = new variableNode(new position(ctx), ctx.Identifier() == null ? null : ctx.Identifier().toString(),
+        variableNode node = new variableNode(new position(ctx), ctx.Identifier() == null ? null : ctx.Identifier().getText(),
                             ctx.expression() == null ? null : (ExprNode) visit(ctx.expression()));
         return node;
     }
@@ -83,7 +83,9 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitBasic_type(MxParser.Basic_typeContext ctx) {
-        basictypeNode node = new basictypeNode(new position(ctx), ctx.toString());
+//        System.out.println("build_basic_type");
+//        System.out.println(ctx.getText());
+        basictypeNode node = new basictypeNode(new position(ctx), ctx.getText());
         return node;
     }
 
@@ -186,22 +188,22 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
     public ASTNode visitPrimary(MxParser.PrimaryContext ctx) {
         if(ctx.expression() != null) return visit(ctx.expression());
         if(ctx.literal() != null) return visit(ctx.literal());
-        return new varExprNode(new position(ctx), ctx.Identifier().toString());
+        return new varExprNode(new position(ctx), ctx.Identifier().getText());
     }
 
     @Override
     public ASTNode visitLiteral(MxParser.LiteralContext ctx) {
         if(ctx.This() != null) return new thisExprNode(new position(ctx));
         if(ctx.Null() != null) return new constExprNode(new position(ctx),
-                new Type(Type.type.Null, null, 0), ctx.Null().toString());
+                new Type(Type.type.Null, null, 0), ctx.Null().getText());
         if(ctx.ConstInteger() != null) return new constExprNode(new position(ctx),
-                new Type(Type.type.Int, null, 0), ctx.ConstInteger().toString());
+                new Type(Type.type.Int, null, 0), ctx.ConstInteger().getText());
         if(ctx.True() != null) return new constExprNode(new position(ctx),
-                new Type(Type.type.Bool, null, 0), ctx.True().toString());
+                new Type(Type.type.Bool, null, 0), ctx.True().getText());
         if(ctx.False() != null) return new constExprNode(new position(ctx),
-                new Type(Type.type.Bool, null, 0), ctx.False().toString());
+                new Type(Type.type.Bool, null, 0), ctx.False().getText());
         if(ctx.ConstString() != null) return new constExprNode(new position(ctx),
-                new Type(Type.type.String, null, 0), ctx.ConstString().toString());
+                new Type(Type.type.String, null, 0), ctx.ConstString().getText());
         return null;
     }
 
@@ -212,7 +214,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitMemberExpr(MxParser.MemberExprContext ctx) {
-        memberExprNode node = new memberExprNode(new position(ctx), (ExprNode) visit(ctx.expression()), ctx.Identifier().toString());
+        memberExprNode node = new memberExprNode(new position(ctx), (ExprNode) visit(ctx.expression()), ctx.Identifier().getText());
         return node;
     }
 
@@ -240,7 +242,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitPrefixExpr(MxParser.PrefixExprContext ctx) {
         preExprNode node = new preExprNode(new position(ctx), (ExprNode) visit(ctx.expression()));
-        switch (ctx.op.toString()){
+        switch (ctx.op.getText()){
             case "++" -> node.op = preExprNode.preop.add;
             case "--" -> node.op = preExprNode.preop.sub;
             case "!" -> node.op = preExprNode.preop.lnot;
@@ -252,7 +254,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitSuffixExpr(MxParser.SuffixExprContext ctx) {
         sufExprNode node = new sufExprNode(new position(ctx), (ExprNode) visit(ctx.expression()));
-        switch (ctx.op.toString()){
+        switch (ctx.op.getText()){
             case "++" -> node.op = sufExprNode.sufop.add;
             case "--" -> node.op = sufExprNode.sufop.sub;
         }
@@ -263,7 +265,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
     public ASTNode visitBinaryExpr(MxParser.BinaryExprContext ctx) {
         binaryExprNode node = new binaryExprNode(new position(ctx),
                 (ExprNode) visit(ctx.expression(0)), (ExprNode) visit(ctx.expression(1)));
-        switch (ctx.op.toString()){
+        switch (ctx.op.getText()){
             case "+" -> node.op = binaryExprNode.binaryop.add;
             case "-" -> node.op = binaryExprNode.binaryop.sub;
             case "*" -> node.op = binaryExprNode.binaryop.mul;

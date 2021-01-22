@@ -10,6 +10,8 @@ public class globalScope extends Scope{
     public globalScope(Scope parentScope){super(parentScope);}
 
     public void addType(String str, Type type, position pos){
+//        System.out.println("addType");
+//        System.out.println(str);
         if(types.containsKey(str)){
             throw new SemanticError("class redefined", pos);
         }
@@ -17,7 +19,9 @@ public class globalScope extends Scope{
     }
 
     public Type getType(String str, position pos){
-        if(types.containsKey(str)) return types.get(str);
-        throw new SemanticError("cannot find such type", pos);
+//        System.out.println("getType");
+//        System.out.println(str);
+            if(types.containsKey(str)) return types.get(str);
+                throw new SemanticError("cannot find such type", pos);
     }
 }
