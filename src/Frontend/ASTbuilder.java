@@ -71,7 +71,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitVariable(MxParser.VariableContext ctx) {
         variableNode node = new variableNode(new position(ctx), ctx.Identifier().toString(),
-                            (ExprNode) visit(ctx.expression()));
+                            ctx.expression() == null ? null : (ExprNode) visit(ctx.expression()));
         return node;
     }
 
@@ -128,7 +128,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitIfStmt(MxParser.IfStmtContext ctx) {
         ifStmtNode node = new ifStmtNode(new position(ctx), (ExprNode) visit(ctx.ifcondition),
-                (StmtNode) visit(ctx.ifbody), (StmtNode) visit(ctx.elsebody));
+                (StmtNode) visit(ctx.ifbody), ctx.elsebody == null ? null : (StmtNode) visit(ctx.elsebody));
         return node;
     }
 
@@ -218,7 +218,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitFuncalExpr(MxParser.FuncalExprContext ctx) {
         funcalExprNode node = new funcalExprNode(new position(ctx), (ExprNode) visit(ctx.expression()),
-                (exprlistNode) visit(ctx.expressionlist()));
+                ctx.expressionlist() == null ? null : (exprlistNode) visit(ctx.expressionlist()));
         return node;
     }
 

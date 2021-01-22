@@ -4,9 +4,9 @@ import Util.position;
 
 import java.util.ArrayList;
 
-public class arraycrtNode extends ASTNode{
+public class arraycrtNode extends ExprNode{
     public basictypeNode basictype;
-    public ArrayList<ExprNode> dims;
+    public ArrayList<ExprNode> dims = new ArrayList<>();
     public int dim_num;
 
     public arraycrtNode(position pos, basictypeNode basictype){

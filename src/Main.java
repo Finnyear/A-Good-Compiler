@@ -5,17 +5,18 @@ import Parser.MxParser;
 import Util.MxErrorListener;
 import Util.Scope;
 import Util.globalscope;
-import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import AST.*;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 
 public class Main {
     public static void main(String[] args) throws Exception{
-        InputStream input = System.in;
+        String name = "test.mx";
+        InputStream input = new FileInputStream(name);
         try{
             ProgramNode rt;
             globalscope global_scope = new globalscope(null);

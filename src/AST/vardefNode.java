@@ -5,7 +5,7 @@ import Util.position;
 
 public class vardefNode extends PartNode{
     public typeNode type;
-    public ArrayList<variableNode> variables;
+    public ArrayList<variableNode> variables = new ArrayList<>();
     public vardefNode(position pos, typeNode type){
         super(pos);
         this.type = type;

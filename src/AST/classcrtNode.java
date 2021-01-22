@@ -2,7 +2,7 @@ package AST;
 
 import Util.position;
 
-public class classcrtNode extends ASTNode{
+public class classcrtNode extends ExprNode{
     public basictypeNode basictype;
 
     public classcrtNode(position pos, basictypeNode basictype){
