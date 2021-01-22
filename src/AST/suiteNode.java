@@ -4,7 +4,7 @@ import Util.position;
 
 import java.util.ArrayList;
 
-public class suiteNode extends ASTNode{
+public class suiteNode extends StmtNode{
     public ArrayList<StmtNode> stmts = new ArrayList<>();
 
     public suiteNode(position pos){

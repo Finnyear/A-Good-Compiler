@@ -21,7 +21,7 @@ LBracket : '[';
 RBracket : ']';
 
 ConstInteger : [1-9] [0-9]* | '0' ;
-ConstBool : True | False;
+//ConstBool : True | False ;
 ConstString : '"' (~["\\\r\n] | '\\' ["\\nr])* '"';
 
 Identifier : [a-zA-Z] [a-zA-Z_0-9]* ;
@@ -68,7 +68,7 @@ statement
             whilebody=statement                             #whileStmt
     | For '(' forinit=expression? ';'
             forcondition=expression? ';'
-            forupdate=expression? ';' ')'
+            forupdate=expression? ')'
             forbody=statement                               #forStmt
     | Return expression? ';'                                #returnStmt
     | Break ';'                                             #breakStmt
@@ -106,7 +106,8 @@ primary
 
 literal
     : ConstInteger
-    | ConstBool
+    | True
+    | False
     | ConstString
     | This
     | Null

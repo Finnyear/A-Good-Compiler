@@ -70,7 +70,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitVariable(MxParser.VariableContext ctx) {
-        variableNode node = new variableNode(new position(ctx), ctx.Identifier().toString(),
+        variableNode node = new variableNode(new position(ctx), ctx.Identifier() == null ? null : ctx.Identifier().toString(),
                             ctx.expression() == null ? null : (ExprNode) visit(ctx.expression()));
         return node;
     }
@@ -134,6 +134,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitWhileStmt(MxParser.WhileStmtContext ctx) {
+//        System.out.println("Visit While");
         whileStmtNode node = new whileStmtNode(new position(ctx), (ExprNode) visit(ctx.whilecondition),
                 (StmtNode) visit(ctx.whilebody));
         return node;
@@ -141,14 +142,19 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitForStmt(MxParser.ForStmtContext ctx) {
-        forStmtNode node = new forStmtNode(new position(ctx), (ExprNode) visit(ctx.forinit),
-                (ExprNode) visit(ctx.forcondition), (ExprNode) visit(ctx.forupdate), (StmtNode) visit(ctx.forbody));
+//        System.out.println("Visit For");
+        forStmtNode node = new forStmtNode(new position(ctx),
+                ctx.forinit == null ? null : (ExprNode) visit(ctx.forinit),
+                ctx.forcondition == null ? null : (ExprNode) visit(ctx.forcondition),
+                ctx.forupdate == null ? null : (ExprNode) visit(ctx.forupdate),
+                (StmtNode) visit(ctx.forbody));
         return node;
     }
 
     @Override
     public ASTNode visitReturnStmt(MxParser.ReturnStmtContext ctx) {
-        returnStmtNode node = new returnStmtNode(new position(ctx), (ExprNode) visit(ctx.expression()));
+        returnStmtNode node = new returnStmtNode(new position(ctx),
+                ctx.expression() == null ? null : (ExprNode) visit(ctx.expression()));
         return node;
     }
 
@@ -190,8 +196,10 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
                 new Type(Type.type.Null, null, 0), ctx.Null().toString());
         if(ctx.ConstInteger() != null) return new constExprNode(new position(ctx),
                 new Type(Type.type.Int, null, 0), ctx.ConstInteger().toString());
-        if(ctx.ConstBool() != null) return new constExprNode(new position(ctx),
-                new Type(Type.type.Bool, null, 0), ctx.ConstBool().toString());
+        if(ctx.True() != null) return new constExprNode(new position(ctx),
+                new Type(Type.type.Bool, null, 0), ctx.True().toString());
+        if(ctx.False() != null) return new constExprNode(new position(ctx),
+                new Type(Type.type.Bool, null, 0), ctx.False().toString());
         if(ctx.ConstString() != null) return new constExprNode(new position(ctx),
                 new Type(Type.type.String, null, 0), ctx.ConstString().toString());
         return null;
