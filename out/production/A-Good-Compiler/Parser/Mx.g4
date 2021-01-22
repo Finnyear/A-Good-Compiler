@@ -54,6 +54,9 @@ fun_par_list : (type variable (',' type variable)*)?;
 suite : '{' statement* '}';
 
 creator
+
+
+
     : basic_type ('[' expression ']')+ (('['']') | ('[]'))*                         #arraycreator
     | basic_type ('[' expression ']')* (('['']') | ('[]'))+ ('[' expression ']')+   #invalidcreator
     | basic_type ('(' ')')?                                 #classcreator

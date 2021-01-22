@@ -57,7 +57,7 @@ public class SemanticCheck implements ASTVisitor {
             throw new SemanticError("variable define type wrong", it.pos);
         it.variables.forEach(variableNode -> {
             variableNode.accept(this);
-            if(!variableNode.expr.type.cmp(var_type))
+            if(variableNode.expr != null && !variableNode.expr.type.cmp(var_type))
                 throw new SemanticError("define init type wrong", variableNode.pos);
             if(current_scope.qryvar(variableNode.name, false))
                 throw new SemanticError("variable redefined", variableNode.pos);
