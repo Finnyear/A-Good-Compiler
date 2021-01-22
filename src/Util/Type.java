@@ -5,6 +5,12 @@ public class Type {
     public String class_name;
     public int dimension;
     type type;
+    public Type(){}
+    public Type(type type){
+        this.type = type;
+        this.class_name = null;
+        this.dimension = 0;
+    }
     public Type(type type, String class_name, int dimension){
         this.type = type;
         this.class_name = class_name;

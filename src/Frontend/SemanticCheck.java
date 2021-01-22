@@ -1,30 +1,30 @@
 package Frontend;
 
 import AST.*;
-import Util.globalScope;
-import Util.Type;
+import Util.*;
 
-public class SymbolCollector implements ASTVisitor {
-    private globalScope global_scope;
-    public SymbolCollector(globalScope global_scope){this.global_scope = global_scope;}
+import java.util.ArrayList;
 
-    @Override
-    public void visit(ProgramNode it){
-        global_scope.addType("bool", new Type(Type.type.Bool, null, 0), it.pos);
-        global_scope.addType("int", new Type(Type.type.Int, null, 0), it.pos);
-        global_scope.addType("string", new Type(Type.type.String, null, 0), it.pos);
-        global_scope.addType( "void", new Type(Type.type.Void, null, 0), it.pos);
-        it.parts.forEach(partNode -> {
-            if(partNode.classdef != null)
-                partNode.classdef.accept(this);
-        });
+public class SemanticCheck implements ASTVisitor {
+
+    public globalScope global_scope;
+    public Scope current_scope;
+
+    public SemanticCheck(globalScope global_scope){
+        this.global_scope = global_scope;
+        this.current_scope = global_scope;
     }
 
-    @Override
-    public void visit(classdefNode it){
-        global_scope.addType(it.name, new Type(Type.type.Class, it.name, 0), it.pos);
+    @Override public void visit(ProgramNode it){
+        global_scope.addfun("print", new funType(new Type(Type.type.Void), new ArrayList<>(){{add(new Type(Type.type.String));}}), it.pos);
+        global_scope.addfun("println", new funType(new Type(Type.type.Void), new ArrayList<>(){{add(new Type(Type.type.String));}}), it.pos);
+        global_scope.addfun("printInt", new funType(new Type(Type.type.Void), new ArrayList<>(){{add(new Type(Type.type.Int));}}), it.pos);
+        global_scope.addfun("printlnInt", new funType(new Type(Type.type.Void), new ArrayList<>(){{add(new Type(Type.type.Int));}}), it.pos);
+        global_scope.addfun("getString", new funType(new Type(Type.type.String), new ArrayList<>()), it.pos);
+        global_scope.addfun("getInt", new funType(new Type(Type.type.Int), new ArrayList<>()), it.pos);
+        global_scope.addfun("toString", new funType(new Type(Type.type.String), new ArrayList<>(){{add(new Type(Type.type.Int));}}), it.pos);
     }
-
+    @Override public void visit(classdefNode it){}
     @Override public void visit(arraycrtNode it){}
     @Override public void visit(arrayExprNode it){}
     @Override public void visit(assignExprNode it){}

@@ -9,6 +9,7 @@ public class funparlistNode extends ASTNode{
     public ArrayList<typeNode> types = new ArrayList<>();
     public ArrayList<variableNode> variables = new ArrayList<>();
 
+
     public funparlistNode(position pos){
         super(pos);
     }

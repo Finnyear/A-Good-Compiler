@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class Scope {
-    private HashMap<String, Type> vars, funs;
-    private Scope parentScope;
+    public HashMap<String, Type> vars, funs;
+    public Scope parentScope;
     public Scope(Scope parentScope){
         this.parentScope = parentScope;
         vars = new HashMap<>();

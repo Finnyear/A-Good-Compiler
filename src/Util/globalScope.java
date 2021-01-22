@@ -4,10 +4,10 @@ import Util.error.SemanticError;
 
 import java.util.HashMap;
 
-public class globalscope extends Scope{
+public class globalScope extends Scope{
     private HashMap<String, Type> types = new HashMap<>();
 
-    public globalscope(Scope parentScope){super(parentScope);}
+    public globalScope(Scope parentScope){super(parentScope);}
 
     public void addType(String str, Type type, position pos){
         if(types.containsKey(str)){

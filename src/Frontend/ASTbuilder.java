@@ -8,9 +8,9 @@ import Util.*;
 import Util.error.SemanticError;
 
 public class ASTbuilder extends MxBaseVisitor<ASTNode> {
-    private globalscope global_scope;
+    private globalScope global_scope;
 
-    public ASTbuilder(globalscope global_scope){
+    public ASTbuilder(globalScope global_scope){
         this.global_scope = global_scope;
     }
 
