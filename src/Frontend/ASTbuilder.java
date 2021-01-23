@@ -76,23 +76,23 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitType(MxParser.TypeContext ctx) {
-        typeNode node = new typeNode(new position(ctx), (basictypeNode) visit(ctx.basic_type()), ctx.LBracket().size());
+        typeNode node = new typeNode(new position(ctx), ctx.basic_type().getText(), ctx.LBracket().size());
         return node;
     }
 
-    @Override
-    public ASTNode visitBasic_type(MxParser.Basic_typeContext ctx) {
-//        System.out.println("build_basic_type");
-//        System.out.println(ctx.getText());
-        basictypeNode node = new basictypeNode(new position(ctx), ctx.getText());
-        return node;
-    }
+//    @Override
+//    public ASTNode visitBasic_type(MxParser.Basic_typeContext ctx) {
+////        System.out.println("build_basic_type");
+////        System.out.println(ctx.getText());
+//        basictypeNode node = new basictypeNode(new position(ctx), ctx.getText());
+//        return node;
+//    }
 
     @Override
     public ASTNode visitArraycreator(MxParser.ArraycreatorContext ctx) {
-        arraycrtNode node = new arraycrtNode(new position(ctx), (basictypeNode) visit(ctx.basic_type()));
+        arraycrtNode node = new arraycrtNode(new position(ctx), new typeNode(new position(ctx),
+                ctx.basic_type().getText(), ctx.LBracket().size()));
         ctx.expression().forEach(expressionContext -> node.dims.add((ExprNode) visit(expressionContext)));
-        node.dim_num = ctx.LBracket().size();
         return node;
     }
 

@@ -6,6 +6,7 @@ public class varExprNode extends ExprNode{
     public varExprNode(position pos, String name){
         super(pos);
         this.name = name;
+//        System.out.println(name);
     }
 
     @Override

@@ -1,8 +1,10 @@
 package Frontend;
 
 import AST.*;
+import Util.classType;
 import Util.globalScope;
 import Util.Type;
+import Util.classType;
 
 public class SymbolCollector implements ASTVisitor {
     private globalScope global_scope;
@@ -10,10 +12,11 @@ public class SymbolCollector implements ASTVisitor {
 
     @Override
     public void visit(ProgramNode it){
-        global_scope.addType("bool", new Type(Type.type.Bool, null, 0), it.pos);
-        global_scope.addType("int", new Type(Type.type.Int, null, 0), it.pos);
-        global_scope.addType("string", new Type(Type.type.String, null, 0), it.pos);
-        global_scope.addType( "void", new Type(Type.type.Void, null, 0), it.pos);
+        global_scope.addType("bool", new Type(Type.type.Bool, null), it.pos);
+        global_scope.addType("int", new Type(Type.type.Int, null), it.pos);
+        global_scope.addType("string", new Type(Type.type.String, null), it.pos);
+        global_scope.addType( "void", new Type(Type.type.Void, null), it.pos);
+        global_scope.addType( "null", new Type(Type.type.Null, null), it.pos);
         it.parts.forEach(partNode -> {
             if(partNode.classdef != null)
                 partNode.classdef.accept(this);
@@ -22,7 +25,7 @@ public class SymbolCollector implements ASTVisitor {
 
     @Override
     public void visit(classdefNode it){
-        global_scope.addType(it.name, new Type(Type.type.Class, it.name, 0), it.pos);
+        global_scope.addType(it.name, new classType(Type.type.Class, it.name), it.pos);
     }
 
     @Override public void visit(arraycrtNode it){}

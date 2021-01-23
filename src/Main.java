@@ -5,12 +5,13 @@ import Frontend.SymbolCollector;
 import Parser.MxLexer;
 import Parser.MxParser;
 import Util.MxErrorListener;
+import Util.error.Error;
 import Util.Scope;
 import Util.globalScope;
+import AST.ProgramNode;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import AST.*;
 
 import java.io.FileInputStream;
 import java.io.InputStream;

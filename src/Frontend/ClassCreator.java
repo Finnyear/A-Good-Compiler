@@ -25,8 +25,15 @@ public class ClassCreator implements ASTVisitor {
         });
     }
 
+    @Override public void visit(PartNode it){
+        if(it.vardef != null) it.vardef.accept(this);
+        if(it.fundef != null) it.fundef.accept(this);
+        if(it.classdef != null) it.classdef.accept(this);
+    }
+
     @Override
     public void visit(classdefNode it){
+//        System.out.println("Class Creator " + it.name);
         classType = (classType) global_scope.getType(it.name, it.pos);
         name = it.name;
         classType.vars = new HashMap<>();
@@ -39,8 +46,7 @@ public class ClassCreator implements ASTVisitor {
 
     @Override
     public void visit(vardefNode it){
-        Type vartype = global_scope.getType(it.type.basictype.name, it.pos);
-        vartype.dimension = it.type.dim;
+        Type vartype = it.type.getnewType(global_scope);
         for(variableNode var: it.variables){
             String varname = var.name;
             if(classType.vars.containsKey(varname))
@@ -56,8 +62,8 @@ public class ClassCreator implements ASTVisitor {
         if(it.name.equals(name))
             throw new SemanticError("function named wrong", it.pos);
         ArrayList<Type> para = new ArrayList<>();
-        it.fun_par_list.types.forEach(typeNode -> para.add(global_scope.getType(typeNode.basictype.name, it.pos)));
-        classType.funs.put(it.name, new funType(global_scope.getType(it.type.basictype.name, it.pos), para));
+        it.fun_par_list.types.forEach(typeNode -> para.add(global_scope.getType(typeNode.name, it.pos)));
+        classType.funs.put(it.name, new funType(global_scope.getType(it.type.name, it.pos), para));
     }
 
     @Override
@@ -92,7 +98,6 @@ public class ClassCreator implements ASTVisitor {
     @Override public void visit(literalNode it){}
     @Override public void visit(memberExprNode it){}
     @Override public void visit(newExprNode it){}
-    @Override public void visit(PartNode it){}
     @Override public void visit(preExprNode it){}
     @Override public void visit(primaryNode it){}
     @Override public void visit(pureExprStmtNode it){}

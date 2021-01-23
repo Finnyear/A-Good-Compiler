@@ -21,7 +21,7 @@ public class globalScope extends Scope{
     public Type getType(String str, position pos){
 //        System.out.println("getType");
 //        System.out.println(str);
-            if(types.containsKey(str)) return types.get(str);
-                throw new SemanticError("cannot find such type", pos);
+        if(types.containsKey(str)) return types.get(str);
+        throw new SemanticError("cannot find such type", pos);
     }
 }

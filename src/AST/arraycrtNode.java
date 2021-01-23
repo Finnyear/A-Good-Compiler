@@ -5,13 +5,12 @@ import Util.position;
 import java.util.ArrayList;
 
 public class arraycrtNode extends ExprNode{
-    public basictypeNode basictype;
+    public typeNode btype;
     public ArrayList<ExprNode> dims = new ArrayList<>();
-    public int dim_num;
 
-    public arraycrtNode(position pos, basictypeNode basictype){
+    public arraycrtNode(position pos, typeNode btype){
         super(pos);
-        this.basictype = basictype;
+        this.btype = btype;
     }
 
     @Override
