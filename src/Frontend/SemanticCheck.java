@@ -49,12 +49,16 @@ public class SemanticCheck implements ASTVisitor {
         it.parts.forEach(partNode -> partNode.accept(this));
     }
     @Override public void visit(PartNode it){
-        if(it.vardef != null) it.vardef.accept(this);
+        if(it.vardef != null) {
+//            System.out.println("vardef");
+            it.vardef.accept(this);
+        }
         if(it.fundef != null) it.fundef.accept(this);
         if(it.classdef != null) it.classdef.accept(this);
     }
     @Override public void visit(vardefNode it){
-        Type var_type = global_scope.getType(it.type.basictype.name, it.pos);
+        Type var_type = it.type.getType(global_scope);
+//        System.out.println(it.type.dim);
         if(var_type.tp == Type.type.Void || var_type.tp == Type.type.Null)
             throw new SemanticError("variable define type wrong", it.pos);
         it.variables.forEach(variableNode -> {
@@ -100,7 +104,15 @@ public class SemanticCheck implements ASTVisitor {
             throw new SemanticError("array type wrong", it.basictype.pos);
         it.type = new Type(type.tp, null, it.dim_num);
     }
-    @Override public void visit(arrayExprNode it){}
+    @Override public void visit(arrayExprNode it){
+        it.name.accept(this);
+        if(it.name.type.dimension == 0)
+            throw new SemanticError("array expression type wrong", it.pos);
+        it.dim.accept(this);
+        if(it.dim.type.cmp(global_scope.getType("int", it.pos)))
+            throw new SemanticError("array expression dimension wrong", it.pos);
+        it.type = new Type(it.name.type.tp, it.name.type.class_name, it.name.type.dimension - 1);
+    }
     @Override public void visit(assignExprNode it){
         it.lv.accept(this);
         it.rv.accept(this);
@@ -129,7 +141,14 @@ public class SemanticCheck implements ASTVisitor {
                     throw new SemanticError("binary operator type wrong", it.pos);
             }
         }
-        it.type = it.lhs.type;
+        switch (it.op){
+            case grt, geq, les, leq, eq, neq -> {
+                it.type = global_scope.getType("bool", it.pos);
+            }
+            default -> {
+                it.type = it.lhs.type;
+            }
+        }
     }
     @Override public void visit(blockNode it){
         it.suite.accept(this);
@@ -161,12 +180,12 @@ public class SemanticCheck implements ASTVisitor {
         if(it.forinit != null) it.forinit.accept(this);
         if(it.forcon != null) {
             it.forcon.accept(this);
-            if(!it.forcon.type.cmp(global_scope.getType("bool", it.forcon.pos)))
+            if(it.forcon.type.cmp(global_scope.getType("bool", it.forcon.pos)))
                 throw new SemanticError("for condition type wrong", it.forcon.pos);
         }
         if(it.forupd != null) it.forupd.accept(this);
         loopnum++;
-        it.forbody.accept(this);
+        if(it.forbody != null)it.forbody.accept(this);
         loopnum--;
     }
     @Override public void visit(funcalExprNode it){
@@ -283,6 +302,7 @@ public class SemanticCheck implements ASTVisitor {
     }
 
     @Override public void visit(varExprNode it) {
+//        System.out.println(it.name);
         if(!current_scope.qryvar(it.name, true))
             throw new SemanticError("no such variable", it.pos);
         it.type = current_scope.getvarType(it.name, true);
@@ -293,7 +313,7 @@ public class SemanticCheck implements ASTVisitor {
         if(!it.whilecon.type.cmp(global_scope.getType("bool", it.whilecon.pos)))
             throw new SemanticError("for condition type wrong", it.whilecon.pos);
         loopnum++;
-        it.whilebody.accept(this);
+        if(it.whilebody != null)it.whilebody.accept(this);
         loopnum--;
     }
 }

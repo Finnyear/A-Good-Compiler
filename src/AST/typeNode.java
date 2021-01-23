@@ -14,7 +14,7 @@ public class typeNode extends ASTNode{
     }
 
     public Type getType(globalScope global_scope){
-        return global_scope.getType(basictype.name, pos);
+        return new Type(global_scope.getType(basictype.name, pos).tp, global_scope.getType(basictype.name, pos).class_name, dim);
     }
 
     @Override

@@ -76,7 +76,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitType(MxParser.TypeContext ctx) {
-        typeNode node = new typeNode(new position(ctx), (basictypeNode) visit(ctx.basic_type()), 0);
+        typeNode node = new typeNode(new position(ctx), (basictypeNode) visit(ctx.basic_type()), ctx.LBracket().size());
         return node;
     }
 
@@ -151,6 +151,10 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
                 (StmtNode) visit(ctx.forbody));
         return node;
     }
+
+//    @Override
+//    public ASTNode visitEmptyStmt(MxParser.EmptyStmtContext ctx) {
+//    }
 
     @Override
     public ASTNode visitReturnStmt(MxParser.ReturnStmtContext ctx) {

@@ -47,7 +47,7 @@ variable : Identifier ('=' expression)? ;
 
 basic_type : Int | Bool | String | Void | Identifier;
 
-type : basic_type ('[]')*;
+type : basic_type ('['']')*;
 
 fun_par_list : (type variable (',' type variable)*)?;
 
@@ -57,8 +57,8 @@ creator
 
 
 
-    : basic_type ('[' expression ']')+ (('['']') | ('[]'))*                         #arraycreator
-    | basic_type ('[' expression ']')* (('['']') | ('[]'))+ ('[' expression ']')+   #invalidcreator
+    : basic_type ('[' expression ']')+ (('['']'))*                         #arraycreator
+    | basic_type ('[' expression ']')* (('['']'))+ ('[' expression ']')+   #invalidcreator
     | basic_type ('(' ')')?                                 #classcreator
     ;
 
@@ -91,7 +91,7 @@ expression
     | <assoc=right> op = ('!' | '~') expression             #prefixExpr
     | <assoc=right> op = ('++' | '--') expression           #prefixExpr
     | expression op = ('++' | '--')                         #suffixExpr
-    | expression op=('*' | '/') expression                  #binaryExpr
+    | expression op=('*' | '/' | '%') expression            #binaryExpr
     | expression op=('+' | '-') expression                  #binaryExpr
     | expression op=('>' | '<') expression                  #binaryExpr
     | expression op=('>=' | '<=' ) expression               #binaryExpr
