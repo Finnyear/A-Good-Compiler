@@ -57,18 +57,22 @@ public class SemanticCheck implements ASTVisitor {
     }
     @Override public void visit(vardefNode it){
         Type var_type = it.type.getnewType(global_scope);
-//        System.out.println(it.type.basictype.name);
-//        System.out.println(it.type.dim);
-//        if(var_type instanceof classType){
-//            System.out.println("classType");
+//        if(var_type instanceof arrayType) {
+//            System.out.println(((arrayType) var_type).basictype.tp);
+//            System.out.println(((arrayType) var_type).dimision);
 //        }
         if(var_type.tp == Type.type.Void || var_type.tp == Type.type.Null)
             throw new SemanticError("variable define type wrong", it.pos);
         it.variables.forEach(variableNode -> {
             if(variableNode.expr != null) {
                 variableNode.expr.accept(this);
-//                System.out.println(variableNode.expr.type.tp);
-//                System.out.println(variableNode.expr.type.dimension);
+//                if(variableNode.expr.type instanceof arrayType) {
+//                    System.out.println(((arrayType) variableNode.expr.type).basictype.tp);
+//                    System.out.println(((arrayType) variableNode.expr.type).dimision);
+//                }
+//                else {
+//                    System.out.println("Something wrong");
+//                }
                 if(variableNode.expr.type.cmp(var_type))
                     throw new SemanticError("define init type wrong", variableNode.pos);
             }
@@ -106,9 +110,9 @@ public class SemanticCheck implements ASTVisitor {
                 throw new SemanticError("array size type wrong", it.pos);
         }
         Type type = it.btype.getnewType(global_scope);
-        if(!type.cmp(global_scope.getType("void", it.pos)))
+        if(!((arrayType)type).basictype.cmp(global_scope.getType("void", it.pos)))
             throw new SemanticError("array type wrong", it.pos);
-        it.type = ((arrayType) type).subarray();
+        it.type = type;
     }
     @Override public void visit(arrayExprNode it){
         it.name.accept(this);
