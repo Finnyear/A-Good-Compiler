@@ -37,7 +37,7 @@ part : class_def | fun_def | var_def;
 
 class_def : Class Identifier '{' (var_def | fun_def | class_con )*  '}' ';';
 
-class_con : Identifier '(' fun_par_list ')' suite;
+class_con : Identifier '(' ')' suite;
 
 fun_def : type Identifier '(' fun_par_list ')' suite;
 
@@ -85,8 +85,8 @@ expressionlist: expression (',' expression)* ;
 expression
     : primary                                               #atomExpr
     | <assoc=right> New creator                             #newExpr
-    | expression '.' Identifier                             #memberExpr
-    | expression '(' expressionlist? ')'                    #funcalExpr
+    | expression '.' expression                             #memberExpr
+    | Identifier '(' expressionlist? ')'                    #funcalExpr
     | expression '[' expression ']'                         #arrayExpr
     | <assoc=right> op = ('!' | '~') expression             #prefixExpr
     | <assoc=right> op = ('++' | '--') expression           #prefixExpr

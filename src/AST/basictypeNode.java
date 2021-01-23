@@ -2,7 +2,7 @@ package AST;
 
 import Util.position;
 
-public class basictypeNode extends ASTNode{
+public class basictypeNode extends ExprNode{
     public String name;
     public basictypeNode(position pos, String name){
         super(pos);

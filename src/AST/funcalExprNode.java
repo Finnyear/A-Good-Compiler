@@ -3,10 +3,10 @@ package AST;
 import Util.position;
 
 public class funcalExprNode extends ExprNode{
-    public ExprNode name;
+    public String name;
     public exprlistNode paras;
 
-    public funcalExprNode(position pos, ExprNode name, exprlistNode paras){
+    public funcalExprNode(position pos, String name, exprlistNode paras){
         super(pos);
         this.name = name;
         this.paras = paras;

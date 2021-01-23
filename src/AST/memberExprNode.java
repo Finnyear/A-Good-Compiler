@@ -2,13 +2,12 @@ package AST;
 
 import Util.position;
 public class memberExprNode extends ExprNode{
-    public ExprNode expr;
-    public String member;
+    public ExprNode tp, mem;
 
-    public memberExprNode(position pos, ExprNode expr, String member){
+    public memberExprNode(position pos, ExprNode tp, ExprNode mem){
         super(pos);
-        this.expr = expr;
-        this.member = member;
+        this.tp = tp;
+        this.mem = mem;
     }
 
     @Override

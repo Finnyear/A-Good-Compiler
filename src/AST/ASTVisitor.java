@@ -13,6 +13,7 @@ public interface ASTVisitor {
     void visit(classconNode it);
     void visit(classcrtNode it);
     void visit(classdefNode it);
+    void visit(constExprNode it);
     void visit(continueStmtNode it);
     void visit(creatorNode it);
     void visit(emptyStmtNode it);
@@ -36,8 +37,10 @@ public interface ASTVisitor {
     void visit(sufExprNode it);
     void visit(suiteNode it);
     void visit(typeNode it);
+    void visit(thisExprNode it);
     void visit(vardefNode it);
     void visit(vardefStmtNode it);
+    void visit(varExprNode it);
     void visit(variableNode it);
     void visit(whileStmtNode it);
 }

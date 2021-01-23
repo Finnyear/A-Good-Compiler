@@ -3,12 +3,12 @@ package AST;
 import Util.*;
 
 public class constExprNode extends ExprNode{
-    public Type type;
+    public String tp;
     public String val;
 
-    public constExprNode(position pos, Type type, String val){
+    public constExprNode(position pos, String tp, String val){
         super(pos);
-        this.type = type;
+        this.tp = tp;
         this.val = val;
     }
 

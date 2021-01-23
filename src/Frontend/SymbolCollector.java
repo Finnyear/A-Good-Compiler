@@ -36,6 +36,7 @@ public class SymbolCollector implements ASTVisitor {
     @Override public void visit(breakStmtNode it){}
     @Override public void visit(classconNode it){}
     @Override public void visit(classcrtNode it){}
+    @Override public void visit(constExprNode it){}
     @Override public void visit(continueStmtNode it){}
     @Override public void visit(creatorNode it){}
     @Override public void visit(emptyStmtNode it){}
@@ -57,9 +58,11 @@ public class SymbolCollector implements ASTVisitor {
     @Override public void visit(StmtNode it){}
     @Override public void visit(sufExprNode it){}
     @Override public void visit(suiteNode it){}
+    @Override public void visit(thisExprNode it){}
     @Override public void visit(typeNode it){}
     @Override public void visit(vardefNode it){}
     @Override public void visit(vardefStmtNode it){}
+    @Override public void visit(varExprNode it){}
     @Override public void visit(variableNode it){}
     @Override public void visit(whileStmtNode it){}
 }

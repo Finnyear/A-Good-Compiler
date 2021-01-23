@@ -55,8 +55,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitClass_con(MxParser.Class_conContext ctx) {
-        classconNode node = new classconNode(new position(ctx), ctx.Identifier().getText(),
-                            (funparlistNode) visit(ctx.fun_par_list()), (suiteNode) visit(ctx.suite()));
+        classconNode node = new classconNode(new position(ctx), ctx.Identifier().getText(), (suiteNode) visit(ctx.suite()));
         return node;
     }
 
@@ -195,15 +194,25 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
     public ASTNode visitLiteral(MxParser.LiteralContext ctx) {
         if(ctx.This() != null) return new thisExprNode(new position(ctx));
         if(ctx.Null() != null) return new constExprNode(new position(ctx),
-                new Type(Type.type.Null, null, 0), ctx.Null().getText());
+//                new Type(Type.type.Null, null, 0),
+                "null",
+                ctx.Null().getText());
         if(ctx.ConstInteger() != null) return new constExprNode(new position(ctx),
-                new Type(Type.type.Int, null, 0), ctx.ConstInteger().getText());
+//                new Type(Type.type.Int, null, 0),
+                "int",
+                ctx.ConstInteger().getText());
         if(ctx.True() != null) return new constExprNode(new position(ctx),
-                new Type(Type.type.Bool, null, 0), ctx.True().getText());
+//                new Type(Type.type.Bool, null, 0),
+                "bool",
+                ctx.True().getText());
         if(ctx.False() != null) return new constExprNode(new position(ctx),
-                new Type(Type.type.Bool, null, 0), ctx.False().getText());
+//                new Type(Type.type.Bool, null, 0),
+                "bool",
+                ctx.False().getText());
         if(ctx.ConstString() != null) return new constExprNode(new position(ctx),
-                new Type(Type.type.String, null, 0), ctx.ConstString().getText());
+//                new Type(Type.type.String, null, 0),
+                "string",
+                ctx.ConstString().getText());
         return null;
     }
 
@@ -214,7 +223,8 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitMemberExpr(MxParser.MemberExprContext ctx) {
-        memberExprNode node = new memberExprNode(new position(ctx), (ExprNode) visit(ctx.expression()), ctx.Identifier().getText());
+        memberExprNode node = new memberExprNode(new position(ctx),
+                (ExprNode) visit(ctx.expression(0)), (ExprNode) visit(ctx.expression(1)));
         return node;
     }
 
@@ -227,7 +237,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitFuncalExpr(MxParser.FuncalExprContext ctx) {
-        funcalExprNode node = new funcalExprNode(new position(ctx), (ExprNode) visit(ctx.expression()),
+        funcalExprNode node = new funcalExprNode(new position(ctx), ctx.Identifier().getText(),
                 ctx.expressionlist() == null ? null : (exprlistNode) visit(ctx.expressionlist()));
         return node;
     }

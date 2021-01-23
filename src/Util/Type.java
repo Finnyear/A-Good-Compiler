@@ -22,9 +22,9 @@ public class Type {
         this.class_name = other.class_name;
     }
     public boolean cmp(Type other){
-        if(this.dimension != other.dimension) return false;
-        if(this.class_name != other.class_name) return false;
-        if(this.tp != other.tp) return false;
-        return true;
+        if(this.dimension != other.dimension) return true;
+        if(this.class_name != other.class_name) return true;
+        if(this.tp != other.tp) return true;
+        return false;
     }
 }

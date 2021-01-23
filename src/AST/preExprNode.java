@@ -19,4 +19,9 @@ public class preExprNode extends ExprNode{
     public void accept(ASTVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public boolean isAssignable() {
+        return op == preop.add || op == preop.sub;
+    }
 }

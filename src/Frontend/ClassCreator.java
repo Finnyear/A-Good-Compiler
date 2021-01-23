@@ -64,8 +64,8 @@ public class ClassCreator implements ASTVisitor {
     public void visit(classconNode it){
         if(!it.name.equals(name))
             throw new SemanticError("constructor function named wrong", it.pos);
-        if(!it.fun_par_list.types.isEmpty())
-            throw new SemanticError("constructor parameter wrong", it.pos);
+//        if(!it.fun_par_list.types.isEmpty())
+//            throw new SemanticError("constructor parameter wrong", it.pos);
         classType.cons.put(it.name, new funType(global_scope.getType("null", it.pos), new ArrayList<>()));
     }
 
@@ -79,6 +79,7 @@ public class ClassCreator implements ASTVisitor {
     @Override public void visit(blockNode it){}
     @Override public void visit(breakStmtNode it){}
     @Override public void visit(classcrtNode it){}
+    @Override public void visit(constExprNode it){}
     @Override public void visit(continueStmtNode it){}
     @Override public void visit(creatorNode it){}
     @Override public void visit(emptyStmtNode it){}
@@ -99,8 +100,10 @@ public class ClassCreator implements ASTVisitor {
     @Override public void visit(StmtNode it){}
     @Override public void visit(sufExprNode it){}
     @Override public void visit(suiteNode it){}
+    @Override public void visit(thisExprNode it){}
     @Override public void visit(typeNode it){}
     @Override public void visit(vardefStmtNode it){}
     @Override public void visit(variableNode it){}
+    @Override public void visit(varExprNode it){}
     @Override public void visit(whileStmtNode it){}
 }
