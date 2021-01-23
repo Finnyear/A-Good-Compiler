@@ -3,11 +3,11 @@ package AST;
 import Util.position;
 
 public class classcrtNode extends ExprNode{
-    public basictypeNode basictype;
+    public typeNode btype;
 
-    public classcrtNode(position pos, basictypeNode basictype){
+    public classcrtNode(position pos, typeNode btype){
         super(pos);
-        this.basictype = basictype;
+        this.btype = btype;
     }
 
     @Override

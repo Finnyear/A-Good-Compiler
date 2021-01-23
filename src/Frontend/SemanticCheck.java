@@ -174,7 +174,7 @@ public class SemanticCheck implements ASTVisitor {
         it.suite.accept(this);
     }
     @Override public void visit(classcrtNode it){
-        it.type = global_scope.getType(it.basictype.name, it.pos);
+        it.type = it.btype.getglobalType(global_scope);
         if(it.type == global_scope.getType("void", it.pos))
             throw new SemanticError("new class type wrong", it.pos);
     }

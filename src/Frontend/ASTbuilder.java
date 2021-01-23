@@ -98,7 +98,8 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitClasscreator(MxParser.ClasscreatorContext ctx) {
-        classcrtNode node = new classcrtNode(new position(ctx), (basictypeNode) visit(ctx.basic_type()));
+        classcrtNode node = new classcrtNode(new position(ctx), new typeNode(new position(ctx),
+                ctx.basic_type().getText(), 0));
         return node;
     }
 
