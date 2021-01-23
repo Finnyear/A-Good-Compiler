@@ -62,8 +62,8 @@ public class ClassCreator implements ASTVisitor {
         if(it.name.equals(name))
             throw new SemanticError("function named wrong", it.pos);
         ArrayList<Type> para = new ArrayList<>();
-        it.fun_par_list.types.forEach(typeNode -> para.add(global_scope.getType(typeNode.name, it.pos)));
-        classType.funs.put(it.name, new funType(global_scope.getType(it.type.name, it.pos), para));
+        it.fun_par_list.types.forEach(typeNode -> para.add(typeNode.getnewType(global_scope)));
+        classType.funs.put(it.name, new funType(it.type.getnewType(global_scope), para));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ClassCreator implements ASTVisitor {
             throw new SemanticError("constructor function named wrong", it.pos);
 //        if(!it.fun_par_list.types.isEmpty())
 //            throw new SemanticError("constructor parameter wrong", it.pos);
-        classType.cons.put(it.name, new funType(global_scope.getType("null", it.pos), new ArrayList<>()));
+        classType.cons.put(it.name, new funType(global_scope.getType("void", it.pos), new ArrayList<>()));
     }
 
     @Override public void visit(arraycrtNode it){}

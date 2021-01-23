@@ -79,6 +79,7 @@ public class SemanticCheck implements ASTVisitor {
         current_class.funs.forEach((funname, funtype) -> current_scope.addfun(funname, funtype, it.pos));
         current_class.cons.forEach((conname, contype) -> current_scope.addfun(conname, contype, it.pos));
         it.fundefs.forEach(fundefNode -> fundefNode.accept(this));
+        it.classcons.forEach(classconNode -> classconNode.accept(this));
         current_scope = current_scope.getParentScope();
         current_class = null;
     }
@@ -86,7 +87,7 @@ public class SemanticCheck implements ASTVisitor {
         current_scope = new Scope(current_scope);
         funparlistNode para = it.fun_par_list;
         for(int i = 0; i < para.types.size(); i++)
-            current_scope.addvar(para.variables.get(i).name, para.types.get(i).getnewType(global_scope), para.pos);
+            current_scope.addfun(para.variables.get(i).name, para.types.get(i).getnewType(global_scope), para.pos);
         return_type = it.type.getnewType(global_scope);
         it.suite.accept(this);
         return_type = null;
@@ -176,7 +177,11 @@ public class SemanticCheck implements ASTVisitor {
             throw new SemanticError("break position wrong", it.pos);
     }
     @Override public void visit(classconNode it){
+        current_scope = new Scope(current_scope);
+        return_type = global_scope.getType("void", it.pos);
         it.suite.accept(this);
+        return_type = null;
+        current_scope = current_scope.getParentScope();
     }
     @Override public void visit(classcrtNode it){
         it.type = it.btype.getglobalType(global_scope);
@@ -220,7 +225,10 @@ public class SemanticCheck implements ASTVisitor {
         }
 //        System.out.println(it.name);
         it.type = funtype.returntype;
-//        System.out.println(it.type.tp + it.type.class_name);
+        if(funtype.returntype instanceof arrayType){}
+        else {
+            System.out.println(it.type.tp + it.type.class_name);
+        }
     }
     @Override public void visit(funparlistNode it){}//
     @Override public void visit(ifStmtNode it){
