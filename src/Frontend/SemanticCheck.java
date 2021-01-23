@@ -86,8 +86,9 @@ public class SemanticCheck implements ASTVisitor {
     @Override public void visit(fundefNode it){
         current_scope = new Scope(current_scope);
         funparlistNode para = it.fun_par_list;
+//        System.out.println(para.variables.get(0).name + para.types.get(0).getnewType(global_scope).tp);
         for(int i = 0; i < para.types.size(); i++)
-            current_scope.addfun(para.variables.get(i).name, para.types.get(i).getnewType(global_scope), para.pos);
+            current_scope.addvar(para.variables.get(i).name, para.types.get(i).getnewType(global_scope), para.pos);
         return_type = it.type.getnewType(global_scope);
         it.suite.accept(this);
         return_type = null;
