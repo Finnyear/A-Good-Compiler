@@ -14,6 +14,7 @@ public class arrayType extends Type{
     @Override
     public boolean cmp(Type other) {
         boolean sp = super.cmp(other);
+        if(this.tp == type.Null || other.tp == type.Null) return false;
         if(sp) return sp;
         if(other instanceof arrayType)
             return this.dimision != ((arrayType) other).dimision || this.basictype.cmp(((arrayType) other).basictype);

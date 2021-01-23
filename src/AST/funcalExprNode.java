@@ -1,5 +1,6 @@
 package AST;
 
+import Util.Type;
 import Util.position;
 
 public class funcalExprNode extends ExprNode{
@@ -15,5 +16,10 @@ public class funcalExprNode extends ExprNode{
     @Override
     public void accept(ASTVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public boolean isAssignable() {
+        return type.tp == Type.type.Class;
     }
 }

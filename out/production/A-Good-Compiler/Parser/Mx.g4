@@ -94,12 +94,12 @@ expression
     | expression op = ('++' | '--')                         #suffixExpr
     | expression op=('*' | '/' | '%') expression            #binaryExpr
     | expression op=('+' | '-') expression                  #binaryExpr
+    | expression op=('<<' | '>>' ) expression               #binaryExpr
     | expression op=('>' | '<') expression                  #binaryExpr
     | expression op=('>=' | '<=' ) expression               #binaryExpr
     | expression op=('==' | '!=' ) expression               #binaryExpr
     | expression op=('|' | '&' | '^') expression            #binaryExpr
     | expression op=('||' | '&&' ) expression               #binaryExpr
-    | expression op=('<<' | '>>' ) expression               #binaryExpr
     | <assoc=right> expression '=' expression               #assignExpr
     ;
 
