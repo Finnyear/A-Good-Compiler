@@ -1,8 +1,10 @@
-int n;
-int x;
-int y;
-int z;
-int c = 0;
-int k;
 int main(){
+    string str;
+    int n;
+    println(str);
+    printInt(n);
+    printlnInt(n);
+    n = getInt();
+    str = getString();
+    str = toString();
 }

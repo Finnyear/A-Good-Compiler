@@ -16,7 +16,7 @@ public class SemanticCheck implements ASTVisitor {
 
     public SemanticCheck(globalScope global_scope){
         this.global_scope = global_scope;
-        this.current_scope = global_scope;
+        this.current_scope = this.global_scope;
         loopnum = 0;
     }
 
@@ -170,12 +170,13 @@ public class SemanticCheck implements ASTVisitor {
         loopnum--;
     }
     @Override public void visit(funcalExprNode it){
+//        System.out.println(it.name);
         if(!current_scope.qryfun(it.name, true))
             throw new SemanticError("no such function", it.pos);
         funType funtype = (funType) current_scope.getfunType(it.name, true);
-        if(it.paras.exprs.size() != funtype.paras.size())
+        if((it.paras == null ? 0 : it.paras.exprs.size()) != funtype.paras.size())
             throw new SemanticError("function call parameter number wrong", it.pos);
-        for(int i = 0; i < it.paras.exprs.size(); i++){
+        for(int i = 0; i < (it.paras == null ? 0 : it.paras.exprs.size()); i++){
             it.paras.exprs.get(i).accept(this);
             if(it.paras.exprs.get(i).type.cmp(funtype.paras.get(i)))
                 throw new SemanticError("function call parameter not match", it.paras.exprs.get(i).pos);

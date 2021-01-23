@@ -8,11 +8,14 @@ import java.util.HashSet;
 public class Scope {
     public HashMap<String, Type> vars, funs;
     public Scope parentScope;
+
+
     public Scope(Scope parentScope){
         this.parentScope = parentScope;
         vars = new HashMap<>();
         funs = new HashMap<>();
     }
+
     public Scope getParentScope(){
         return parentScope;
     }
@@ -25,7 +28,7 @@ public class Scope {
     public boolean qryvar(String name, boolean lookupon){
         if(vars.containsKey(name))
             return true;
-        if(parentScope != null && lookupon)
+        if((parentScope != null) && (lookupon == true))
             return parentScope.qryvar(name, true);
         return false;
     }
@@ -45,8 +48,8 @@ public class Scope {
     public boolean qryfun(String name, boolean lookupon){
         if(funs.containsKey(name))
             return true;
-        if(parentScope != null && lookupon)
-            return parentScope.qryvar(name, true);
+        if((parentScope != null) && (lookupon == true))
+            return parentScope.qryfun(name, true);
         return false;
     }
     public Type getfunType(String name, boolean lookupon){
