@@ -43,9 +43,9 @@ public class MxParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'{'", "'}'", "';'", "'('", "')'", "','", "'='", "'.'", "'!'", 
-			"'~'", "'++'", "'--'", "'+'", "'-'", "'*'", "'/'", "'%'", "'>'", "'<'", 
-			"'>='", "'<='", "'=='", "'!='", "'|'", "'&'", "'^'", "'||'", "'&&'", 
-			"'<<'", "'>>'", "'int'", "'bool'", "'string'", "'null'", "'void'", "'true'", 
+			"'~'", "'++'", "'--'", "'+'", "'-'", "'*'", "'/'", "'%'", "'<<'", "'>>'", 
+			"'>'", "'<'", "'>='", "'<='", "'=='", "'!='", "'|'", "'&'", "'^'", "'||'", 
+			"'&&'", "'int'", "'bool'", "'string'", "'null'", "'void'", "'true'", 
 			"'false'", "'if'", "'else'", "'for'", "'while'", "'break'", "'continue'", 
 			"'return'", "'new'", "'class'", "'this'", "'['", "']'"
 		};
@@ -2059,7 +2059,7 @@ public class MxParser extends Parser {
 						setState(260);
 						((BinaryExprContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__23) | (1L << T__24) | (1L << T__25))) != 0)) ) {
+						if ( !(_la==T__23 || _la==T__24) ) {
 							((BinaryExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -2080,7 +2080,7 @@ public class MxParser extends Parser {
 						setState(263);
 						((BinaryExprContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(_la==T__26 || _la==T__27) ) {
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__25) | (1L << T__26) | (1L << T__27))) != 0)) ) {
 							((BinaryExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -2375,7 +2375,7 @@ public class MxParser extends Parser {
 		"\3\20\3\20\3\20\7\20\u0119\n\20\f\20\16\20\u011c\13\20\3\21\3\21\3\21"+
 		"\3\21\3\21\3\21\5\21\u0124\n\21\3\22\3\22\3\22\2\3\36\23\2\4\6\b\n\f\16"+
 		"\20\22\24\26\30\32\34\36 \"\2\16\5\2!#%%\66\66\3\2\13\f\3\2\r\16\3\2\17"+
-		"\20\3\2\21\23\3\2\24\25\3\2\26\27\3\2\30\31\3\2\32\34\3\2\35\36\3\2\37"+
+		"\20\3\2\21\23\3\2\24\25\3\2\26\27\3\2\30\31\3\2\32\33\3\2\34\36\3\2\37"+
 		" \6\2$$&\'\61\61\64\65\2\u014d\2\'\3\2\2\2\4/\3\2\2\2\6\61\3\2\2\2\b?"+
 		"\3\2\2\2\nD\3\2\2\2\fK\3\2\2\2\16V\3\2\2\2\20[\3\2\2\2\22]\3\2\2\2\24"+
 		"p\3\2\2\2\26r\3\2\2\2\30\u00a8\3\2\2\2\32\u00d7\3\2\2\2\34\u00d9\3\2\2"+

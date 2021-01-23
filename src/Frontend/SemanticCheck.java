@@ -155,7 +155,7 @@ public class SemanticCheck implements ASTVisitor {
                 if(it.lhs.type.cmp(global_scope.getType("bool", it.pos)))
                     throw new SemanticError("logic operator type wrong", it.pos);
             }
-            case eq -> {}
+            case eq, neq-> {}
             default -> {
                 if(it.lhs.type.cmp(global_scope.getType("int", it.pos)) &&
                     it.lhs.type.cmp(global_scope.getType("string", it.pos)))

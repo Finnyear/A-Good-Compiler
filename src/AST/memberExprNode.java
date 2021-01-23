@@ -17,6 +17,6 @@ public class memberExprNode extends ExprNode{
 
     @Override
     public boolean isAssignable() {
-        return tp.isAssignable();
+        return mem.isAssignable();
     }
 }
