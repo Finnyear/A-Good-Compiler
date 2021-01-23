@@ -2,6 +2,7 @@ package AST;
 
 import Util.arrayType;
 import Util.position;
+import Util.classType;
 import Util.globalScope;
 import Util.Type;
 
@@ -20,7 +21,11 @@ public class typeNode extends ExprNode{
     }
     public Type getnewType(globalScope global_scope){
         Type type = global_scope.getType(name, pos);
-//        System.out.println(this.name + type.tp);
+//        if(type instanceof classType){
+//            System.out.println(name);
+//            System.out.println("class type okey");
+//        }
+//        System.out.println(dim);
         return this.dim == 0 ? type : new arrayType(type, this.dim);
     }
 

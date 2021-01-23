@@ -1,9 +1,12 @@
-A get() { return new A; } // this is valid
 
-class A {
-    A() {
-
-    }
+class BBB {
+    int a;
 };
 
-int main() { return 0; }
+int main() {
+
+    BBB[][] bb = new BBB[10][10];
+
+    bb[5][5].a;
+
+}

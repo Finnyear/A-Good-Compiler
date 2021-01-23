@@ -8,7 +8,7 @@ public class arrayType extends Type{
         this.dimision = dimision;
     }
     public Type subarray(){
-        return dimision > 1 ? new arrayType(basictype, dimision - 1) : new Type(basictype);
+        return dimision > 1 ? new arrayType(this.basictype, this.dimision - 1) : this.basictype;
     }
 
     @Override

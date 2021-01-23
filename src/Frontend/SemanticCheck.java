@@ -57,28 +57,18 @@ public class SemanticCheck implements ASTVisitor {
     }
     @Override public void visit(vardefNode it){
         Type var_type = it.type.getnewType(global_scope);
-//        if(var_type instanceof arrayType) {
-//            System.out.println(((arrayType) var_type).basictype.tp);
-//            System.out.println(((arrayType) var_type).dimision);
-//        }
         if(var_type.tp == Type.type.Void || var_type.tp == Type.type.Null)
             throw new SemanticError("variable define type wrong", it.pos);
         it.variables.forEach(variableNode -> {
             if(variableNode.expr != null) {
                 variableNode.expr.accept(this);
-//                if(variableNode.expr.type instanceof arrayType) {
-//                    System.out.println(((arrayType) variableNode.expr.type).basictype.tp);
-//                    System.out.println(((arrayType) variableNode.expr.type).dimision);
-//                }
-//                else {
-//                    System.out.println("Something wrong");
-//                }
                 if(variableNode.expr.type.cmp(var_type))
                     throw new SemanticError("define init type wrong", variableNode.pos);
             }
             if(current_scope.qryvar(variableNode.name, false))
                 throw new SemanticError("variable redefined", variableNode.pos);
             current_scope.addvar(variableNode.name, var_type, variableNode.pos);
+//            System.out.println(variableNode.name);
         });
     }
     @Override public void visit(classdefNode it){
@@ -122,6 +112,21 @@ public class SemanticCheck implements ASTVisitor {
         if(it.dim.type.cmp(global_scope.getType("int", it.pos)))
             throw new SemanticError("array expression dimension wrong", it.pos);
         it.type = ((arrayType)it.name.type).subarray();
+
+//        if(it.type instanceof arrayType){
+//            System.out.println(((arrayType) it.type).dimision);
+//        }
+//        else{
+//            System.out.println(it.type.tp);
+//            System.out.println(it.type.class_name);
+//            if(it.type instanceof classType){
+//                System.out.println("Yes");
+//            }
+//            else{
+//                System.out.println("No");
+//            }
+//            System.out.println("0");
+//        }
     }
     @Override public void visit(assignExprNode it){
         it.lv.accept(this);
@@ -238,7 +243,7 @@ public class SemanticCheck implements ASTVisitor {
         if(it.tp.type instanceof arrayType){
             current_scope.addfun("size", new funType(global_scope.getType("int", it.pos), new ArrayList<>()), it.pos);
         }
-        else if(it.tp.type.tp == Type.type.Class){
+        else if(it.tp.type instanceof classType){
             ((classType) it.tp.type).vars.forEach((varname, vartype) -> current_scope.addvar(varname, vartype, it.pos));
             ((classType) it.tp.type).funs.forEach((funname, funtype) -> current_scope.addfun(funname, funtype, it.pos));
             ((classType) it.tp.type).cons.forEach((conname, contype) -> current_scope.addfun(conname, contype, it.pos));
