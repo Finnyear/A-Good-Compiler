@@ -128,6 +128,8 @@ public class SemanticCheck implements ASTVisitor {
     @Override public void visit(binaryExprNode it){
         it.lhs.accept(this);
         it.rhs.accept(this);
+//        System.out.println(it.lhs.type.tp);
+//        System.out.println(it.rhs.type.tp);
         if(it.lhs.type.cmp(it.rhs.type))
             throw new SemanticError("binary expression type not match", it.pos);
         switch (it.op){
@@ -143,6 +145,7 @@ public class SemanticCheck implements ASTVisitor {
         }
         switch (it.op){
             case grt, geq, les, leq, eq, neq -> {
+//                System.out.println("bool");
                 it.type = global_scope.getType("bool", it.pos);
             }
             default -> {
@@ -256,7 +259,7 @@ public class SemanticCheck implements ASTVisitor {
         else {
             if (it.expr.type.cmp(global_scope.getType("int", it.pos)))
                 throw new SemanticError("prefix expression type wrong", it.pos);
-            if (it.op != preExprNode.preop.not && !it.expr.isAssignable())
+            if ((it.op == preExprNode.preop.add || it.op == preExprNode.preop.sub) && !it.expr.isAssignable())
                 throw new SemanticError("prefix expression is not assignable", it.pos);
             it.type = global_scope.getType("int", it.pos);
         }
@@ -310,7 +313,7 @@ public class SemanticCheck implements ASTVisitor {
 
     @Override public void visit(whileStmtNode it){
         it.whilecon.accept(this);
-        if(!it.whilecon.type.cmp(global_scope.getType("bool", it.whilecon.pos)))
+        if(it.whilecon.type.cmp(global_scope.getType("bool", it.whilecon.pos)))
             throw new SemanticError("for condition type wrong", it.whilecon.pos);
         loopnum++;
         if(it.whilebody != null)it.whilebody.accept(this);

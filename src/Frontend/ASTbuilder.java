@@ -189,8 +189,11 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitPrimary(MxParser.PrimaryContext ctx) {
+        if(ctx.literal() != null) {
+//            System.out.println("Literal");
+            return visit(ctx.literal());
+        }
         if(ctx.expression() != null) return visit(ctx.expression());
-        if(ctx.literal() != null) return visit(ctx.literal());
         return new varExprNode(new position(ctx), ctx.Identifier().getText());
     }
 
@@ -261,6 +264,8 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
             case "--" -> node.op = preExprNode.preop.sub;
             case "!" -> node.op = preExprNode.preop.lnot;
             case "~" -> node.op = preExprNode.preop.not;
+            case "+" -> node.op = preExprNode.preop.pls;
+            case "-" -> node.op = preExprNode.preop.mns;
         }
         return node;
     }

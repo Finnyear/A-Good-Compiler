@@ -6,7 +6,7 @@ String : 'string';
 Null : 'null';
 Void : 'void';
 True : 'true';
-False : 'False';
+False : 'false';
 If : 'if';
 Else : 'else';
 For : 'for';
@@ -57,8 +57,8 @@ creator
 
 
 
-    : basic_type ('[' expression ']')+ (('['']'))*                         #arraycreator
-    | basic_type ('[' expression ']')* (('['']'))+ ('[' expression ']')+   #invalidcreator
+    : basic_type ('[' expression ']')* ('['']')+ ('[' expression ']')+   #invalidcreator
+    | basic_type ('[' expression ']')+ ('['']')*                         #arraycreator
     | basic_type ('(' ')')?                                 #classcreator
     ;
 
@@ -90,6 +90,7 @@ expression
     | expression '[' expression ']'                         #arrayExpr
     | <assoc=right> op = ('!' | '~') expression             #prefixExpr
     | <assoc=right> op = ('++' | '--') expression           #prefixExpr
+    | <assoc=right> op = ('+' | '-') expression             #prefixExpr
     | expression op = ('++' | '--')                         #suffixExpr
     | expression op=('*' | '/' | '%') expression            #binaryExpr
     | expression op=('+' | '-') expression                  #binaryExpr
@@ -98,13 +99,14 @@ expression
     | expression op=('==' | '!=' ) expression               #binaryExpr
     | expression op=('|' | '&' | '^') expression            #binaryExpr
     | expression op=('||' | '&&' ) expression               #binaryExpr
+    | expression op=('<<' | '>>' ) expression               #binaryExpr
     | <assoc=right> expression '=' expression               #assignExpr
     ;
 
 primary
     : '(' expression ')'
+    | literal
     | Identifier
-    | literal 
     ;
 
 literal

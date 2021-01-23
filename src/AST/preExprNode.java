@@ -6,7 +6,7 @@ import Util.position;
 public class preExprNode extends ExprNode{
     public ExprNode expr;
     public enum preop{
-        add, sub, lnot, not
+        add, sub, lnot, not, pls, mns
     }
     public preop op;
 

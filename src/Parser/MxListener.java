@@ -118,18 +118,6 @@ public interface MxListener extends ParseTreeListener {
 	 */
 	void exitSuite(MxParser.SuiteContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code arraycreator}
-	 * labeled alternative in {@link MxParser#creator}.
-	 * @param ctx the parse tree
-	 */
-	void enterArraycreator(MxParser.ArraycreatorContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code arraycreator}
-	 * labeled alternative in {@link MxParser#creator}.
-	 * @param ctx the parse tree
-	 */
-	void exitArraycreator(MxParser.ArraycreatorContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code invalidcreator}
 	 * labeled alternative in {@link MxParser#creator}.
 	 * @param ctx the parse tree
@@ -141,6 +129,18 @@ public interface MxListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitInvalidcreator(MxParser.InvalidcreatorContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code arraycreator}
+	 * labeled alternative in {@link MxParser#creator}.
+	 * @param ctx the parse tree
+	 */
+	void enterArraycreator(MxParser.ArraycreatorContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code arraycreator}
+	 * labeled alternative in {@link MxParser#creator}.
+	 * @param ctx the parse tree
+	 */
+	void exitArraycreator(MxParser.ArraycreatorContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code classcreator}
 	 * labeled alternative in {@link MxParser#creator}.

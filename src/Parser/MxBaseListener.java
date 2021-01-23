@@ -148,18 +148,6 @@ public class MxBaseListener implements MxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArraycreator(MxParser.ArraycreatorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitArraycreator(MxParser.ArraycreatorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterInvalidcreator(MxParser.InvalidcreatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -167,6 +155,18 @@ public class MxBaseListener implements MxListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitInvalidcreator(MxParser.InvalidcreatorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArraycreator(MxParser.ArraycreatorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArraycreator(MxParser.ArraycreatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
