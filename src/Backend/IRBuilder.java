@@ -364,7 +364,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     @Override
     public void visit(variableNode it) {
         IRType type = IRroot.getIRtype(it.varent.type);
-        System.out.println(type.toString());
+//        System.out.println(type.toString());
         if(it.isglobal == true){
             GlobalVar reg = new GlobalVar(new IRpointerType(type, true), it.name);
             it.varent.operand = reg;
@@ -418,7 +418,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                     new intConst(0, 32), varent.index, (Register) it.operand, current_block));
         }
         else {
-            if(varent.operand == null) System.out.println("wuwuwu");
+//            if(varent.operand == null) System.out.println("wuwuwu");
             it.operand = varent.operand;
         }
         addbranch(it);
@@ -543,7 +543,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             case mul, div, mod, sla, sra, and, or, xor, sub, add -> {
                 it.lhs.accept(this);
                 it.rhs.accept(this);
-                System.out.println("???????");
+//                System.out.println("???????");
                 op1 = getpointee(it.lhs.operand);
                 op2 = getpointee(it.rhs.operand);
                 it.operand = new Register(Root.intIR, "binary_" + opcode.toString());

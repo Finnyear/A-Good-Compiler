@@ -258,7 +258,7 @@ public class InstSelection {
     }
 
     public void genLIR(Inst inst){
-        System.out.println(inst);
+//        System.out.println(inst);
         LBlock lBlock = currentBlock;
         if(inst instanceof Binary){
             Binary tmp = (Binary)inst;
@@ -324,7 +324,7 @@ public class InstSelection {
     }
 
     public void copyblock(IRBlock src, LBlock block){
-        System.out.println("copy block");
+//        System.out.println("copy block");
         currentBlock = block;
         for(Inst inst = src.head_inst; inst != null; inst = src.getnxt(inst)) genLIR(inst);
         src.suc_block.forEach(suc -> {
