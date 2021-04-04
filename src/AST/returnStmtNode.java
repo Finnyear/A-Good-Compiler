@@ -3,6 +3,7 @@ package AST;
 import Util.position;
 public class returnStmtNode extends StmtNode{
     public ExprNode expr;
+    public fundefNode dest;
 
     public returnStmtNode(position pos, ExprNode expr){
         super(pos);

@@ -1,10 +1,9 @@
 package AST;
 
-import Util.arrayType;
+import Util.type.arrayType;
 import Util.position;
-import Util.classType;
-import Util.globalScope;
-import Util.Type;
+import Util.scope.globalScope;
+import Util.type.Type;
 
 public class typeNode extends ExprNode{
 //    public basictypeNode basictype;
@@ -30,5 +29,5 @@ public class typeNode extends ExprNode{
     }
 
     @Override
-    public void accept(ASTVisitor visitor){visitor.visit(this);}
+    public void accept(ASTVisitor visitor){}
 }

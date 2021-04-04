@@ -1,11 +1,14 @@
 package AST;
 
+import MIR.IRBlock;
 import Util.position;
 public class forStmtNode extends StmtNode{
     public ExprNode forinit;
     public ExprNode forcon;
     public ExprNode forupd;
     public StmtNode forbody;
+
+    public IRBlock updblock = null, endblock = null;
 
     public forStmtNode(position pos, ExprNode forinit, ExprNode forcon, ExprNode forupd, StmtNode forbody){
         super(pos);

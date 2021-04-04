@@ -1,15 +1,16 @@
 package AST;
 
-import Util.Type;
 import Util.position;
 
 public class funcalExprNode extends ExprNode{
     public String name;
     public exprlistNode paras;
+    public varExprNode callee;
 
-    public funcalExprNode(position pos, String name, exprlistNode paras){
+    public funcalExprNode(position pos, varExprNode callee, exprlistNode paras){
         super(pos);
-        this.name = name;
+        name = callee.name;
+        this.callee = callee;
         this.paras = paras;
     }
 

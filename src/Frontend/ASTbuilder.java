@@ -6,6 +6,7 @@ import Parser.MxBaseVisitor;
 import Parser.MxParser;
 import Util.*;
 import Util.error.SemanticError;
+import Util.scope.globalScope;
 
 public class ASTbuilder extends MxBaseVisitor<ASTNode> {
     private globalScope global_scope;
@@ -49,13 +50,15 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
         classdefNode node = new classdefNode(new position(ctx), ctx.Identifier().getText());
         ctx.var_def().forEach(var_defContext -> node.vardefs.add((vardefNode) visit(var_defContext)));
         ctx.fun_def().forEach(fun_defContext -> node.fundefs.add((fundefNode) visit(fun_defContext)));
-        ctx.class_con().forEach(class_conContext -> node.classcons.add((classconNode) visit(class_conContext)));
+        ctx.class_con().forEach(class_conContext -> node.classcon = (fundefNode) visit(class_conContext));
         return node;
     }
 
     @Override
     public ASTNode visitClass_con(MxParser.Class_conContext ctx) {
-        classconNode node = new classconNode(new position(ctx), ctx.Identifier().getText(), (suiteNode) visit(ctx.suite()));
+        fundefNode node = new fundefNode(new position(ctx), new typeNode(new position(ctx), "void", 0),
+                ctx.Identifier().getText(), new funparlistNode(new position(ctx)), (suiteNode) visit(ctx.suite()));
+        node.iscon = true;
         return node;
     }
 
@@ -153,10 +156,6 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
         return node;
     }
 
-//    @Override
-//    public ASTNode visitEmptyStmt(MxParser.EmptyStmtContext ctx) {
-//    }
-
     @Override
     public ASTNode visitReturnStmt(MxParser.ReturnStmtContext ctx) {
         returnStmtNode node = new returnStmtNode(new position(ctx),
@@ -245,7 +244,7 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitFuncalExpr(MxParser.FuncalExprContext ctx) {
-        funcalExprNode node = new funcalExprNode(new position(ctx), ctx.Identifier().getText(),
+        funcalExprNode node = new funcalExprNode(new position(ctx), new varExprNode(new position(ctx), ctx.Identifier().getText()),
                 ctx.expressionlist() == null ? null : (exprlistNode) visit(ctx.expressionlist()));
         return node;
     }

@@ -1,8 +1,11 @@
 package AST;
 
 import Util.position;
+import Util.varentity;
+
 public class varExprNode extends ExprNode{
     public String name;
+    public varentity varent;
     public varExprNode(position pos, String name){
         super(pos);
         this.name = name;

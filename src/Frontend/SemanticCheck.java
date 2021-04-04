@@ -1,8 +1,15 @@
 package Frontend;
 
 import AST.*;
-import Util.*;
+import MIR.IROperand.intConst;
 import Util.error.SemanticError;
+import Util.scope.Scope;
+import Util.scope.globalScope;
+import Util.type.Type;
+import Util.type.arrayType;
+import Util.type.classType;
+import Util.type.funType;
+import Util.varentity;
 
 import java.util.ArrayList;
 
@@ -12,7 +19,9 @@ public class SemanticCheck implements ASTVisitor {
     public Scope current_scope;
     public classType current_class;
     public Type return_type;
+    public fundefNode current_func;
     public int loopnum;
+    public ASTNode current_loop = null;
 
     public SemanticCheck(globalScope global_scope){
         this.global_scope = global_scope;
@@ -21,19 +30,19 @@ public class SemanticCheck implements ASTVisitor {
     }
 
     @Override public void visit(ProgramNode it){
-        global_scope.addfun("print", new funType(new Type(Type.type.Void), new ArrayList<>(){{add(new Type(Type.type.String));}}), it.pos);
-        global_scope.addfun("println", new funType(new Type(Type.type.Void), new ArrayList<>(){{add(new Type(Type.type.String));}}), it.pos);
-        global_scope.addfun("printInt", new funType(new Type(Type.type.Void), new ArrayList<>(){{add(new Type(Type.type.Int));}}), it.pos);
-        global_scope.addfun("printlnInt", new funType(new Type(Type.type.Void), new ArrayList<>(){{add(new Type(Type.type.Int));}}), it.pos);
-        global_scope.addfun("getString", new funType(new Type(Type.type.String), new ArrayList<>()), it.pos);
-        global_scope.addfun("getInt", new funType(new Type(Type.type.Int), new ArrayList<>()), it.pos);
-        global_scope.addfun("toString", new funType(new Type(Type.type.String), new ArrayList<>(){{add(new Type(Type.type.Int));}}), it.pos);
+        global_scope.addfun("print", new funType(new Type(Type.type.Void), new ArrayList<>(){{add(new Type(Type.type.String));}}, false), it.pos);
+        global_scope.addfun("println", new funType(new Type(Type.type.Void), new ArrayList<>(){{add(new Type(Type.type.String));}}, false), it.pos);
+        global_scope.addfun("printInt", new funType(new Type(Type.type.Void), new ArrayList<>(){{add(new Type(Type.type.Int));}}, false), it.pos);
+        global_scope.addfun("printlnInt", new funType(new Type(Type.type.Void), new ArrayList<>(){{add(new Type(Type.type.Int));}}, false), it.pos);
+        global_scope.addfun("getString", new funType(new Type(Type.type.String), new ArrayList<>(), false), it.pos);
+        global_scope.addfun("getInt", new funType(new Type(Type.type.Int), new ArrayList<>(), false), it.pos);
+        global_scope.addfun("toString", new funType(new Type(Type.type.String), new ArrayList<>(){{add(new Type(Type.type.Int));}}, false), it.pos);
         it.parts.forEach(partNode -> {
             if(partNode.fundef != null) {
                 fundefNode node = partNode.fundef;;
                 ArrayList<Type> para = new ArrayList<>();
                 node.fun_par_list.types.forEach(typeNode -> para.add(typeNode.getnewType(global_scope)));
-                funType fun_type = new funType(node.type.getnewType(global_scope), para);
+                funType fun_type = new funType(node.type.getnewType(global_scope), para, false);
                 if(node.name.equals("main")){
                     if(!node.fun_par_list.types.isEmpty())
                         throw new SemanticError("main function parameter wrong", node.pos);
@@ -61,6 +70,13 @@ public class SemanticCheck implements ASTVisitor {
                 (var_type instanceof arrayType && ((arrayType) var_type).basictype.tp == Type.type.Void))
             throw new SemanticError("variable define type wrong", it.pos);
         it.variables.forEach(variableNode -> {
+            if(current_scope instanceof globalScope) variableNode.isglobal = true;
+            varentity varent = new varentity(variableNode.name, var_type, variableNode.isglobal);
+            if(current_class != null) {
+                varent.ismember = true;
+                varent.index = new intConst(current_class.setelement(var_type), 32);
+            }
+            variableNode.varent = varent;
             if(variableNode.expr != null) {
                 variableNode.expr.accept(this);
                 if(variableNode.expr.type.cmp(var_type))
@@ -69,6 +85,7 @@ public class SemanticCheck implements ASTVisitor {
             if(current_scope.qryvar(variableNode.name, false))
                 throw new SemanticError("variable redefined", variableNode.pos);
             current_scope.addvar(variableNode.name, var_type, variableNode.pos);
+            current_scope.addentity(varent.name, varent);
 //            System.out.println(variableNode.name);
         });
     }
@@ -76,26 +93,41 @@ public class SemanticCheck implements ASTVisitor {
 //        System.out.println("Class Visitor " + it.name);
         current_class = (classType) global_scope.getType(it.name, it.pos);
         current_scope = new Scope(current_scope);
-        current_class.vars.forEach((varname, vartype) -> current_scope.addvar(varname, vartype, it.pos));
+        current_class.vars.forEach((varname, vartype) -> {
+            current_scope.addvar(varname, vartype, it.pos);
+        });
         current_class.funs.forEach((funname, funtype) -> current_scope.addfun(funname, funtype, it.pos));
         current_class.cons.forEach((conname, contype) -> current_scope.addfun(conname, contype, it.pos));
         it.fundefs.forEach(fundefNode -> fundefNode.accept(this));
-        it.classcons.forEach(classconNode -> classconNode.accept(this));
+        it.classcon.accept(this);
+        current_class.scope = current_scope;
         current_scope = current_scope.getParentScope();
         current_class = null;
     }
     @Override public void visit(fundefNode it){
-        current_scope = new Scope(current_scope);
-        funparlistNode para = it.fun_par_list;
+        if(!it.iscon) {
+            current_scope = new Scope(current_scope);
+            funparlistNode para = it.fun_par_list;
 //        System.out.println(para.variables.get(0).name + para.types.get(0).getnewType(global_scope).tp);
-        for(int i = 0; i < para.types.size(); i++)
-            current_scope.addvar(para.variables.get(i).name, para.types.get(i).getnewType(global_scope), para.pos);
-        return_type = it.type.getnewType(global_scope);
-        it.suite.accept(this);
-        return_type = null;
-        current_scope = current_scope.getParentScope();
+            for (int i = 0; i < para.types.size(); i++) {
+                current_scope.addvar(para.variables.get(i).name, para.types.get(i).getnewType(global_scope), para.pos);
+//                current_scope.addentity(para.variables.get(i).name, it.IRfunc.params.get(i));
+            }
+            return_type = it.type.getnewType(global_scope);
+            current_func = it;
+            it.suite.accept(this);
+            current_func = null;
+            return_type = null;
+            current_scope = current_scope.getParentScope();
+        }
+        else{
+            current_scope = new Scope(current_scope);
+            return_type = global_scope.getType("void", it.pos);
+            it.suite.accept(this);
+            return_type = null;
+            current_scope = current_scope.getParentScope();
+        }
     }
-    @Override public void visit(variableNode it){}//
     @Override public void visit(arraycrtNode it){
         for(ExprNode expr : it.dims){
             expr.accept(this);
@@ -140,9 +172,6 @@ public class SemanticCheck implements ASTVisitor {
             throw new SemanticError("assign type not match", it.pos);
         it.type = it.lv.type;
     }
-    @Override public void visit(atomExprNode it){}
-    @Override public void visit(basiccrtNode it){}//
-    @Override public void visit(basictypeNode it){}//
     @Override public void visit(binaryExprNode it){
         it.lhs.accept(this);
         it.rhs.accept(this);
@@ -176,16 +205,11 @@ public class SemanticCheck implements ASTVisitor {
         it.suite.accept(this);
     }
     @Override public void visit(breakStmtNode it){
-        if(loopnum == 0)
+        if(current_loop == null)
             throw new SemanticError("break position wrong", it.pos);
+        it.dest = current_loop;
     }
-    @Override public void visit(classconNode it){
-        current_scope = new Scope(current_scope);
-        return_type = global_scope.getType("void", it.pos);
-        it.suite.accept(this);
-        return_type = null;
-        current_scope = current_scope.getParentScope();
-    }
+
     @Override public void visit(classcrtNode it){
         it.type = it.btype.getglobalType(global_scope);
         if(it.type == global_scope.getType("void", it.pos))
@@ -195,13 +219,10 @@ public class SemanticCheck implements ASTVisitor {
         it.type = global_scope.getType(it.tp, it.pos);
     }
     @Override public void visit(continueStmtNode it){
-        if(loopnum == 0)
+        if(current_loop == null)
             throw new SemanticError("continue position wrong", it.pos);
+        it.dest = current_loop;
     }
-    @Override public void visit(creatorNode it){}
-    @Override public void visit(emptyStmtNode it){}//
-    @Override public void visit(exprlistNode it){}//
-    @Override public void visit(ExprNode it){}//
     @Override public void visit(forStmtNode it){
         if(it.forinit != null) it.forinit.accept(this);
         if(it.forcon != null) {
@@ -210,10 +231,13 @@ public class SemanticCheck implements ASTVisitor {
                 throw new SemanticError("for condition type wrong", it.forcon.pos);
         }
         if(it.forupd != null) it.forupd.accept(this);
-        loopnum++;
+//        loopnum++;
+        ASTNode up_loop = current_loop;
+        current_loop = it;
         current_scope = new Scope(current_scope);
         if(it.forbody != null)it.forbody.accept(this);
-        loopnum--;
+//        loopnum--;
+        current_loop = up_loop;
         current_scope = current_scope.getParentScope();
     }
     @Override public void visit(funcalExprNode it){
@@ -235,7 +259,6 @@ public class SemanticCheck implements ASTVisitor {
 //            System.out.println(it.type.tp + it.type.class_name);
 //        }
     }
-    @Override public void visit(funparlistNode it){}//
     @Override public void visit(ifStmtNode it){
         it.ifcon.accept(this);
         if(it.ifcon.type.cmp(global_scope.getType("bool", it.pos)))
@@ -251,12 +274,11 @@ public class SemanticCheck implements ASTVisitor {
             current_scope = current_scope.getParentScope();
         }
     }
-    @Override public void visit(literalNode it){}//
     @Override public void visit(memberExprNode it){
         it.tp.accept(this);
         current_scope = new Scope(current_scope);
         if(it.tp.type instanceof arrayType){
-            current_scope.addfun("size", new funType(global_scope.getType("int", it.pos), new ArrayList<>()), it.pos);
+            current_scope.addfun("size", new funType(global_scope.getType("int", it.pos), new ArrayList<>(), false), it.pos);
         }
         else if(it.tp.type instanceof classType){
             ((classType) it.tp.type).vars.forEach((varname, vartype) -> current_scope.addvar(varname, vartype, it.pos));
@@ -264,23 +286,22 @@ public class SemanticCheck implements ASTVisitor {
             ((classType) it.tp.type).cons.forEach((conname, contype) -> current_scope.addfun(conname, contype, it.pos));
         }
         else if(it.tp.type.tp == Type.type.String){
-            current_scope.addfun("length", new funType(global_scope.getType("int", it.pos), new ArrayList<>()), it.pos);
+            current_scope.addfun("length", new funType(global_scope.getType("int", it.pos), new ArrayList<>(), true), it.pos);
             current_scope.addfun("substring", new funType(global_scope.getType("string", it.pos),
                     new ArrayList<>(){{
                         add(global_scope.getType("int", it.pos));
                         add(global_scope.getType("int", it.pos));
-            }}), it.pos);
-            current_scope.addfun("parseInt", new funType(global_scope.getType("int", it.pos), new ArrayList<>()), it.pos);
+            }}, true), it.pos);
+            current_scope.addfun("parseInt", new funType(global_scope.getType("int", it.pos), new ArrayList<>(), true), it.pos);
             current_scope.addfun("ord", new funType(global_scope.getType("int", it.pos),
                     new ArrayList<>(){{
                         add(global_scope.getType("int", it.pos));
-                    }}), it.pos);
+                    }}, true), it.pos);
         }
         it.mem.accept(this);
         it.type = it.mem.type;
         current_scope = current_scope.getParentScope();
     }
-    @Override public void visit(newExprNode it){}//
     @Override public void visit(preExprNode it){
         it.expr.accept(this);
         if(it.op == preExprNode.preop.lnot){
@@ -296,7 +317,6 @@ public class SemanticCheck implements ASTVisitor {
             it.type = global_scope.getType("int", it.pos);
         }
     }
-    @Override public void visit(primaryNode it){}//
     @Override public void visit(pureExprStmtNode it){
         it.expr.accept(this);
     }
@@ -321,8 +341,8 @@ public class SemanticCheck implements ASTVisitor {
 //            }
             if(it.expr.type.cmp(return_type)) throw new SemanticError("return type wrong", it.expr.pos);
         }
+        it.dest = current_func;
     }
-    @Override public void visit(StmtNode it){}//
     @Override public void visit(sufExprNode it){
         it.expr.accept(this);
         if(it.expr.type.cmp(global_scope.getType("int", it.pos)))
@@ -341,13 +361,15 @@ public class SemanticCheck implements ASTVisitor {
             throw new SemanticError("this pointer position wrong", it.pos);
         it.type = current_class;
     }
-    @Override public void visit(typeNode it){}//
     @Override public void visit(vardefStmtNode it){
         it.vardef.accept(this);
     }
 
+    @Override public void visit(variableNode it){}
     @Override public void visit(varExprNode it) {
 //        System.out.println(it.name);
+        varentity varent = current_scope.getentity(it.name, true);
+        it.varent = varent;
         if(!current_scope.qryvar(it.name, true))
             throw new SemanticError("no such variable", it.pos);
         it.type = current_scope.getvarType(it.name, true);
@@ -357,10 +379,13 @@ public class SemanticCheck implements ASTVisitor {
         it.whilecon.accept(this);
         if(it.whilecon.type.cmp(global_scope.getType("bool", it.whilecon.pos)))
             throw new SemanticError("for condition type wrong", it.whilecon.pos);
-        loopnum++;
+//        loopnum++;
+        ASTNode up_loop = current_loop;
+        current_loop = it;
         current_scope = new Scope(current_scope);
         if(it.whilebody != null)it.whilebody.accept(this);
-        loopnum--;
+//        loopnum--;
+        current_loop = up_loop;
         current_scope = current_scope.getParentScope();
     }
 }

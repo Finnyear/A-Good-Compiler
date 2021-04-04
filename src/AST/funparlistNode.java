@@ -16,6 +16,5 @@ public class funparlistNode extends ASTNode{
 
     @Override
     public void accept(ASTVisitor visitor) {
-        visitor.visit(this);
     }
 }

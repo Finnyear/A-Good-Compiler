@@ -1,6 +1,5 @@
 package AST;
 
-import Util.Type;
 import Util.position;
 
 public class preExprNode extends ExprNode{

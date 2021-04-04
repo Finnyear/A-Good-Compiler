@@ -1,11 +1,13 @@
 package AST;
 
+import MIR.IRFunction;
 import Util.position;
 
 public class classconNode extends ASTNode{
 
     public String name;
     public suiteNode suite;
+    public IRFunction IRfunc;
 
     public classconNode(position pos, String name, suiteNode suite){
         super(pos);
@@ -14,6 +16,6 @@ public class classconNode extends ASTNode{
     }
 
     @Override
-    public void accept(ASTVisitor visitor){visitor.visit(this);}
+    public void accept(ASTVisitor visitor){}
 
 }

@@ -1,13 +1,16 @@
+import Asm.LRoot;
+import Backend.*;
 import Frontend.ASTbuilder;
 import Frontend.ClassCreator;
 import Frontend.SemanticCheck;
 import Frontend.SymbolCollector;
+import MIR.Root;
 import Parser.MxLexer;
 import Parser.MxParser;
 import Util.MxErrorListener;
 import Util.error.Error;
-import Util.Scope;
-import Util.globalScope;
+import Util.scope.Scope;
+import Util.scope.globalScope;
 import AST.ProgramNode;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -15,12 +18,13 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.PrintStream;
 
 public class Main {
     public static void main(String[] args) throws Exception{
-//        String name = "test.mx";
-//        InputStream input = new FileInputStream(name);
-        InputStream input = System.in;
+        String name = "test.mx";
+        InputStream input = new FileInputStream(name);
+//        InputStream input = System.in;
         try{
             ProgramNode rt;
             globalScope global_scope = new globalScope(null);
@@ -37,6 +41,18 @@ public class Main {
             new SymbolCollector(global_scope).visit(rt);
             new ClassCreator(global_scope).visit(rt);
             new SemanticCheck(global_scope).visit(rt);
+
+            Root IRroot = new Root();
+
+            new IRBuilder(global_scope, IRroot).visit(rt);
+            new Mem2Reg(IRroot).run();
+            IRroot.addphi();
+            new IRPrinter(new PrintStream("output.ll")).run(IRroot);
+
+            LRoot lroot = new InstSelection(IRroot).run();
+//            new RegAlloc(lroot).run();
+            new AsmPrinter(lroot, new PrintStream("output.s"), false).run();
+
         } catch (Error error){
             System.err.println(error.toString());
             throw new RuntimeException();
