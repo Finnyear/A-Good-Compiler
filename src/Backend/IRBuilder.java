@@ -30,8 +30,18 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     private int symbolcnt = 0;
     private HashSet<IRBlock> entryreachable = new HashSet<>();
     private HashSet<IRBlock> returnvisited = new HashSet<>();
+    private entity current_this_operand = null;
 
-    public IRBuilder(globalScope gScope, Root IRroot){this.gScope = gScope; this.IRroot = IRroot;}
+    public IRBuilder(globalScope gScope, Root IRroot){
+        this.gScope = gScope; this.IRroot = IRroot;
+        gScope.getfunType("print", false).IRfunc = IRroot.builtinfunc.get("g_print");
+        gScope.getfunType("println", false).IRfunc = IRroot.builtinfunc.get("g_println");
+        gScope.getfunType("printInt", false).IRfunc = IRroot.builtinfunc.get("g_printInt");
+        gScope.getfunType("printlnInt", false).IRfunc = IRroot.builtinfunc.get("g_printlnInt");
+        gScope.getfunType("getString", false).IRfunc = IRroot.builtinfunc.get("g_getString");
+        gScope.getfunType("getInt", false).IRfunc = IRroot.builtinfunc.get("g_getInt");
+        gScope.getfunType("toString", false).IRfunc = IRroot.builtinfunc.get("g_toString");
+    }
 
     private String getname(entity src){
         if(src instanceof Param) return ((Param)src).name;
@@ -99,18 +109,46 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(ProgramNode it) {
+        classType stringType = (classType)gScope.getType("string", new position(0, 0));
+
+        IRFunction fn = new IRFunction("l_string_length");
+        fn.returnType = Root.intIR;
+        fn.params.add(new Param(Root.stringIR, "s"));
+        IRroot.builtinfunc.put("l_string_length", fn);
+        stringType.scope.getfunType("length", false).IRfunc = fn;
+        fn = new IRFunction("l_string_substring");
+        fn.returnType = Root.stringIR;
+        fn.params.add(new Param(Root.stringIR, "s"));
+        fn.params.add(new Param(Root.intIR, "left"));
+        fn.params.add(new Param(Root.intIR, "right"));
+        IRroot.builtinfunc.put("l_string_substring", fn);
+        stringType.scope.getfunType("substring", false).IRfunc = fn;
+        fn = new IRFunction("l_string_parseInt");
+        fn.returnType = Root.intIR;
+        fn.params.add(new Param(Root.stringIR, "s"));
+        IRroot.builtinfunc.put("l_string_parseInt", fn);
+        stringType.scope.getfunType("parseInt", false).IRfunc = fn;
+        fn = new IRFunction("l_string_ord");
+        fn.returnType = Root.charIR;
+        fn.params.add(new Param(Root.stringIR, "s"));
+        IRroot.builtinfunc.put("l_string_ord", fn);
+        stringType.scope.getfunType("ord", false).IRfunc = fn;
+
         it.parts.forEach(part ->{
             if(part.classdef != null){
                 String name = part.classdef.name;
                 part.classdef.fundefs.forEach(func -> {
                     IRFunction IRfunc = new IRFunction("cls_"+name+"_"+func.name);
                     func.IRfunc = IRfunc;
+                    funType funtype = ((classType)gScope.getType(part.classdef.name, part.pos)).scope.getfunType(func.name, false);
+                    funtype.IRfunc = IRfunc;
                     IRroot.addfun(IRfunc.name, IRfunc);
                 });
                 int con_cnt = 0;
                 IRFunction IRfunc = new IRFunction("cls_" + name + "_con_" + con_cnt);
                 con_cnt = con_cnt + 1;
-                part.classdef.classcon.IRfunc = IRfunc;
+                if(part.classdef.classcon != null)part.classdef.classcon.IRfunc = IRfunc;
+                else IRfunc.exitblock.addterminate(new Return(null, IRfunc.exitblock));
                 IRroot.addfun(IRfunc.name, IRfunc);
             }
             else if(part.fundef != null){
@@ -203,37 +241,29 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                 current_block.addinst(new Binary(Binary.Opcode.sub, tmp, new intConst(-1, 32), (Register) it.operand, current_block));
                 if(it.expr.isAssignable()) current_block.addinst(new Store(it.operand, tmp, current_block));
             }
-            case pls -> {
-                it.operand = it.expr.operand;
-            }
-            case sub -> {
-                current_block.addinst(new Binary(Binary.Opcode.sub, new intConst(0, 32), tmp, (Register) it.operand, current_block));
-            }
-            case not -> {
-                current_block.addinst(new Binary(Binary.Opcode.xor, new intConst(-1, 32), tmp, (Register) it.operand, current_block));
-            }
-            case lnot -> {
-                current_block.addinst(new Binary(Binary.Opcode.xor, new boolConst(true), tmp, (Register) it.operand, current_block));
-            }
+            case pls -> it.operand = it.expr.operand;
+            case sub -> current_block.addinst(new Binary(Binary.Opcode.sub, new intConst(0, 32), tmp, (Register) it.operand, current_block));
+            case not -> current_block.addinst(new Binary(Binary.Opcode.xor, new intConst(-1, 32), tmp, (Register) it.operand, current_block));
+            case lnot -> current_block.addinst(new Binary(Binary.Opcode.xor, new boolConst(true), tmp, (Register) it.operand, current_block));
         }
     }
 
     @Override
     public void visit(classdefNode it) {
         current_class = (classType) gScope.getType(it.name, it.pos);
-        IRclassType IRclasstype = (IRclassType) gScope.getnewIRType(current_class);
+        IRclassType IRclasstype = IRroot.classtypes.get(it.name);
         it.vardefs.forEach(var -> var.accept(this));
         it.fundefs.forEach(fun -> fun.accept(this));
-        it.classcon.accept(this);
+        if(it.classcon != null)it.classcon.accept(this);
         current_class = null;
     }
 
     private String getString(String str){
         String ret = str;
-        ret.replace("\\n", "\n");
-        ret.replace("\\t", "\t");
-        ret.replace("\\\"", "\"");
-        ret.replace("\\\\", "\\");
+        ret = ret.replace("\\n", "\n");
+        ret = ret.replace("\\t", "\t");
+        ret = ret.replace("\\\"", "\"");
+        ret = ret.replace("\\\\", "\\");
         ret += "\0";
         return ret;
     }
@@ -264,6 +294,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(fundefNode it) {
+//        System.out.println(it.name);
         current_function = it.IRfunc;
         current_block = current_function.entryblock;
         if(current_class != null)
@@ -364,7 +395,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     @Override
     public void visit(variableNode it) {
         IRType type = IRroot.getIRtype(it.varent.type);
-//        System.out.println(type.toString());
         if(it.isglobal == true){
             GlobalVar reg = new GlobalVar(new IRpointerType(type, true), it.name);
             it.varent.operand = reg;
@@ -668,9 +698,17 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     public void visit(memberExprNode it) { //////////////////fix memberExprNode !!!!!!!!!!!!!!
         it.tp.accept(this);
         entity classptr = getpointee(it.tp.operand);
-        it.operand = new Register(it.memoperand.type, "this." + it.memname);
-        current_block.addinst(new Getelementptr(((IRpointerType)classptr.type).pointeeType, classptr,
-                new intConst(0, 32), new intConst(it.memoff, 32), (Register) it.operand, current_block));
+        if(it.mem instanceof varExprNode) {
+            it.operand = new Register(it.varent.operand.type, "this." + it.memname);
+            current_block.addinst(new Getelementptr(((IRpointerType) classptr.type).pointeeType, classptr,
+                    new intConst(0, 32), new intConst(it.memoff, 32), (Register) it.operand, current_block));
+        }
+        else {
+            entity tmp_this_operand = current_this_operand;
+            current_this_operand = it.tp.operand;
+            it.mem.accept(this);
+            current_this_operand = tmp_this_operand;
+        }
     }
 
     @Override
@@ -709,13 +747,20 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         if(it.type.tp == Type.type.Void) it.operand = null;
         else it.operand = new Register(IRroot.getIRtype(funtype.returntype), "fun_cal_ret_val");
         ArrayList<entity> params = new ArrayList<>();
-        if(funtype.inclass == true) params.add(getpointee(it.callee.operand));
-        it.paras.exprs.forEach(param -> {
-            param.accept(this);
-            params.add(getpointee(param.operand));
-        });
+        if(funtype.inclass) params.add(getpointee(it.callee.operand));
+        if(it.paras != null) {
+            it.paras.exprs.forEach(param -> {
+                param.accept(this);
+                params.add(getpointee(param.operand));
+            });
+        }
         current_block.addinst(new Call(funtype.IRfunc, params, (Register) it.operand, current_block));
         if(it.operand != null) addbranch(it);
+    }
+
+    @Override
+    public void visit(funcNode it) {
+        if(current_this_operand != null) it.operand = current_this_operand;
     }
 
     @Override
@@ -756,10 +801,10 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     public void visit(classcrtNode it) {
         Register tmp = new Register(IRroot.stringIR, "malloc");
         it.operand = new Register(IRroot.getIRtype(it.type), "new_class_ptr");
-        current_block.addinst(new Malloc(new intConst(((classType)it.type).sz / 8, 32), tmp, current_block));
+        current_block.addinst(new Malloc(new intConst(((classType)it.type).allocsz / 8, 32), tmp, current_block));
         current_block.addinst(new Bitcast(tmp, (Register) it.operand, current_block));
-        if(!((classType)it.type).cons.isEmpty()) {
-            funType clscon = (funType) ((classType)it.type).scope.funs.get(((classType)it.type).class_name);
+        if(((classType)it.type).scope.con != null) {
+            funType clscon = ((classType)it.type).scope.con;
             ArrayList<entity> params = new ArrayList<>();
             params.add(it.operand);
             current_block.addinst(new Call(clscon.IRfunc, params, null, current_block));

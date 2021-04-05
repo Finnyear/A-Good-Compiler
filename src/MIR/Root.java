@@ -20,6 +20,35 @@ public class Root {
                           voidIR = new IRvoidType();
 
     public Root(){
+        IRFunction func = new IRFunction("g_print");
+        func.returnType = voidIR;
+        func.params.add(new Param(stringIR, "s"));
+        builtinfunc.put("g_print", func);
+        func = new IRFunction("g_println");
+        func.returnType = voidIR;
+        func.params.add(new Param(stringIR, "s"));
+        builtinfunc.put("g_println", func);
+        func = new IRFunction("g_printInt");
+        func.returnType = voidIR;
+        func.params.add(new Param(intIR, "v"));
+        builtinfunc.put("g_printInt", func);
+        func = new IRFunction("g_printlnInt");
+        func.returnType = voidIR;
+        func.params.add(new Param(intIR, "v"));
+        builtinfunc.put("g_printlnInt", func);
+
+        func = new IRFunction("g_getString");
+        func.returnType = stringIR;
+        builtinfunc.put("g_getString", func);
+        func = new IRFunction("g_getInt");
+        func.returnType = intIR;
+        builtinfunc.put("g_getInt", func);
+
+        func = new IRFunction("g_toString");
+        func.returnType = stringIR;
+        func.params.add(new Param(intIR, "i"));
+        builtinfunc.put("g_toString", func);
+
         IRFunction init = new IRFunction("__init");
         init.setrettype(new IRvoidType());
         functions.put("__init", init);

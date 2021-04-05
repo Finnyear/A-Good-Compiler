@@ -6,21 +6,25 @@ import Util.error.SemanticError;
 import Util.error.myError;
 import Util.position;
 import Util.type.Type;
+import Util.type.funType;
 import Util.varentity;
 
 import java.util.HashMap;
 
 public class Scope {
     public HashMap<String, Type> vars, funs;
-    public HashMap<String, varentity> entities = new HashMap<>();
-    public HashMap<String, IRFunction> IRfunctions = new HashMap<>();
+    public HashMap<String, varentity> entities;
+//    public HashMap<String, IRFunction> IRfunctions = new HashMap<>();
     public Scope parentScope;
+
+    public funType con = null;
 
 
     public Scope(Scope parentScope){
         this.parentScope = parentScope;
         vars = new HashMap<>();
         funs = new HashMap<>();
+        entities = new HashMap<>();
     }
 
     public Scope getParentScope(){
@@ -59,9 +63,9 @@ public class Scope {
             return parentScope.qryfun(name, true);
         return false;
     }
-    public Type getfunType(String name, boolean lookupon){
+    public funType getfunType(String name, boolean lookupon){
         if(funs.containsKey(name))
-            return funs.get(name);
+            return (funType) funs.get(name);
         if(parentScope != null && lookupon)
             return parentScope.getfunType(name, true);
         return null;
@@ -81,19 +85,19 @@ public class Scope {
         return null;
     }
 
-    public void addIRfun(String name, IRFunction IRfun){
-        if(IRfunctions.containsKey(name))
-            throw new myError("function name reused", new position(0, 0));
-        IRfunctions.put(name, IRfun);
-    }
-
-    public IRFunction getIRfun(String name, boolean lookupon){
-        if(IRfunctions.containsKey(name))
-            return IRfunctions.get(name);
-        if((parentScope != null) && (lookupon == true))
-            return parentScope.getIRfun(name, true);
-        return null;
-    }
+//    public void addIRfun(String name, IRFunction IRfun){
+//        if(IRfunctions.containsKey(name))
+//            throw new myError("function name reused", new position(0, 0));
+//        IRfunctions.put(name, IRfun);
+//    }
+//
+//    public IRFunction getIRfun(String name, boolean lookupon){
+//        if(IRfunctions.containsKey(name))
+//            return IRfunctions.get(name);
+//        if((parentScope != null) && (lookupon == true))
+//            return parentScope.getIRfun(name, true);
+//        return null;
+//    }
 
 
 }

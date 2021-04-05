@@ -39,10 +39,10 @@ public class Main {
             rt = (ProgramNode) astBuilder.visit(parseTree);
             Scope global = new Scope(null);
             new SymbolCollector(global_scope).visit(rt);
-            new ClassCreator(global_scope).visit(rt);
-            new SemanticCheck(global_scope).visit(rt);
-
             Root IRroot = new Root();
+            new ClassCreator(global_scope, IRroot).visit(rt);
+//            System.out.println("111");
+            new SemanticCheck(global_scope).visit(rt);
 
             new IRBuilder(global_scope, IRroot).visit(rt);
             new Mem2Reg(IRroot).run();
@@ -50,7 +50,7 @@ public class Main {
             new IRPrinter(new PrintStream("output.ll")).run(IRroot);
 
             LRoot lroot = new InstSelection(IRroot).run();
-//            new RegAlloc(lroot).run();
+            new RegAlloc(lroot).run();
             new AsmPrinter(lroot, new PrintStream("output.s"), false).run();
 
         } catch (Error error){

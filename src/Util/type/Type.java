@@ -1,7 +1,7 @@
 package Util.type;
 
 public class Type {
-    public enum type{Int, String, Bool, Class, Void, Null};
+    public enum type{Int, Bool, Class, Void, Null};
     public String class_name;
     public type tp;
     public Type(){}
@@ -19,13 +19,19 @@ public class Type {
     }
     public boolean cmp(Type other){
         if(this.tp == type.Null)
-            return !(other instanceof arrayType || (other.tp != type.Int && other.tp != type.Bool && other.tp != type.String));
+            return !(other instanceof arrayType || (other.tp != type.Int && other.tp != type.Bool));
         if(other.tp == type.Null)
-            return !(this instanceof arrayType || (this.tp != type.Int && this.tp != type.Bool && this.tp != type.String));
+            return !(this instanceof arrayType || (this.tp != type.Int && this.tp != type.Bool));
         if(this.class_name != other.class_name) return true;
         if(this.tp != other.tp) return true;
         if(this instanceof arrayType && !(other instanceof arrayType)) return true;
         if(!(this instanceof arrayType) && other instanceof arrayType) return true;
         return false;
+    }
+
+    public int size(){
+        if(tp == type.Int) return 32;
+        if(tp == type.Bool) return 8;
+        return 0;
     }
 }

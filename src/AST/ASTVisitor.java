@@ -14,6 +14,7 @@ public interface ASTVisitor {
     void visit(forStmtNode it);
     void visit(funcalExprNode it);
     void visit(fundefNode it);
+    void visit(funcNode it);
     void visit(ifStmtNode it);
     void visit(memberExprNode it);
     void visit(PartNode it);

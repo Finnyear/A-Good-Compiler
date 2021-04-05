@@ -5,9 +5,9 @@ import Util.position;
 public class funcalExprNode extends ExprNode{
     public String name;
     public exprlistNode paras;
-    public varExprNode callee;
+    public funcNode callee;
 
-    public funcalExprNode(position pos, varExprNode callee, exprlistNode paras){
+    public funcalExprNode(position pos, funcNode callee, exprlistNode paras){
         super(pos);
         name = callee.name;
         this.callee = callee;

@@ -1,6 +1,8 @@
 package AST;
 
 import Util.position;
+import Util.type.Type;
+
 import java.util.ArrayList;
 
 public class classdefNode extends PartNode{

@@ -82,6 +82,7 @@ public class IRPrinter {
             int sz = type.types.size();
             for(int i = 0; i < sz; i++)
                 out.print(type.types.get(i).toString() + (i == sz - 1 ? "}\n" : ", "));
+            if(sz == 0) out.println("}");
         });
         IRroot.globalVars.forEach(gvar -> {
             out.println("@" + gvar.name + " = global " + ((IRpointerType)gvar.type).pointeeType.toString()

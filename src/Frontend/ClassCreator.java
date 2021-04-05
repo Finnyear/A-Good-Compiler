@@ -1,13 +1,18 @@
 package Frontend;
 
 import AST.*;
+import MIR.IROperand.intConst;
 import MIR.IRType.IRType;
 import MIR.IRType.IRclassType;
+import MIR.Root;
 import Util.error.SemanticError;
+import Util.scope.Scope;
 import Util.scope.globalScope;
 import Util.type.Type;
+import Util.type.arrayType;
 import Util.type.classType;
 import Util.type.funType;
+import Util.varentity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,51 +24,58 @@ public class ClassCreator implements ASTVisitor {
     public Util.type.classType classType;
     public String name;
     public IRclassType currentIRclass;
+    public Scope current_scope;
+    public Root IRroot;
 
-    public ClassCreator(globalScope global_scope){
+    public ClassCreator(globalScope global_scope, Root IRroot){
         this.global_scope = global_scope;
+        this.IRroot = IRroot;
     }
 
     @Override
     public void visit(ProgramNode it){
         it.parts.forEach(partNode -> {
-            if(partNode.classdef != null) visit(partNode);
+            if(partNode.classdef != null) visit(partNode.classdef);
         });
     }
 
-    @Override public void visit(PartNode it){
-        if(it.vardef != null) it.vardef.accept(this);
-        if(it.fundef != null) it.fundef.accept(this);
-        if(it.classdef != null) it.classdef.accept(this);
-    }
+    @Override public void visit(PartNode it){}
 
     @Override
     public void visit(classdefNode it){
-//        System.out.println("Class Creator " + it.name);
         classType = (classType) global_scope.getType(it.name, it.pos);
+        classType.scope = new Scope(global_scope);
+        current_scope = classType.scope;
         currentIRclass = (IRclassType) global_scope.getIRType(classType);
+        IRroot.classtypes.put(it.name, currentIRclass);
         name = it.name;
-        classType.vars = new HashMap<>();
-        classType.funs = new HashMap<>();
-        classType.cons = new HashMap<>();
-        it.vardefs.forEach(vardefNode -> visit(vardefNode));
-        it.fundefs.forEach(fundefNode -> visit(fundefNode));
-        it.classcon.accept(this);
+        it.vardefs.forEach(vardefNode -> vardefNode.accept(this));
+        it.fundefs.forEach(fundefNode -> fundefNode.accept(this));
+        if(it.classcon != null)it.classcon.accept(this);
     }
 
     @Override
     public void visit(vardefNode it){
-        Type vartype = it.type.getnewType(global_scope);
-        IRType valIRtype = global_scope.getnewIRType(vartype);
+        Type var_type = it.type.getnewType(global_scope);
+//        IRType valIRtype = global_scope.getnewIRType(vartype);
+        if(var_type.tp == Type.type.Void || var_type.tp == Type.type.Null ||
+                (var_type instanceof arrayType && ((arrayType) var_type).basictype.tp == Type.type.Void))
+            throw new SemanticError("variable define type wrong", it.pos);
         for(variableNode var: it.variables){
             String varname = var.name;
-            if(classType.vars.containsKey(varname))
+            if(classType.scope.vars.containsKey(varname))
                 throw new SemanticError("variable redefined", it.pos);
             if(varname.equals(name))
                 throw new SemanticError("variable named wrong", it.pos);
-            classType.vars.put(varname, vartype);
-            classType.Indexes.put(varname, classType.cnt);
-            classType.cnt++;
+            current_scope.vars.put(varname, var_type);
+            classType.Indexes.put(varname, classType.cnt++);
+            varentity varent = new varentity(varname, var_type, false);
+            varent.ismember = true;
+            varent.index = new intConst(classType.setelement(var_type), 32);
+            IRType type = IRroot.getIRtype(var_type);
+            currentIRclass.addmember(type);
+            var.varent = varent;
+            current_scope.addentity(varname, varent);
         }
     }
 
@@ -74,15 +86,17 @@ public class ClassCreator implements ASTVisitor {
                 throw new SemanticError("function named wrong", it.pos);
             ArrayList<Type> para = new ArrayList<>();
             it.fun_par_list.types.forEach(typeNode -> para.add(typeNode.getnewType(global_scope)));
-            classType.funs.put(it.name, new funType(it.type.getnewType(global_scope), para, true));
+            current_scope.funs.put(it.name, new funType(it.type.getnewType(global_scope), para, true));
         }
         else {
             if(!it.name.equals(name))
                 throw new SemanticError("constructor function named wrong", it.pos);
-            classType.cons.put(it.name, new funType(global_scope.getType("void", it.pos), new ArrayList<>(), true));
-
+            current_scope.con = new funType(global_scope.getType("void", it.pos), new ArrayList<>(), true);
         }
     }
+
+    @Override
+    public void visit(funcNode it) {}
 
     @Override public void visit(arraycrtNode it){}
     @Override public void visit(arrayExprNode it){}

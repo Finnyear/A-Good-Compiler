@@ -20,4 +20,9 @@ public class arrayType extends Type {
             return this.dimision != ((arrayType) other).dimision || this.basictype.cmp(((arrayType) other).basictype);
         return true;
     }
+
+    @Override
+    public int size() {
+        return 32; // a pointer;
+    }
 }

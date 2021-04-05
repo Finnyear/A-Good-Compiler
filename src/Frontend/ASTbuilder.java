@@ -244,7 +244,8 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitFuncalExpr(MxParser.FuncalExprContext ctx) {
-        funcalExprNode node = new funcalExprNode(new position(ctx), new varExprNode(new position(ctx), ctx.Identifier().getText()),
+        varExprNode var =  new varExprNode(new position(ctx), ctx.Identifier().getText());
+        funcalExprNode node = new funcalExprNode(new position(ctx), new funcNode(var.name, var.pos),
                 ctx.expressionlist() == null ? null : (exprlistNode) visit(ctx.expressionlist()));
         return node;
     }

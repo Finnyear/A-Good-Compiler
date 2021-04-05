@@ -1,39 +1,34 @@
 	.text
+	.globl	cls_A_set
+	.p2align	1
+	.type	cls_A_set,@function
+cls_A_set:
+.cls_A_set_entry: 
+	addi sp, sp, 0
+	null
+	sw t0, 0(a0)
+	addi sp, sp, 0
+	ret
+	.size	cls_A_set, .-cls_A_set
+
 	.globl	main
 	.p2align	1
 	.type	main,@function
 main:
 .main_entry: 
-	addi sp, sp, 0
-	mv 0%, s0
-	mv 1%, s1
-	mv 2%, s2
-	mv 3%, s3
-	mv 4%, s4
-	mv 5%, s5
-	mv 6%, s6
-	mv 7%, s7
-	mv 8%, s8
-	mv 9%, s9
-	mv 10%, s10
-	mv 11%, s11
-	mv 12%, ra
+	addi sp, sp, -16
+	sw s0, 12(sp)
+	sw ra, 8(sp)
 	call __init
 	mv a0, zero
-	mv s0, 0%
-	mv s1, 1%
-	mv s2, 2%
-	mv s3, 3%
-	mv s4, 4%
-	mv s5, 5%
-	mv s6, 6%
-	mv s7, 7%
-	mv s8, 8%
-	mv s9, 9%
-	mv s10, 10%
-	mv s11, 11%
-	mv ra, 12%
-	addi sp, sp, 0
+	call cls_A_set
+	mv s0, zero
+	call g_getInt
+	sw a0, 0(s0)
+	mv a0, zero
+	lw s0, 12(sp)
+	lw ra, 8(sp)
+	addi sp, sp, 16
 	ret
 	.size	main, .-main
 
@@ -43,33 +38,18 @@ main:
 __init:
 .__init_entry: 
 	addi sp, sp, 0
-	mv 0%, s0
-	mv 1%, s1
-	mv 2%, s2
-	mv 3%, s3
-	mv 4%, s4
-	mv 5%, s5
-	mv 6%, s6
-	mv 7%, s7
-	mv 8%, s8
-	mv 9%, s9
-	mv 10%, s10
-	mv 11%, s11
-	mv 12%, ra
-	mv s0, 0%
-	mv s1, 1%
-	mv s2, 2%
-	mv s3, 3%
-	mv s4, 4%
-	mv s5, 5%
-	mv s6, 6%
-	mv s7, 7%
-	mv s8, 8%
-	mv s9, 9%
-	mv s10, 10%
-	mv s11, 11%
-	mv ra, 12%
 	addi sp, sp, 0
 	ret
 	.size	__init, .-__init
+
+	.globl	cls_A_con_0
+	.p2align	1
+	.type	cls_A_con_0,@function
+cls_A_con_0:
+.cls_A_con_0_entry: 
+	addi sp, sp, 0
+	sw zero, 0(a0)
+	addi sp, sp, 0
+	ret
+	.size	cls_A_con_0, .-cls_A_con_0
 

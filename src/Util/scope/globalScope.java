@@ -49,7 +49,7 @@ public class globalScope extends Scope {
         if(type instanceof arrayType){
             return new IRpointerType(getnewIRType(((arrayType) type).subarray()), false);
         }
-        if(type.tp == Type.type.String || type.tp == Type.type.Bool){
+        if(type.tp == Type.type.Bool){
             return new IRintType(8);
         }
         if(type.tp == Type.type.Int){
