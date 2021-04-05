@@ -7,6 +7,7 @@ import Parser.MxParser;
 import Util.*;
 import Util.error.SemanticError;
 import Util.scope.globalScope;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ASTbuilder extends MxBaseVisitor<ASTNode> {
     private globalScope global_scope;
@@ -114,7 +115,13 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitSuite(MxParser.SuiteContext ctx) {
         suiteNode node = new suiteNode(new position(ctx));
-        ctx.statement().forEach(statementContext -> node.stmts.add((StmtNode) visit(statementContext)));
+//        ctx.statement().forEach(statementContext -> node.stmts.add((StmtNode) visit(statementContext)));
+        for(ParserRuleContext statement : ctx.statement()){
+            StmtNode stmtnode = (StmtNode) visit(statement);
+            node.stmts.add(stmtnode);
+            if(stmtnode instanceof breakStmtNode || stmtnode instanceof returnStmtNode || stmtnode instanceof continueStmtNode)
+                break;
+        }
         return node;
     }
 

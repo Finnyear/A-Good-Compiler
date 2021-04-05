@@ -1,6 +1,7 @@
 package Backend;
 
 import AST.*;
+import Asm.LOperand.GReg;
 import Asm.RiscInst.Ret;
 import MIR.*;
 import MIR.IRInst.*;
@@ -47,11 +48,14 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     private String getname(entity src){
         if(src instanceof Param) return ((Param)src).name;
         if(src instanceof Register) return ((Register)src).name;
+        if(src instanceof GlobalVar) return ((GlobalVar)src).name;
         return "const";
     }
 
     private entity getpointee(entity ptr){
+//        if(ptr == null) return null;
         if(ptr.type.isresolvable()){
+//            System.out.println("pointee_" + getname(ptr));
             String name = getname(ptr);
             Register dest = new Register(((IRpointerType)ptr.type).pointeeType, "pointee_" + getname(ptr));
             current_block.addinst(new Load(ptr, dest, current_block));
@@ -80,6 +84,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     void assign(entity reg, ExprNode expr){
         expr.accept(this);
+//        System.out.println("assign");
         entity tmp = getpointee(expr.operand);
         if(!(reg.type instanceof IRpointerType)) throw new myError("assign to sth not pointer", new position(0,0));
         if(tmp.type instanceof IRboolType){
@@ -573,6 +578,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         Inst inst;
         Binary.Opcode opcode = null;
         Cmp.Condcode condcode = null;
+        IRFunction stringcall = null;
         switch (it.op){
             case mul -> opcode = Binary.Opcode.mul;
             case div -> opcode = Binary.Opcode.sdiv;
@@ -583,35 +589,75 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             case or ->  opcode = Binary.Opcode.or;
             case xor -> opcode = Binary.Opcode.xor;
             case sub -> opcode = Binary.Opcode.sub;
-            case add -> opcode = Binary.Opcode.add;
+            case add -> {
+                if(it.lhs.type.tp == Type.type.Int)opcode = Binary.Opcode.add;
+                else stringcall = IRroot.builtinfunc.get("g_stringadd");
+            }
+            case les -> {
+                if(it.lhs.type.tp == Type.type.Int)condcode = Cmp.Condcode.slt;
+                else stringcall = IRroot.builtinfunc.get("g_stringlt");
+            }
+            case leq -> {
+                if(it.lhs.type.tp == Type.type.Int)condcode = Cmp.Condcode.sle;
+                else stringcall = IRroot.builtinfunc.get("g_stringle");
+            }
+            case grt -> {
+                if(it.lhs.type.tp == Type.type.Int)condcode = Cmp.Condcode.sgt;
+                else stringcall = IRroot.builtinfunc.get("g_stringgt");
+            }
+            case geq -> {
+                if(it.lhs.type.tp == Type.type.Int)condcode = Cmp.Condcode.sge;
+                else stringcall = IRroot.builtinfunc.get("g_stringge");
+            }
 
-            case les -> condcode = Cmp.Condcode.slt;
-            case leq -> condcode = Cmp.Condcode.sle;
-            case grt -> condcode = Cmp.Condcode.sgt;
-            case geq -> condcode = Cmp.Condcode.sge;
-
-            case eq ->  condcode = Cmp.Condcode.eq;
-            case neq -> condcode = Cmp.Condcode.ne;
+            case eq ->  {
+                if(it.lhs.type.tp == Type.type.Class && it.lhs.type.class_name == "string")
+                    stringcall = IRroot.builtinfunc.get("g_stringeq");
+                else condcode = Cmp.Condcode.eq;
+            }
+            case neq ->  {
+                if(it.lhs.type.tp == Type.type.Class && it.lhs.type.class_name == "string")
+                    stringcall = IRroot.builtinfunc.get("g_stringne");
+                else condcode = Cmp.Condcode.ne;
+            }
             default -> {}
         }
         switch (it.op){
             case mul, div, mod, sla, sra, and, or, xor, sub, add -> {
                 it.lhs.accept(this);
                 it.rhs.accept(this);
+                if(opcode != null) {
 //                System.out.println("???????");
-                op1 = getpointee(it.lhs.operand);
-                op2 = getpointee(it.rhs.operand);
-                it.operand = new Register(Root.intIR, "binary_" + opcode.toString());
-                inst = new Binary(opcode, op1, op2, (Register) it.operand, current_block);
+                    op1 = getpointee(it.lhs.operand);
+                    op2 = getpointee(it.rhs.operand);
+                    it.operand = new Register(Root.intIR, "binary_" + opcode.toString());
+                    inst = new Binary(opcode, op1, op2, (Register) it.operand, current_block);
+                }
+                else{
+                    it.operand = new Register(Root.stringIR, "binary_add_string");
+                    ArrayList<entity> params = new ArrayList<>();
+                    params.add(getpointee(it.lhs.operand));
+                    params.add(getpointee(it.rhs.operand));
+                    inst = new Call(stringcall, params, (Register) it.operand, current_block);
+                }
                 current_block.addinst(inst);
             }
             case les, leq, grt, geq ->{
                 it.lhs.accept(this);
                 it.rhs.accept(this);
-                op1 = getpointee(it.lhs.operand);
-                op2 = getpointee(it.rhs.operand);
-                it.operand = new Register(IRroot.boolIR, "cmp_" + condcode.toString());
-                inst = new Cmp(condcode, op1, op2, (Register) it.operand, current_block);
+                if(condcode != null) {
+                    op1 = getpointee(it.lhs.operand);
+                    op2 = getpointee(it.rhs.operand);
+                    it.operand = new Register(IRroot.boolIR, "cmp_" + condcode.toString());
+                    inst = new Cmp(condcode, op1, op2, (Register) it.operand, current_block);
+                }
+                else{
+                    it.operand = new Register(Root.boolIR, "cmp_string");
+                    ArrayList<entity> params = new ArrayList<>();
+                    params.add(getpointee(it.lhs.operand));
+                    params.add(getpointee(it.rhs.operand));
+                    inst = new Call(stringcall, params, (Register) it.operand, current_block);
+                }
                 current_block.addinst(inst);
                 addbranch(it);
             }
@@ -681,9 +727,17 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             case eq, neq -> {
                 it.lhs.accept(this);
                 it.rhs.accept(this);
-                it.operand = new Register(IRroot.boolIR, it.op.toString());
-                current_block.addinst(new Cmp(condcode, inttran(getpointee(it.lhs.operand)), inttran(getpointee(it.rhs.operand)),
-                        (Register) it.operand, current_block));
+                if(condcode != null) {
+                    it.operand = new Register(IRroot.boolIR, it.op.toString());
+                    current_block.addinst(new Cmp(condcode, inttran(getpointee(it.lhs.operand)), inttran(getpointee(it.rhs.operand)),
+                            (Register) it.operand, current_block));
+                }
+                else{
+                    ArrayList<entity> params = new ArrayList<>();
+                    params.add(getpointee(it.lhs.operand));
+                    params.add(getpointee(it.rhs.operand));
+                    current_block.addinst(new Call(stringcall, params, (Register) it.operand, current_block));
+                }
                 addbranch(it);
             }
         }
@@ -724,11 +778,11 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     public void visit(memberExprNode it) { //////////////////fix memberExprNode !!!!!!!!!!!!!!
         it.tp.accept(this);
 //        if(it.tp.type instanceof arrayType){
-//            it.operand = new Register(Root.intIR, "array_size");
+//            it.operand = new Register(conRoot.intIR, "array_size");
 //            entity ent = getpointee(it.mem.operand);
 //        }
-        entity classptr = getpointee(it.tp.operand);
         if(it.mem instanceof varExprNode) {
+            entity classptr = getpointee(it.tp.operand);
             it.operand = new Register(it.varent.operand.type, "this." + it.memname);
             current_block.addinst(new Getelementptr(((IRpointerType) classptr.type).pointeeType, classptr,
                     new intConst(0, 32), new intConst(it.memoff, 32), (Register) it.operand, current_block));
@@ -737,6 +791,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             entity tmp_this_operand = current_this_operand;
             current_this_operand = it.tp.operand;
             it.mem.accept(this);
+            it.operand = it.mem.operand;
             current_this_operand = tmp_this_operand;
         }
     }
@@ -762,7 +817,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             current_block.addterminate(new Jump(condblock, current_block));
         }
         current_block = bodyblock;
-        it.forbody.accept(this);
+        if(it.forbody != null)it.forbody.accept(this);
         if(current_block.terminate == null) current_block.addterminate(new Jump(updblock, current_block));
         current_block = updblock;
         if(it.forupd != null) it.forupd.accept(this);
@@ -815,7 +870,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         }
         it.condblock = condblock;
         current_block = bodyblock;
-        it.whilebody.accept(this);
+        if(it.whilebody != null)it.whilebody.accept(this);
         if(current_block.terminate == null) current_block.addterminate(new Jump(condblock, current_block));
         current_block =endblock;
     }

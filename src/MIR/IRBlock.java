@@ -75,7 +75,7 @@ public class IRBlock {
     }
 
     public void addterminate(Inst inst){
-        if(terminate != null) throw new myError("add terminate again!", new position(0, 0));
+//        if(terminate != null) throw new myError("add terminate again!", new position(0, 0));
         terminate = inst;
         if(terminate instanceof Jump){
             ((Jump) terminate).destblock.add_pre_block(this);

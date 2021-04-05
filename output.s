@@ -15,158 +15,58 @@ __init:
 main:
 .main_entry: 
 	addi sp, sp, -16
-	sw ra, 12(sp)
+	sw s0, 12(sp)
+	sw ra, 8(sp)
 	call __init
-	call g_getInt
-	lui t0, %hi(n)
-	sw a0, %lo(n)(t0)
-	call g_getInt
-	lui t0, %hi(p)
-	sw a0, %lo(p)(t0)
-	call g_getInt
-	lui t0, %hi(k)
-	sw a0, %lo(k)(t0)
-	lw t1, p
-	lw t0, k
-	slt t1, t1, t0
+	lw a0, s
+	call l_string_length
+	lui t0, %hi(l)
+	sw a0, %lo(l)(t0)
+	lw a0, s
+	mv a1, zero
 	null
-	slt t0, t0, t1
-	beqz t0, .main_addphi_mid
-.main_if_then: 
-	la a0, .main.0
-	call g_print
-.main_if_end: 
-	lw t1, p
-	lw t0, k
-	slt t1, t1, t0
-	lui t0, %hi(i)
-	sw t1, %lo(i)(t0)
-.main_for_cond: 
-	lw t1, p
-	lw t0, k
-	slt t1, t1, t0
-	lw t0, i
-	bge t1, t0, .main_for_body
-.main_for_end: 
-	lw t1, p
-	lw t0, k
-	slt t1, t1, t0
-	lw t0, n
-	slt t0, t1, t0
-	beqz t0, .main_addphi_mid
-.main_if_then: 
-	la a0, .main.4
-	call g_print
-.main_if_end: 
-	lw ra, 12(sp)
+	call l_string_substring
+	mv s0, a0
+	lw t0, l
+	addi a0, t0, -2
+	call g_toString
+	mv a1, a0
+	mv a0, s0
+	call g_stringadd
+	mv s0, a0
+	lw a0, s
+	lw t0, l
+	addi a1, t0, -1
+	lw a2, l
+	call l_string_substring
+	mv a1, a0
+	mv a0, s0
+	call g_stringadd
+	call g_println
+	lw a0, s
+	call g_println
+	mv a0, zero
+	lw s0, 12(sp)
+	lw ra, 8(sp)
 	addi sp, sp, 16
 	ret
-.main_addphi_mid: 
-.main_for_body: 
-	lw t0, i
-	slti t0, t0, 1
-	xori t0, t0, 1
-	beqz t0, .main_addphi_mid
-.main_land_cond: 
-	lw t1, i
-	lw t0, n
-	slt t0, t0, t1
-	xori t0, t0, 1
-	beqz t0, .main_addphi_mid
-.main_if_then: 
-	lw t1, i
-	lw t0, p
-	beq t1, t0, .main_if_then
-.main_else_then: 
-	lw a0, i
-	call g_printInt
-	la a0, .main.3
-	call g_print
-	j .main_if_end
-.main_addphi_mid: 
-.main_addphi_mid: 
-.main_addphi_mid: 
-.main_if_end: 
-.main_if_then: 
-	la a0, .main.1
-	call g_print
-	lw a0, i
-	call g_toString
-	call g_print
-	la a0, .main.2
-	call g_print
-.main_if_end: 
-.main_for_upd: 
-	lw t0, i
-	addi t1, t0, 1
-	lui t0, %hi(i)
-	sw t1, %lo(i)(t0)
-	j .main_for_cond
 	.size	main, .-main
 
-	.type	i,@object
+	.type	s,@object
 	.section	.bss
-	.globl	i
+	.globl	s
 	.p2align	2
-i:
-.Li$local:
+s:
+.Ls$local:
 	.word	0
-	.size	i, 4
+	.size	s, 4
 
-	.type	n,@object
+	.type	l,@object
 	.section	.bss
-	.globl	n
+	.globl	l
 	.p2align	2
-n:
-.Ln$local:
+l:
+.Ll$local:
 	.word	0
-	.size	n, 4
-
-	.type	k,@object
-	.section	.bss
-	.globl	k
-	.p2align	2
-k:
-.Lk$local:
-	.word	0
-	.size	k, 4
-
-	.type	p,@object
-	.section	.bss
-	.globl	p
-	.p2align	2
-p:
-.Lp$local:
-	.word	0
-	.size	p, 4
-
-	.type	.main.4,@object
-	.section	.rodata
-.main.4:
-	.asciz	"\">> \""
-	.size	.main.4, 6
-
-	.type	.main.0,@object
-	.section	.rodata
-.main.0:
-	.asciz	"\"<< \""
-	.size	.main.0, 6
-
-	.type	.main.2,@object
-	.section	.rodata
-.main.2:
-	.asciz	"\") \""
-	.size	.main.2, 5
-
-	.type	.main.1,@object
-	.section	.rodata
-.main.1:
-	.asciz	"\"(\""
-	.size	.main.1, 4
-
-	.type	.main.3,@object
-	.section	.rodata
-.main.3:
-	.asciz	"\" \""
-	.size	.main.3, 4
+	.size	l, 4
 
