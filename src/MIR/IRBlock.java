@@ -119,8 +119,8 @@ public class IRBlock {
         }
         else{
             Branch oldbr = (Branch) terminate, newbr;
-            if(oldbr.true_br_block == old) newbr = new Branch(oldbr.dest, neww, oldbr.false_br_block, this);
-            else newbr = new Branch(oldbr.dest, oldbr.true_br_block, neww, this);
+            if(oldbr.true_br_block == old) newbr = new Branch(oldbr.cond, neww, oldbr.false_br_block, this);
+            else newbr = new Branch(oldbr.cond, oldbr.true_br_block, neww, this);
             removeterminate();
             addterminate(newbr);
         }

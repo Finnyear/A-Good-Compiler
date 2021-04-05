@@ -49,6 +49,11 @@ public class Root {
         func.params.add(new Param(intIR, "i"));
         builtinfunc.put("g_toString", func);
 
+        func = new IRFunction("malloc");
+        func.returnType = stringIR;
+        func.params.add(new Param(intIR, "a"));
+        builtinfunc.put("malloc", func);
+
         IRFunction init = new IRFunction("__init");
         init.setrettype(new IRvoidType());
         functions.put("__init", init);

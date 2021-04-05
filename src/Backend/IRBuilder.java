@@ -60,8 +60,10 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     private void addbranch(ExprNode it){
         if(it.ifblock == null) return ;
-        if(!(it.operand.type instanceof IRboolType)) throw new myError("add not bool branch", new position(0, 0));
-        current_block.addinst(new Branch(it.operand, it.ifblock, it.elseblock, current_block));
+        entity tmpent = getpointee(it.operand);
+        if(!(tmpent.type instanceof IRboolType)) throw new myError("add not bool branch", new position(0, 0));
+//        System.out.println("addbranch");
+        current_block.addterminate(new Branch(tmpent, it.ifblock, it.elseblock, current_block));
         //add some phi node ?...
         if(logicphi.containsKey(it.ifblock)){
             Phi tmp = logicphi.get(it.ifblock);
@@ -153,8 +155,10 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             }
             else if(part.fundef != null){
                 String name = part.fundef.name;
+                funType funtype = gScope.getfunType(name, true);
                 if(!name.equals("main")) name = "fun_" + name;
                 IRFunction IRfunc = new IRFunction(name);
+                funtype.IRfunc = IRfunc;
                 part.fundef.IRfunc = IRfunc;
                 IRroot.addfun(IRfunc.name, IRfunc);
             }
@@ -220,10 +224,13 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(preExprNode it) {
+//        System.out.println(it.op);
+//        System.out.println("...");
         IRType type;
         if(it.op == preExprNode.preop.lnot) type = Root.boolIR;
         else type = Root.intIR;
         it.operand = new Register(type, "pre_" + it.op.toString());
+//        System.out.println("...");
         if(type == Root.boolIR && it.ifblock != null) {
             it.expr.ifblock = it.elseblock;
             it.expr.elseblock = it.ifblock;
@@ -231,7 +238,8 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             return ;
         }
         it.expr.accept(this);
-        entity tmp = it.expr.operand;//first time thought need to get pointee
+        entity tmp = getpointee(it.expr.operand);//first time thought need to get pointee
+        System.out.println(tmp.toString());
         switch (it.op){
             case add -> {
                 current_block.addinst(new Binary(Binary.Opcode.add, tmp, new intConst(1, 32),(Register) it.operand, current_block));
@@ -295,6 +303,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     @Override
     public void visit(fundefNode it) {
 //        System.out.println(it.name);
+        returnlist.clear();
         current_function = it.IRfunc;
         current_block = current_function.entryblock;
         if(current_class != null)
@@ -305,10 +314,10 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         it.fun_par_list.variables.forEach(param -> param.accept(this));
         isparam = false;
 
-        if(current_function.name.equals("main"))
+        if(current_function.name.equals("main")) {
             current_block.addinst(new Call(IRroot.Init(), new ArrayList<>(), null, current_block));
+        }
         it.suite.accept(this);
-
         if(current_block.terminate == null){
             Return ret;
             if(current_function.name.equals("main") || current_function.returnType instanceof IRintType)
@@ -323,6 +332,8 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             current_block.addterminate(ret);
             returnlist.add(ret);
         }
+
+
         entryreachable = new HashSet<>();
         returnvisited = new HashSet<>();
         entrydfs(current_function.entryblock);
@@ -440,6 +451,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(varExprNode it) {
+//        System.out.println(it.name);
         varentity varent = it.varent;
         if(varent.ismember == true){
             Param classptr = current_function.classptr;
@@ -448,7 +460,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                     new intConst(0, 32), varent.index, (Register) it.operand, current_block));
         }
         else {
-//            if(varent.operand == null) System.out.println("wuwuwu");
             it.operand = varent.operand;
         }
         addbranch(it);
@@ -529,9 +540,11 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     public void visit(arrayExprNode it) {
         it.name.accept(this);
         it.dim.accept(this);
+        entity ptr = getpointee(it.name.operand);
+        entity dim = getpointee(it.dim.operand);
         it.operand = new Register(new IRpointerType(IRroot.getIRtype(it.type), true), "arrayptr");
-        current_block.addinst(new Getelementptr(((IRpointerType)it.name.operand.type).pointeeType, it.name.operand,
-                it.dim.operand, null, (Register) it.operand, current_block));
+        current_block.addinst(new Getelementptr(((IRpointerType)it.name.operand.type).pointeeType, ptr,
+                dim, null, (Register) it.operand, current_block));
         addbranch(it);
     }
 
@@ -754,6 +767,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                 params.add(getpointee(param.operand));
             });
         }
+        if(funtype.IRfunc == null) System.out.println("...");
         current_block.addinst(new Call(funtype.IRfunc, params, (Register) it.operand, current_block));
         if(it.operand != null) addbranch(it);
     }

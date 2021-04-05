@@ -110,9 +110,21 @@ public class SemanticCheck implements ASTVisitor {
             current_scope = new Scope(current_scope);
             funparlistNode para = it.fun_par_list;
 //        System.out.println(para.variables.get(0).name + para.types.get(0).getnewType(global_scope).tp);
+
             for (int i = 0; i < para.types.size(); i++) {
-                current_scope.addvar(para.variables.get(i).name, para.types.get(i).getnewType(global_scope), para.pos);
-//                current_scope.addentity(para.variables.get(i).name, it.IRfunc.params.get(i));
+                variableNode variableNode = para.variables.get(i);
+                Type var_type = para.types.get(i).getnewType(global_scope);
+                if(current_scope.qryvar(variableNode.name, false))
+                    throw new SemanticError("variable redefined", variableNode.pos);
+                current_scope.addvar(variableNode.name, var_type, para.pos);
+                varentity varent = new varentity(variableNode.name, var_type, variableNode.isglobal);
+                variableNode.varent = varent;
+                current_scope.addentity(varent.name, varent);
+                if(variableNode.expr != null) {
+                    variableNode.expr.accept(this);
+                    if(variableNode.expr.type.cmp(var_type))
+                        throw new SemanticError("define init type wrong", variableNode.pos);
+                }
             }
             return_type = it.type.getnewType(global_scope);
             current_func = it;
@@ -380,6 +392,9 @@ public class SemanticCheck implements ASTVisitor {
     @Override public void visit(varExprNode it) {
 //        System.out.println(it.name);
         varentity varent = current_scope.getentity(it.name, true);
+        if(varent == null){
+            System.out.println("haha");
+        }
         it.varent = varent;
 //        if(varent == null){
 //            System.out.println("???");
