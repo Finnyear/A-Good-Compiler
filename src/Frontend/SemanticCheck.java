@@ -392,9 +392,9 @@ public class SemanticCheck implements ASTVisitor {
     @Override public void visit(varExprNode it) {
 //        System.out.println(it.name);
         varentity varent = current_scope.getentity(it.name, true);
-        if(varent == null){
-            System.out.println("haha");
-        }
+//        if(varent == null){
+//            System.out.println("haha");
+//        }
         it.varent = varent;
 //        if(varent == null){
 //            System.out.println("???");

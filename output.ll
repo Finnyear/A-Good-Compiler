@@ -11,207 +11,146 @@ declare i8* @g_toString(i32 %i)
 declare i8* @g_getString()
 declare i32 @l_string_length(i8* %s)
 @n = global i32 zeroinitializer, align 4
-@a = global i32* zeroinitializer, align 4
+@p = global i32 zeroinitializer, align 4
+@k = global i32 zeroinitializer, align 4
 @i = global i32 zeroinitializer, align 4
-define i32 @fun_jud(i32 %param_x){
-entry:
-;precursors: 
-;successors: for_cond 
-	mv i8 %flag_addr_phi 65536
-	mv i32 %i_addr_phi 0
-	mv i32 %j_addr_phi 65536
-	br label %for_cond
-for_cond:
-;precursors: entry for_upd 
-;successors: for_body for_end 
-	%flag_addr_phi = phi i8 [ 65536, %entry ], [ %flag_addr_phi, %for_upd ]
-	%i_addr_phi = phi i32 [ 0, %entry ], [ %suf_tmp, %for_upd ]
-	%j_addr_phi = phi i32 [ 65536, %entry ], [ %j_addr_phi, %for_upd ]
-	%pointee_const = load i32, i32* @n, align 4
-	%binary_sdiv = sdiv i32 %pointee_const, %param_x
-	%cmp_slt = icmp slt i32 %i_addr_phi, %binary_sdiv
-	br i1 %cmp_slt, label %for_body, label %for_end
-for_body:
-;precursors: for_cond 
-;successors: for_cond 
-	mv i8 %flag_addr_phi 0
-	mv i32 %j_addr_phi 0
-	br label %for_cond
-for_end:
-;precursors: for_cond 
-;successors: rootReturn 
-	mv i8 %flag_addr_phi %flag_addr_phi
-	mv i32 %j_addr_phi %j_addr_phi
-	mv i32 %rootRet 0
-	br label %rootReturn
-for_cond:
-;precursors: for_body for_upd 
-;successors: for_body for_end 
-	%flag_addr_phi = phi i8 [ 0, %for_body ], [ %flag_addr_phi, %for_upd ]
-	%j_addr_phi = phi i32 [ 0, %for_body ], [ %suf_tmp, %for_upd ]
-	%binary_sub = sub i32 %param_x, 1
-	%cmp_slt = icmp slt i32 %j_addr_phi, %binary_sub
-	br i1 %cmp_slt, label %for_body, label %for_end
-rootReturn:
-;precursors: if_then for_end 
-;successors: 
-	%flag_addr_phi = phi i8 [ %flag_addr_phi, %if_then ], [ %flag_addr_phi, %for_end ]
-	%j_addr_phi = phi i32 [ %j_addr_phi, %if_then ], [ %j_addr_phi, %for_end ]
-	%rootRet = phi i32 [ 1, %if_then ], [ 0, %for_end ]
-	ret i32 %rootRet
-for_body:
-;precursors: for_cond 
-;successors: if_then addphi_mid 
-	%binary_mul = mul i32 %i_addr_phi, %param_x
-	%binary_add = add i32 %binary_mul, %j_addr_phi
-	%pointee_const = load i32*, i32** @a, align 4
-	%arrayptr = getelementptr inbounds i32*, i32* %pointee_const, i32 %binary_add
-	%binary_mul = mul i32 %i_addr_phi, %param_x
-	%binary_add = add i32 %binary_mul, %j_addr_phi
-	%binary_add = add i32 %binary_add, 1
-	%pointee_const = load i32*, i32** @a, align 4
-	%arrayptr = getelementptr inbounds i32*, i32* %pointee_const, i32 %binary_add
-	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
-	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
-	%cmp_sgt = icmp sgt i32 %pointee_arrayptr, %pointee_arrayptr
-	br i1 %cmp_sgt, label %if_then, label %addphi_mid
-for_end:
-;precursors: for_cond 
-;successors: if_end if_then 
-	br i8 %flag_addr_phi, label %if_end, label %if_then
-if_then:
-;precursors: for_body 
-;successors: if_end 
-	mv i8 %flag_addr_phi 1
-	br label %if_end
-addphi_mid:
-;precursors: for_body 
-;successors: if_end 
-	mv i8 %flag_addr_phi %flag_addr_phi
-	br label %if_end
-if_end:
-;precursors: for_end 
-;successors: for_upd 
-	br label %for_upd
-if_then:
-;precursors: for_end 
-;successors: rootReturn 
-	mv i8 %flag_addr_phi %flag_addr_phi
-	mv i32 %j_addr_phi %j_addr_phi
-	mv i32 %rootRet 1
-	br label %rootReturn
-if_end:
-;precursors: if_then addphi_mid 
-;successors: for_upd 
-	%flag_addr_phi = phi i8 [ %flag_addr_phi, %addphi_mid ], [ 1, %if_then ]
-	br label %for_upd
-for_upd:
-;precursors: if_end 
-;successors: for_cond 
-	%suf_tmp = add i32 %i_addr_phi, 1
-	mv i8 %flag_addr_phi %flag_addr_phi
-	mv i32 %i_addr_phi %suf_tmp
-	mv i32 %j_addr_phi %j_addr_phi
-	br label %for_cond
-for_upd:
-;precursors: if_end 
-;successors: for_cond 
-	%suf_tmp = add i32 %j_addr_phi, 1
-	mv i8 %flag_addr_phi %flag_addr_phi
-	mv i32 %j_addr_phi %suf_tmp
-	br label %for_cond
-}
+@main.0 = private unnamed_addr constant [6 x i8] c"\22<< \22\00", align 1
+@main.1 = private unnamed_addr constant [4 x i8] c"\22(\22\00", align 1
+@main.2 = private unnamed_addr constant [5 x i8] c"\22) \22\00", align 1
+@main.3 = private unnamed_addr constant [4 x i8] c"\22 \22\00", align 1
+@main.4 = private unnamed_addr constant [6 x i8] c"\22>> \22\00", align 1
 define void @__init(){
 entry:
 ;precursors: 
 ;successors: 
-	%puresz = mul i32 20, 4
-	%matasz = add i32 %puresz, 4
-	%allocptr = call noalias i8* @malloc(i32 %matasz)
-	%allocbitcast = bitcast i8* %allocptr to i32*
-	store i32 20, i32* %allocbitcast, align 4
-	%new_array = getelementptr inbounds i32, i32* %allocbitcast, i32 1
-	store i32* %new_array, i32** @a, align 4
 	ret void
 }
 define i32 @main(){
 entry:
 ;precursors: 
-;successors: for_cond 
+;successors: if_then addphi_mid 
 	call void @__init()
 	%fun_cal_ret_val = call i32 @g_getInt()
 	store i32 %fun_cal_ret_val, i32* @n, align 4
-	store i32 0, i32* @i, align 4
+	%fun_cal_ret_val = call i32 @g_getInt()
+	store i32 %fun_cal_ret_val, i32* @p, align 4
+	%fun_cal_ret_val = call i32 @g_getInt()
+	store i32 %fun_cal_ret_val, i32* @k, align 4
+	%pointee_const = load i32, i32* @p, align 4
+	%pointee_const = load i32, i32* @k, align 4
+	%binary_sub = sub i32 %pointee_const, %pointee_const
+	%cmp_sgt = icmp sgt i32 %binary_sub, 1
+	br i1 %cmp_sgt, label %if_then, label %addphi_mid
+if_then:
+;precursors: entry 
+;successors: if_end 
+	%resolved_main.0 = getelementptr inbounds [ 6 x i8 ], [ 6 x i8 ]* @main.0, i32 0, i32 0
+	call void @g_print(i8* %resolved_main.0)
+	br label %if_end
+addphi_mid:
+;precursors: entry 
+;successors: if_end 
+	br label %if_end
+if_end:
+;precursors: if_then addphi_mid 
+;successors: for_cond 
+	%pointee_const = load i32, i32* @p, align 4
+	%pointee_const = load i32, i32* @k, align 4
+	%binary_sub = sub i32 %pointee_const, %pointee_const
+	store i32 %binary_sub, i32* @i, align 4
 	br label %for_cond
 for_cond:
-;precursors: entry for_upd 
+;precursors: if_end for_upd 
 ;successors: for_body for_end 
+	%pointee_const = load i32, i32* @p, align 4
+	%pointee_const = load i32, i32* @k, align 4
+	%binary_add = add i32 %pointee_const, %pointee_const
 	%pointee_const = load i32, i32* @i, align 4
-	%pointee_const = load i32, i32* @n, align 4
-	%cmp_slt = icmp slt i32 %pointee_const, %pointee_const
-	br i1 %cmp_slt, label %for_body, label %for_end
+	%cmp_sle = icmp sle i32 %pointee_const, %binary_add
+	br i1 %cmp_sle, label %for_body, label %for_end
 for_body:
 ;precursors: for_cond 
-;successors: for_upd 
-	%pointee_const = load i32*, i32** @a, align 4
+;successors: land_cond addphi_mid 
 	%pointee_const = load i32, i32* @i, align 4
-	%arrayptr = getelementptr inbounds i32*, i32* %pointee_const, i32 %pointee_const
-	%fun_cal_ret_val = call i32 @g_getInt()
-	store i32 %fun_cal_ret_val, i32* %arrayptr, align 4
-	br label %for_upd
+	%cmp_sle = icmp sle i32 1, %pointee_const
+	br i1 %cmp_sle, label %land_cond, label %addphi_mid
 for_end:
 ;precursors: for_cond 
-;successors: for_cond 
+;successors: if_then addphi_mid 
+	%pointee_const = load i32, i32* @p, align 4
+	%pointee_const = load i32, i32* @k, align 4
+	%binary_add = add i32 %pointee_const, %pointee_const
 	%pointee_const = load i32, i32* @n, align 4
-	store i32 %pointee_const, i32* @i, align 4
-	br label %for_cond
-for_upd:
+	%cmp_slt = icmp slt i32 %binary_add, %pointee_const
+	br i1 %cmp_slt, label %if_then, label %addphi_mid
+land_cond:
 ;precursors: for_body 
+;successors: if_then addphi_mid 
+	%pointee_const = load i32, i32* @i, align 4
+	%pointee_const = load i32, i32* @n, align 4
+	%cmp_sle = icmp sle i32 %pointee_const, %pointee_const
+	br i1 %cmp_sle, label %if_then, label %addphi_mid
+addphi_mid:
+;precursors: for_body 
+;successors: if_end 
+	br label %if_end
+if_then:
+;precursors: for_end 
+;successors: if_end 
+	%resolved_main.4 = getelementptr inbounds [ 6 x i8 ], [ 6 x i8 ]* @main.4, i32 0, i32 0
+	call void @g_print(i8* %resolved_main.4)
+	br label %if_end
+addphi_mid:
+;precursors: for_end 
+;successors: if_end 
+	br label %if_end
+if_then:
+;precursors: land_cond 
+;successors: if_then else_then 
+	%pointee_const = load i32, i32* @i, align 4
+	%pointee_const = load i32, i32* @p, align 4
+	%eq = icmp eq i32 %pointee_const, %pointee_const
+	br i1 %eq, label %if_then, label %else_then
+addphi_mid:
+;precursors: land_cond 
+;successors: if_end 
+	br label %if_end
+if_end:
+;precursors: if_end addphi_mid addphi_mid 
+;successors: for_upd 
+	br label %for_upd
+if_end:
+;precursors: if_then addphi_mid 
+;successors: 
+	ret i32 0
+if_then:
+;precursors: if_then 
+;successors: if_end 
+	%resolved_main.1 = getelementptr inbounds [ 4 x i8 ], [ 4 x i8 ]* @main.1, i32 0, i32 0
+	call void @g_print(i8* %resolved_main.1)
+	%pointee_const = load i32, i32* @i, align 4
+	%fun_cal_ret_val = call i8* @g_toString(i32 %pointee_const)
+	call void @g_print(i8* %fun_cal_ret_val)
+	%resolved_main.2 = getelementptr inbounds [ 5 x i8 ], [ 5 x i8 ]* @main.2, i32 0, i32 0
+	call void @g_print(i8* %resolved_main.2)
+	br label %if_end
+else_then:
+;precursors: if_then 
+;successors: if_end 
+	%pointee_const = load i32, i32* @i, align 4
+	call void @g_printInt(i32 %pointee_const)
+	%resolved_main.3 = getelementptr inbounds [ 4 x i8 ], [ 4 x i8 ]* @main.3, i32 0, i32 0
+	call void @g_print(i8* %resolved_main.3)
+	br label %if_end
+for_upd:
+;precursors: if_end 
 ;successors: for_cond 
 	%pointee_const = load i32, i32* @i, align 4
 	%suf_tmp = add i32 %pointee_const, 1
 	store i32 %suf_tmp, i32* @i, align 4
 	br label %for_cond
-for_cond:
-;precursors: for_end for_upd 
-;successors: for_body for_end 
-	%pointee_const = load i32, i32* @i, align 4
-	%cmp_sgt = icmp sgt i32 %pointee_const, 0
-	br i1 %cmp_sgt, label %for_body, label %for_end
-for_body:
-;precursors: for_cond 
-;successors: if_then if_end 
-	%pointee_const = load i32, i32* @i, align 4
-	%fun_cal_ret_val = call i32 @fun_jud(i32 %pointee_const)
-	%cmp_sgt = icmp sgt i32 %fun_cal_ret_val, 0
-	br i1 %cmp_sgt, label %if_then, label %if_end
-for_end:
-;precursors: for_cond 
-;successors: rootReturn 
-	mv i32 %rootRet 0
-	br label %rootReturn
-if_then:
-;precursors: for_body 
-;successors: rootReturn 
-	%pointee_const = load i32, i32* @i, align 4
-	%fun_cal_ret_val = call i8* @g_toString(i32 %pointee_const)
-	call void @g_print(i8* %fun_cal_ret_val)
-	mv i32 %rootRet 0
-	br label %rootReturn
 if_end:
-;precursors: for_body 
-;successors: for_upd 
-	br label %for_upd
-rootReturn:
-;precursors: if_then for_end 
-;successors: 
-	%rootRet = phi i32 [ 0, %if_then ], [ 0, %for_end ]
-	ret i32 %rootRet
-for_upd:
-;precursors: if_end 
-;successors: for_cond 
-	%pointee_const = load i32, i32* @i, align 4
-	%binary_sdiv = sdiv i32 %pointee_const, 2
-	store i32 %binary_sdiv, i32* @i, align 4
-	br label %for_cond
+;precursors: if_then else_then 
+;successors: if_end 
+	br label %if_end
 }

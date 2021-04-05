@@ -10,6 +10,7 @@ import Util.*;
 import Util.error.myError;
 import Util.scope.globalScope;
 import Util.type.Type;
+import Util.type.arrayType;
 import Util.type.classType;
 import Util.type.funType;
 
@@ -107,6 +108,17 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         }
         if (entryreachable.contains(it)) return false;
         return it.pre_block.isEmpty();
+    }
+
+    private entity inttran(entity it) {
+        if (it.type instanceof IRboolType) {
+            Register ext = new Register(Root.intIR, "ext_" + it.toString());
+            current_block.addinst(new Zext(it, ext, current_block));
+            return ext;
+        } else {
+            assert (it.type instanceof IRintType) && (it.type.size() == 32);
+            return it;
+        }
     }
 
     @Override
@@ -239,7 +251,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         }
         it.expr.accept(this);
         entity tmp = getpointee(it.expr.operand);//first time thought need to get pointee
-        System.out.println(tmp.toString());
+//        System.out.println(tmp.toString());
         switch (it.op){
             case add -> {
                 current_block.addinst(new Binary(Binary.Opcode.add, tmp, new intConst(1, 32),(Register) it.operand, current_block));
@@ -670,7 +682,8 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                 it.lhs.accept(this);
                 it.rhs.accept(this);
                 it.operand = new Register(IRroot.boolIR, it.op.toString());
-                current_block.addinst(new Cmp(condcode, it.lhs.operand, it.rhs.operand, (Register) it.operand, current_block));
+                current_block.addinst(new Cmp(condcode, inttran(getpointee(it.lhs.operand)), inttran(getpointee(it.rhs.operand)),
+                        (Register) it.operand, current_block));
                 addbranch(it);
             }
         }
@@ -710,6 +723,10 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     @Override
     public void visit(memberExprNode it) { //////////////////fix memberExprNode !!!!!!!!!!!!!!
         it.tp.accept(this);
+//        if(it.tp.type instanceof arrayType){
+//            it.operand = new Register(Root.intIR, "array_size");
+//            entity ent = getpointee(it.mem.operand);
+//        }
         entity classptr = getpointee(it.tp.operand);
         if(it.mem instanceof varExprNode) {
             it.operand = new Register(it.varent.operand.type, "this." + it.memname);
@@ -767,7 +784,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                 params.add(getpointee(param.operand));
             });
         }
-        if(funtype.IRfunc == null) System.out.println("...");
+//        if(funtype.IRfunc == null) System.out.println("...");
         current_block.addinst(new Call(funtype.IRfunc, params, (Register) it.operand, current_block));
         if(it.operand != null) addbranch(it);
     }

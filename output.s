@@ -4,79 +4,10 @@
 	.type	__init,@function
 __init:
 .__init_entry: 
-	addi sp, sp, -16
-	sw s0, 12(sp)
-	sw ra, 8(sp)
-	null
-	null
-	slt t0, s0, t0
-	addi a0, t0, 4
-	call malloc
-	sw s0, 0(a0)
-	addi t1, a0, 4
-	lui t0, %hi(a)
-	sw t1, %lo(a)(t0)
-	lw s0, 12(sp)
-	lw ra, 8(sp)
-	addi sp, sp, 16
+	addi sp, sp, 0
+	addi sp, sp, 0
 	ret
 	.size	__init, .-__init
-
-	.globl	fun_jud
-	.p2align	1
-	.type	fun_jud,@function
-fun_jud:
-.fun_jud_entry: 
-	addi sp, sp, 0
-	null
-	null
-	null
-.fun_jud_for_cond: 
-	lw a1, n
-	slt a1, a1, a0
-	blt t2, a1, .fun_jud_for_body
-.fun_jud_for_end: 
-	null
-.fun_jud_rootReturn: 
-	addi sp, sp, 0
-	ret
-.fun_jud_for_body: 
-	null
-	null
-.fun_jud_for_cond: 
-	addi a1, a0, -1
-	blt t1, a1, .fun_jud_for_body
-.fun_jud_for_end: 
-.fun_jud_for_body: 
-	slt a1, t2, a0
-	slt a1, a1, t1
-	lw a2, a
-	slli a1, a1, 2
-	add a3, a2, a1
-	slt a1, t2, a0
-	slt a1, a1, t1
-	addi a1, a1, 1
-	lw a2, a
-	slli a1, a1, 2
-	add a1, a2, a1
-	lw a2, 0(a3)
-	lw a1, 0(a1)
-	slt a1, a1, a2
-	beqz a1, .fun_jud_if_end
-.fun_jud_if_then: 
-	null
-.fun_jud_if_end: 
-.fun_jud_if_end: 
-.fun_jud_if_then: 
-	null
-	j .fun_jud_rootReturn
-.fun_jud_for_upd: 
-	addi t1, t1, 1
-	j .fun_jud_for_cond
-.fun_jud_for_upd: 
-	addi t2, t2, 1
-	j .fun_jud_for_cond
-	.size	fun_jud, .-fun_jud
 
 	.globl	main
 	.p2align	1
@@ -84,60 +15,90 @@ fun_jud:
 main:
 .main_entry: 
 	addi sp, sp, -16
-	sw s0, 12(sp)
-	sw ra, 8(sp)
+	sw ra, 12(sp)
 	call __init
 	call g_getInt
 	lui t0, %hi(n)
 	sw a0, %lo(n)(t0)
-	lui t0, %hi(i)
-	sw zero, %lo(i)(t0)
-.main_for_cond: 
-	lw t1, i
-	lw t0, n
-	blt t1, t0, .main_for_body
-.main_for_end: 
-	lw t1, n
+	call g_getInt
+	lui t0, %hi(p)
+	sw a0, %lo(p)(t0)
+	call g_getInt
+	lui t0, %hi(k)
+	sw a0, %lo(k)(t0)
+	lw t1, p
+	lw t0, k
+	slt t1, t1, t0
+	null
+	slt t0, t0, t1
+	beqz t0, .main_addphi_mid
+.main_if_then: 
+	la a0, .main.0
+	call g_print
+.main_if_end: 
+	lw t1, p
+	lw t0, k
+	slt t1, t1, t0
 	lui t0, %hi(i)
 	sw t1, %lo(i)(t0)
 .main_for_cond: 
+	lw t1, p
+	lw t0, k
+	slt t1, t1, t0
 	lw t0, i
-	blt zero, t0, .main_for_body
+	bge t1, t0, .main_for_body
 .main_for_end: 
-	null
-.main_rootReturn: 
-	lw s0, 12(sp)
-	lw ra, 8(sp)
+	lw t1, p
+	lw t0, k
+	slt t1, t1, t0
+	lw t0, n
+	slt t0, t1, t0
+	beqz t0, .main_addphi_mid
+.main_if_then: 
+	la a0, .main.4
+	call g_print
+.main_if_end: 
+	lw ra, 12(sp)
 	addi sp, sp, 16
 	ret
+.main_addphi_mid: 
 .main_for_body: 
-	lw t1, a
 	lw t0, i
-	slli t0, t0, 2
-	add s0, t1, t0
-	call g_getInt
-	sw a0, 0(s0)
-.main_for_upd: 
-	lw t0, i
-	addi t1, t0, 1
-	lui t0, %hi(i)
-	sw t1, %lo(i)(t0)
-	j .main_for_cond
-.main_for_body: 
+	slti t0, t0, 1
+	xori t0, t0, 1
+	beqz t0, .main_addphi_mid
+.main_land_cond: 
+	lw t1, i
+	lw t0, n
+	slt t0, t0, t1
+	xori t0, t0, 1
+	beqz t0, .main_addphi_mid
+.main_if_then: 
+	lw t1, i
+	lw t0, p
+	beq t1, t0, .main_if_then
+.main_else_then: 
 	lw a0, i
-	call fun_jud
-	blt zero, a0, .main_if_then
+	call g_printInt
+	la a0, .main.3
+	call g_print
+	j .main_if_end
+.main_addphi_mid: 
+.main_addphi_mid: 
+.main_addphi_mid: 
 .main_if_end: 
 .main_if_then: 
+	la a0, .main.1
+	call g_print
 	lw a0, i
 	call g_toString
 	call g_print
-	null
-	j .main_rootReturn
+	la a0, .main.2
+	call g_print
+.main_if_end: 
 .main_for_upd: 
-	lw t1, i
-	null
-	slt t1, t1, t0
+	lw t0, i
+	addi t1, t0, 1
 	lui t0, %hi(i)
 	sw t1, %lo(i)(t0)
 	j .main_for_cond
@@ -152,15 +113,6 @@ i:
 	.word	0
 	.size	i, 4
 
-	.type	a,@object
-	.section	.bss
-	.globl	a
-	.p2align	2
-a:
-.La$local:
-	.word	0
-	.size	a, 4
-
 	.type	n,@object
 	.section	.bss
 	.globl	n
@@ -169,4 +121,52 @@ n:
 .Ln$local:
 	.word	0
 	.size	n, 4
+
+	.type	k,@object
+	.section	.bss
+	.globl	k
+	.p2align	2
+k:
+.Lk$local:
+	.word	0
+	.size	k, 4
+
+	.type	p,@object
+	.section	.bss
+	.globl	p
+	.p2align	2
+p:
+.Lp$local:
+	.word	0
+	.size	p, 4
+
+	.type	.main.4,@object
+	.section	.rodata
+.main.4:
+	.asciz	"\">> \""
+	.size	.main.4, 6
+
+	.type	.main.0,@object
+	.section	.rodata
+.main.0:
+	.asciz	"\"<< \""
+	.size	.main.0, 6
+
+	.type	.main.2,@object
+	.section	.rodata
+.main.2:
+	.asciz	"\") \""
+	.size	.main.2, 5
+
+	.type	.main.1,@object
+	.section	.rodata
+.main.1:
+	.asciz	"\"(\""
+	.size	.main.1, 4
+
+	.type	.main.3,@object
+	.section	.rodata
+.main.3:
+	.asciz	"\" \""
+	.size	.main.3, 4
 
