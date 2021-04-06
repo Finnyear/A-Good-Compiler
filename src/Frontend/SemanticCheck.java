@@ -1,7 +1,15 @@
 package Frontend;
 
 import AST.*;
+import MIR.IRInst.Store;
+import MIR.IROperand.GlobalVar;
+import MIR.IROperand.Param;
+import MIR.IROperand.Register;
 import MIR.IROperand.intConst;
+import MIR.IRType.IRType;
+import MIR.IRType.IRclassType;
+import MIR.IRType.IRpointerType;
+import MIR.Root;
 import Util.error.SemanticError;
 import Util.position;
 import Util.scope.Scope;
@@ -23,11 +31,13 @@ public class SemanticCheck implements ASTVisitor {
     public fundefNode current_func;
     public int loopnum;
     public ASTNode current_loop = null;
+    public Root IRroot;
 
-    public SemanticCheck(globalScope global_scope){
+    public SemanticCheck(globalScope global_scope, Root IRroot){
         this.global_scope = global_scope;
         this.current_scope = this.global_scope;
         loopnum = 0;
+        this.IRroot = IRroot;
     }
 
     @Override public void visit(ProgramNode it){
@@ -75,10 +85,28 @@ public class SemanticCheck implements ASTVisitor {
         it.variables.forEach(variableNode -> {
             if(current_scope instanceof globalScope) variableNode.isglobal = true;
             varentity varent = new varentity(variableNode.name, var_type, variableNode.isglobal);
+            IRType IRtype = IRroot.getIRtype(var_type);
             if(current_class != null) {
                 varent.ismember = true;
                 varent.index = new intConst(current_class.setelement(var_type), 32);
             }
+
+            if(variableNode.isglobal == true){
+                GlobalVar reg = new GlobalVar(new IRpointerType(IRtype, true), variableNode.name);
+                varent.operand = reg;
+            }
+            else{
+                if(current_func == null){
+                    if(IRtype instanceof IRclassType) IRtype = new IRpointerType(IRtype, false);
+                    Register reg = new Register(new IRpointerType(IRtype, true), variableNode.name + "_addr");
+                    varent.operand = reg;
+                }
+                else{
+                    Register reg = new Register(new IRpointerType(IRtype, true), variableNode.name + "_addr");
+                    varent.operand = reg;
+                }
+            }
+
             variableNode.varent = varent;
             if(variableNode.expr != null) {
                 variableNode.expr.accept(this);
@@ -318,6 +346,7 @@ public class SemanticCheck implements ASTVisitor {
             current_scope.parentScope = tmp_scope;
             if(it.mem instanceof varExprNode) {
                 if(current_scope.qryvar(((varExprNode) it.mem).name, false)){
+//                    it.mem.accept(this);/////////////////////////////////////////////////
                     it.type = current_scope.getvarType(((varExprNode) it.mem).name, false);
                     it.varent = current_scope.getentity(((varExprNode) it.mem).name, false);
                 }else throw new SemanticError("no such member", it.pos);

@@ -42,7 +42,7 @@ public class Main {
             new SymbolCollector(global_scope, IRroot).visit(rt);
             new ClassCreator(global_scope, IRroot).visit(rt);
 //            System.out.println("111");
-            new SemanticCheck(global_scope).visit(rt);
+            new SemanticCheck(global_scope, IRroot).visit(rt);
 
             new IRBuilder(global_scope, IRroot).visit(rt);
             new Mem2Reg(IRroot).run();

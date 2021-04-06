@@ -1,9 +1,12 @@
 package Frontend;
 
 import AST.*;
+import MIR.IROperand.GlobalVar;
+import MIR.IROperand.Register;
 import MIR.IROperand.intConst;
 import MIR.IRType.IRType;
 import MIR.IRType.IRclassType;
+import MIR.IRType.IRpointerType;
 import MIR.Root;
 import Util.error.SemanticError;
 import Util.scope.Scope;
@@ -73,7 +76,15 @@ public class ClassCreator implements ASTVisitor {
             varent.index = new intConst(classType.setelement(var_type), 32);
             IRType type = IRroot.getIRtype(var_type);
             currentIRclass.addmember(type);
+
+            if(type instanceof IRclassType) type = new IRpointerType(type, false);
+            Register reg = new Register(new IRpointerType(type, true), var.name + "_addr");
+            varent.operand = reg;
+
             var.varent = varent;
+//            if(varent.operand == null){
+//                System.out.println("???");
+//            }
             current_scope.addentity(varname, varent);
         }
     }

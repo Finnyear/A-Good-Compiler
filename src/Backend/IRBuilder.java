@@ -188,6 +188,8 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                 IRroot.addfun(IRfunc.name, IRfunc);
             }
         });
+//        it.parts.forEach(part -> {if(part.classdef != null) part.accept(this);});
+//        it.parts.forEach(part -> {if(part.classdef == null) part.accept(this);});
         it.parts.forEach(part -> part.accept(this));
 
         current_function = IRroot.functions.get("__init");
@@ -442,8 +444,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     public void visit(variableNode it) {
         IRType type = IRroot.getIRtype(it.varent.type);
         if(it.isglobal == true){
-            GlobalVar reg = new GlobalVar(new IRpointerType(type, true), it.name);
-            it.varent.operand = reg;
+            GlobalVar reg = (GlobalVar) it.varent.operand;
             IRroot.globalVars.add(reg);
             if(it.expr != null){
                 current_block = IRroot.Init().exitblock;
@@ -464,15 +465,11 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             }
             else{
                 if(current_function == null){
-                    if(type instanceof IRclassType) type = new IRpointerType(type, false);
-                    Register reg = new Register(new IRpointerType(type, true), it.name + "_addr");
-                    it.varent.operand = reg;
                 }
                 else{
-                    Register reg = new Register(new IRpointerType(type, true), it.name + "_addr");
+                    Register reg = (Register) it.varent.operand;
                     if(it.expr != null) assign(reg, it.expr);
                     current_function.allocvars.add(reg);
-                    it.varent.operand = reg;
                 }
             }
         }
@@ -809,6 +806,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         }
         if(it.mem instanceof varExprNode) {
             entity classptr = getpointee(it.tp.operand);
+//            it.mem.accept(this);////////////////////////////////////////////
             it.operand = new Register(it.varent.operand.type, "this." + it.memname);
             current_block.addinst(new Getelementptr(((IRpointerType) classptr.type).pointeeType, classptr,
                     new intConst(0, 32), new intConst(it.memoff, 32), (Register) it.operand, current_block));
