@@ -1,7 +1,35 @@
-int t,l,i;
-string s;
-int main(){
-    l = s.length();
-    println(s.substring(0, 1) + toString(l-2) + s.substring(l-1, l));
-    println(s);
+class A{
+	A(){}
+	B x;
+	string abc;
+	int aabc(int abc) {
+		return abc;
+	}
+};
+
+class B {
+	B(){
+
+	}
+	void D() {
+
+	}
+	A x;
+	B y;
+	void t() {
+		this.D();
+	}
+};
+
+class f{
+
+};
+
+int main() {
+	int [  ] ff = new int[1 ];
+	f g;
+	int [  ][  ][ ] fg = new int[4][ ][	];
+	string String;
+	String = toString(getInt());
+	println(toString(String.length()));
 }

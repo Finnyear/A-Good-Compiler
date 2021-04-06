@@ -47,7 +47,6 @@ public class ClassCreator implements ASTVisitor {
         classType.scope = new Scope(global_scope);
         current_scope = classType.scope;
         currentIRclass = (IRclassType) global_scope.getIRType(classType);
-        IRroot.classtypes.put(it.name, currentIRclass);
         name = it.name;
         it.vardefs.forEach(vardefNode -> vardefNode.accept(this));
         it.fundefs.forEach(fundefNode -> fundefNode.accept(this));

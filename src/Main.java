@@ -22,9 +22,9 @@ import java.io.PrintStream;
 
 public class Main {
     public static void main(String[] args) throws Exception{
-//        String name = "test.mx";
-//        InputStream input = new FileInputStream(name);
-        InputStream input = System.in;//
+        String name = "test.mx";
+        InputStream input = new FileInputStream(name);
+//        InputStream input = System.in;//
         try{
             ProgramNode rt;
             globalScope global_scope = new globalScope(null);
@@ -38,8 +38,8 @@ public class Main {
             ASTbuilder astBuilder = new ASTbuilder(global_scope);
             rt = (ProgramNode) astBuilder.visit(parseTree);
             Scope global = new Scope(null);
-            new SymbolCollector(global_scope).visit(rt);
             Root IRroot = new Root();
+            new SymbolCollector(global_scope, IRroot).visit(rt);
             new ClassCreator(global_scope, IRroot).visit(rt);
 //            System.out.println("111");
             new SemanticCheck(global_scope).visit(rt);

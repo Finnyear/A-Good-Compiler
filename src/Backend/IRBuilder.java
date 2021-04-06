@@ -314,6 +314,9 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             current_block.addinst(new Getelementptr(new IRarrayType(str.length(), IRroot.charIR), strconst,
                     new intConst(0, 32), new intConst(0, 32), (Register) it.operand, current_block));
         }
+        else if(it.tp.equals("null")){
+            it.operand = new Null();
+        }
         else throw new myError("const type wrong", new position(0, 0));
     }
 

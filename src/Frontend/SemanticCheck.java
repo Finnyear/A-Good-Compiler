@@ -307,6 +307,7 @@ public class SemanticCheck implements ASTVisitor {
         } else if (it.tp.type instanceof classType) {
             Scope tmp_scope = current_scope;
             current_scope = ((classType) it.tp.type).scope;
+            current_scope.parentScope = tmp_scope;
             if(it.mem instanceof varExprNode) {
                 if(current_scope.qryvar(((varExprNode) it.mem).name, false)){
                     it.type = current_scope.getvarType(((varExprNode) it.mem).name, false);
@@ -319,6 +320,7 @@ public class SemanticCheck implements ASTVisitor {
                     it.type = it.mem.type;
                 }else throw new SemanticError("no such member function", it.pos);
             }
+            current_scope.parentScope = global_scope;
             current_scope = tmp_scope;
         }
         else throw new SemanticError("this type has no member", it.pos);

@@ -1,6 +1,8 @@
 package Frontend;
 
 import AST.*;
+import MIR.IRType.IRclassType;
+import MIR.Root;
 import Util.position;
 import Util.scope.Scope;
 import Util.type.classType;
@@ -12,7 +14,8 @@ import java.util.ArrayList;
 
 public class SymbolCollector implements ASTVisitor {
     private globalScope global_scope;
-    public SymbolCollector(globalScope global_scope){this.global_scope = global_scope;}
+    public Root IRroot;
+    public SymbolCollector(globalScope global_scope, Root IRroot){this.global_scope = global_scope;this.IRroot = IRroot;}
 
     @Override
     public void visit(ProgramNode it){
@@ -44,7 +47,9 @@ public class SymbolCollector implements ASTVisitor {
 
     @Override
     public void visit(classdefNode it){
-        global_scope.addType(it.name, new classType(Type.type.Class, it.name), it.pos);
+        classType type = new classType(Type.type.Class, it.name);
+        global_scope.addType(it.name, type, it.pos);
+        IRroot.classtypes.put(it.name, (IRclassType) global_scope.getIRType(type));
     }
 
     @Override public void visit(arraycrtNode it){}

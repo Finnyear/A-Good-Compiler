@@ -7,6 +7,7 @@ public class IRpointerType extends IRType{
 
     public IRpointerType(IRType pointeeType, boolean isresolvable){
         super();
+//        System.out.println(pointeeType.toString());
         this.pointeeType = pointeeType;
         this.isresolvable = isresolvable;
     }

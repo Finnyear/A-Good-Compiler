@@ -17,11 +17,41 @@ declare i1 @g_stringgt(i8* %a, i8* %b)
 declare i1 @g_stringeq(i8* %a, i8* %b)
 declare i8* @g_getString()
 declare i1 @g_stringlt(i8* %a, i8* %b)
-@t = global i32 zeroinitializer, align 4
-@l = global i32 zeroinitializer, align 4
-@i = global i32 zeroinitializer, align 4
-@s = global i8* zeroinitializer, align 4
+%struct.A = type {%struct.B*, i8*}
+%struct.B = type {%struct.A*, %struct.B*}
+%struct.f = type {}
+define void @cls_A_con_0(%struct.A* %this){
+entry:
+;precursors: 
+;successors: 
+	ret void
+}
+define i32 @cls_A_aabc(%struct.A* %this, i32 %param_abc){
+entry:
+;precursors: 
+;successors: 
+	ret i32* %abc_addr
+}
+define void @cls_B_D(%struct.B* %this){
+entry:
+;precursors: 
+;successors: 
+	ret void
+}
+define void @cls_B_t(%struct.B* %this){
+entry:
+;precursors: 
+;successors: 
+	call void @cls_B_D(%struct.B* %this)
+	ret void
+}
 define void @__init(){
+entry:
+;precursors: 
+;successors: 
+	ret void
+}
+define void @cls_B_con_0(%struct.B* %this){
 entry:
 ;precursors: 
 ;successors: 
@@ -32,23 +62,29 @@ entry:
 ;precursors: 
 ;successors: 
 	call void @__init()
-	%pointee_s = load i8*, i8** @s, align 4
-	%fun_cal_ret_val = call i32 @l_string_length(i8* %pointee_s)
-	store i32 %fun_cal_ret_val, i32* @l, align 4
-	%pointee_s = load i8*, i8** @s, align 4
-	%fun_cal_ret_val = call i8* @l_string_substring(i8* %pointee_s, i32 0, i32 1)
-	%pointee_l = load i32, i32* @l, align 4
-	%binary_sub = sub i32 %pointee_l, 2
-	%fun_cal_ret_val = call i8* @g_toString(i32 %binary_sub)
-	%binary_add_string = call i8* @g_stringadd(i8* %fun_cal_ret_val, i8* %fun_cal_ret_val)
-	%pointee_s = load i8*, i8** @s, align 4
-	%pointee_l = load i32, i32* @l, align 4
-	%binary_sub = sub i32 %pointee_l, 1
-	%pointee_l = load i32, i32* @l, align 4
-	%fun_cal_ret_val = call i8* @l_string_substring(i8* %pointee_s, i32 %binary_sub, i32 %pointee_l)
-	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %fun_cal_ret_val)
-	call void @g_println(i8* %binary_add_string)
-	%pointee_s = load i8*, i8** @s, align 4
-	call void @g_println(i8* %pointee_s)
+	%puresz = mul i32 1, 4
+	%matasz = add i32 %puresz, 4
+	%allocptr = call noalias i8* @malloc(i32 %matasz)
+	%allocbitcast = bitcast i8* %allocptr to i32*
+	store i32 1, i32* %allocbitcast, align 4
+	%new_array = getelementptr inbounds i32, i32* %allocbitcast, i32 1
+	%puresz = mul i32 4, 4
+	%matasz = add i32 %puresz, 4
+	%allocptr = call noalias i8* @malloc(i32 %matasz)
+	%allocbitcast = bitcast i8* %allocptr to i32*
+	store i32 4, i32* %allocbitcast, align 4
+	%allocoffset = getelementptr inbounds i32, i32* %allocbitcast, i32 1
+	%new_array = bitcast i32* %allocoffset to i32***
+	%fun_cal_ret_val = call i32 @g_getInt()
+	%fun_cal_ret_val = call i8* @g_toString(i32 %fun_cal_ret_val)
+	%fun_cal_ret_val = call i32 @l_string_length(i8* %fun_cal_ret_val)
+	%fun_cal_ret_val = call i8* @g_toString(i32 %fun_cal_ret_val)
+	call void @g_println(i8* %fun_cal_ret_val)
 	ret i32 0
+}
+define null @cls_f_con_0(){
+entry:
+;precursors: 
+;successors: 
+	ret void
 }
