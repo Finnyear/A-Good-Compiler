@@ -818,6 +818,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             it.operand = new Register(it.varent.operand.type, "this." + it.memname);
             current_block.addinst(new Getelementptr(((IRpointerType) classptr.type).pointeeType, classptr,
                     new intConst(0, 32), new intConst(it.memoff, 32), (Register) it.operand, current_block));
+            addbranch(it);
         }
         else {
             entity tmp_this_operand = current_this_operand;
