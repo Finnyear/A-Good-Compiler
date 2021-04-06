@@ -237,8 +237,9 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitMemberExpr(MxParser.MemberExprContext ctx) {
+        String memname = ctx.expression(1).getText();
         memberExprNode node = new memberExprNode(new position(ctx),
-                (ExprNode) visit(ctx.expression(0)), (ExprNode) visit(ctx.expression(1)));
+                (ExprNode) visit(ctx.expression(0)), (ExprNode) visit(ctx.expression(1)), memname);
         return node;
     }
 

@@ -5,6 +5,8 @@ import MIR.IRFunction;
 import MIR.IROperand.Register;
 import MIR.IROperand.entity;
 import MIR.IRType.IRType;
+import Util.error.myError;
+import Util.position;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,6 +17,7 @@ public class Call extends Inst{
 
     public Call(IRFunction callee, ArrayList<entity> parameters, Register dest, IRBlock block) {
         super(dest, block);
+        if(callee == null) this.callee.params = callee.params;
         this.callee = callee;
         this.parameters = parameters;
         parameters.forEach(param -> param.adduse(this));

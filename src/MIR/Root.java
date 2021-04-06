@@ -96,6 +96,12 @@ public class Root {
         func.params.add(new Param(intIR, "a"));
         builtinfunc.put("malloc", func);
 
+
+//        func = new IRFunction("size");
+//        func.returnType = intIR;
+//        func.params.add(new Param(new IRpointerType(intIR), "a"));
+//        builtinfunc.put("size", func);
+
         IRFunction init = new IRFunction("__init");
         init.setrettype(new IRvoidType());
         functions.put("__init", init);

@@ -1,35 +1,21 @@
-class A{
-	A(){}
-	B x;
-	string abc;
-	int aabc(int abc) {
-		return abc;
+//This is the most basic test.
+//基本测试，注释是中文应该要能搞吧
+
+int main()
+{
+	int[][] array = new int[3][3];
+	array[0] = null;
+	println(toString(array[0].size()));
+	array[0] = new int[10];
+    int i;
+	for(i = 0; i < 10; ++i)
+		array[0][i] = i * i; //
+	println(toString(array[0][9]));
+	while(true)
+	{
+		break;
+		continue;
 	}
-};
 
-class B {
-	B(){
-
-	}
-	void D() {
-
-	}
-	A x;
-	B y;
-	void t() {
-		this.D();
-	}
-};
-
-class f{
-
-};
-
-int main() {
-	int [  ] ff = new int[1 ];
-	f g;
-	int [  ][  ][ ] fg = new int[4][ ][	];
-	string String;
-	String = toString(getInt());
-	println(toString(String.length()));
+	return 0;
 }

@@ -142,11 +142,6 @@ public class SemanticCheck implements ASTVisitor {
         }
     }
 
-    @Override
-    public void visit(funcNode it){
-        if(!current_scope.qryfun(it.name, true)) throw new SemanticError("no such function", it.pos);
-        it.type = current_scope.getfunType(it.name, true);
-    }
 
     @Override public void visit(arraycrtNode it){
         for(ExprNode expr : it.dims){
@@ -279,6 +274,13 @@ public class SemanticCheck implements ASTVisitor {
 //        else {
 //            System.out.println(it.type.tp + it.type.class_name);
 //        }
+//        System.out.println(it.name);
+    }
+
+    @Override
+    public void visit(funcNode it){
+        if(!current_scope.qryfun(it.name, true)) throw new SemanticError("no such function", it.pos);
+        it.type = current_scope.getfunType(it.name, true);
     }
     @Override public void visit(ifStmtNode it){
         it.ifcon.accept(this);
@@ -298,9 +300,15 @@ public class SemanticCheck implements ASTVisitor {
     @Override public void visit(memberExprNode it) {
         it.tp.accept(this);
         if (it.tp.type instanceof arrayType) {
-            if (it.memname == "size") {
-                it.type = global_scope.getfunType("size", true);
-                return;
+            if (it.mem instanceof funcalExprNode) {
+                if(((funcalExprNode) it.mem).callee.name.equals("size")) {
+                    it.mem.accept(this);
+//                    it.mem.type = global_scope.getfunType("size", true);
+                    it.type = it.mem.type;
+                    return;
+                }else {
+                    throw new SemanticError("array type has no other member.", it.pos);
+                }
             } else {
                 throw new SemanticError("array type has no other member.", it.pos);
             }

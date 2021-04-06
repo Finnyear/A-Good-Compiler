@@ -9,13 +9,14 @@ public class memberExprNode extends ExprNode{
 
     public int memoff;
     public String memname;
-    public entity memoperand;
+//    public entity memoperand;
     public varentity varent;
 
-    public memberExprNode(position pos, ExprNode tp, ExprNode mem){
+    public memberExprNode(position pos, ExprNode tp, ExprNode mem, String memname){
         super(pos);
         this.tp = tp;
         this.mem = mem;
+        this.memname = memname;
     }
 
     @Override
