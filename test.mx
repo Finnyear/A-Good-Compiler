@@ -1,21 +1,35 @@
-//This is the most basic test.
-//基本测试，注释是中文应该要能搞吧
-
-int main()
-{
-	int[][] array = new int[3][3];
-	array[0] = null;
-	println(toString(array[0].size()));
-	array[0] = new int[10];
-    int i;
-	for(i = 0; i < 10; ++i)
-		array[0][i] = i * i; //
-	println(toString(array[0][9]));
-	while(true)
-	{
-		break;
-		continue;
+class Cat{
+	void greet(){
+		println("MIAOMIAOMIAO");
 	}
+};
 
-	return 0;
+class Lamb{
+	void greet(){
+		println("MIEMIEMIE");
+	}
+};
+
+class Animals{
+	Cat c;
+	Lamb l;
+    Animals(){
+        c = new Cat;
+        l = new Lamb;
+    }
+	void greet(){
+		c.greet();
+		l.greet();
+	}
+};
+
+int main(){
+	Cat cat;
+	cat = new Cat;
+	Lamb lamb;
+	lamb = new Lamb;
+	Animals a = new Animals;
+	a.c = cat;
+	a.l = lamb;
+	a.greet();
 }

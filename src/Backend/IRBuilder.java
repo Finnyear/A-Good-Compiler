@@ -170,7 +170,11 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                 int con_cnt = 0;
                 IRFunction IRfunc = new IRFunction("cls_" + name + "_con_" + con_cnt);
                 con_cnt = con_cnt + 1;
-                if(part.classdef.classcon != null)part.classdef.classcon.IRfunc = IRfunc;
+                if(part.classdef.classcon != null) {
+                    part.classdef.classcon.IRfunc = IRfunc;
+                    funType funtype = ((classType)gScope.getType(part.classdef.name, part.pos)).scope.con;
+                    funtype.IRfunc = IRfunc;
+                }
                 else IRfunc.exitblock.addterminate(new Return(null, IRfunc.exitblock));
                 IRroot.addfun(IRfunc.name, IRfunc);
             }

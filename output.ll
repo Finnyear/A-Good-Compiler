@@ -17,7 +17,50 @@ declare i1 @g_stringgt(i8* %a, i8* %b)
 declare i1 @g_stringeq(i8* %a, i8* %b)
 declare i8* @g_getString()
 declare i1 @g_stringlt(i8* %a, i8* %b)
+%struct.Animals = type {%struct.Cat*, %struct.Lamb*}
+%struct.Cat = type {}
+%struct.Lamb = type {}
+@cls_Cat_greet.0 = private unnamed_addr constant [15 x i8] c"\22MIAOMIAOMIAO\22\00", align 1
+@cls_Lamb_greet.1 = private unnamed_addr constant [12 x i8] c"\22MIEMIEMIE\22\00", align 1
+define void @cls_Animals_greet(%struct.Animals* %this){
+entry:
+;precursors: 
+;successors: 
+	%this.c_addr = getelementptr inbounds %struct.Animals, %struct.Animals* %this, i32 0, i32 0
+	%pointee_this.c_addr = load %struct.Cat*, %struct.Cat** %this.c_addr, align 4
+	call void @cls_Cat_greet(%struct.Cat* %pointee_this.c_addr)
+	%this.l_addr = getelementptr inbounds %struct.Animals, %struct.Animals* %this, i32 0, i32 1
+	%pointee_this.l_addr = load %struct.Lamb*, %struct.Lamb** %this.l_addr, align 4
+	call void @cls_Lamb_greet(%struct.Lamb* %pointee_this.l_addr)
+	ret void
+}
+define void @cls_Animals_con_0(%struct.Animals* %this){
+entry:
+;precursors: 
+;successors: 
+	%this.c_addr = getelementptr inbounds %struct.Animals, %struct.Animals* %this, i32 0, i32 0
+	%malloc = call noalias i8* @malloc(i32 0)
+	%new_class_ptr = bitcast i8* %malloc to %struct.Cat*
+	store %struct.Cat* %new_class_ptr, %struct.Cat** %this.c_addr, align 4
+	%this.l_addr = getelementptr inbounds %struct.Animals, %struct.Animals* %this, i32 0, i32 1
+	%malloc = call noalias i8* @malloc(i32 0)
+	%new_class_ptr = bitcast i8* %malloc to %struct.Lamb*
+	store %struct.Lamb* %new_class_ptr, %struct.Lamb** %this.l_addr, align 4
+	ret void
+}
 define void @__init(){
+entry:
+;precursors: 
+;successors: 
+	ret void
+}
+define null @cls_Cat_con_0(){
+entry:
+;precursors: 
+;successors: 
+	ret void
+}
+define null @cls_Lamb_con_0(){
 entry:
 ;precursors: 
 ;successors: 
@@ -26,102 +69,35 @@ entry:
 define i32 @main(){
 entry:
 ;precursors: 
-;successors: arrayincr 
-	call void @__init()
-	%puresz = mul i32 3, 4
-	%metasz = add i32 %puresz, 4
-	%allocptr = call noalias i8* @malloc(i32 %metasz)
-	%allocbitcast = bitcast i8* %allocptr to i32*
-	store i32 3, i32* %allocbitcast, align 4
-	%allocoffset = getelementptr inbounds i32, i32* %allocbitcast, i32 1
-	%new_array = bitcast i32* %allocoffset to i32**
-	mv i32 %counter 0
-	br label %arrayincr
-arrayincr:
-;precursors: entry arraybody 
-;successors: arraybody arrayend 
-	%counter = phi i32 [ 0, %entry ], [ %countertmp, %arraybody ]
-	%countertmp = add i32 %counter, 1
-	%branchjudge = icmp sle i32 %counter, 3
-	br i1 %branchjudge, label %arraybody, label %arrayend
-arraybody:
-;precursors: arrayincr 
-;successors: arrayincr 
-	%arrayptr = getelementptr inbounds i32, i32* %allocbitcast, i32 %counter
-	%castedptr = bitcast i32* %arrayptr to i32**
-	%puresz = mul i32 3, 4
-	%metasz = add i32 %puresz, 4
-	%allocptr = call noalias i8* @malloc(i32 %metasz)
-	%allocbitcast = bitcast i8* %allocptr to i32*
-	store i32 3, i32* %allocbitcast, align 4
-	%array_malloc = getelementptr inbounds i32, i32* %allocbitcast, i32 1
-	store i32* %array_malloc, i32** %castedptr, align 4
-	mv i32 %counter %countertmp
-	br label %arrayincr
-arrayend:
-;precursors: arrayincr 
-;successors: for_cond 
-	%arrayptr = getelementptr inbounds i32**, i32** %new_array, i32 0
-	store i32* null, i32** %arrayptr, align 4
-	%arrayptr = getelementptr inbounds i32**, i32** %new_array, i32 0
-	%pointee_arrayptr = load i32*, i32** %arrayptr, align 4
-	%metaptr = getelementptr inbounds i32, i32* %pointee_arrayptr, i32 -1
-	%array_size = load i32, i32* %metaptr, align 4
-	%fun_cal_ret_val = call i8* @g_toString(i32 %array_size)
-	call void @g_println(i8* %fun_cal_ret_val)
-	%arrayptr = getelementptr inbounds i32**, i32** %new_array, i32 0
-	%puresz = mul i32 10, 4
-	%metasz = add i32 %puresz, 4
-	%allocptr = call noalias i8* @malloc(i32 %metasz)
-	%allocbitcast = bitcast i8* %allocptr to i32*
-	store i32 10, i32* %allocbitcast, align 4
-	%new_array = getelementptr inbounds i32, i32* %allocbitcast, i32 1
-	store i32* %new_array, i32** %arrayptr, align 4
-	br label %for_cond
-for_cond:
-;precursors: arrayend for_upd 
-;successors: for_body for_end 
-	%cmp_slt = icmp slt i32 0, 10
-	br i1 %cmp_slt, label %for_body, label %for_end
-for_body:
-;precursors: for_cond 
-;successors: for_upd 
-	%arrayptr = getelementptr inbounds i32**, i32** %new_array, i32 0
-	%pointee_arrayptr = load i32*, i32** %arrayptr, align 4
-	%arrayptr = getelementptr inbounds i32*, i32* %pointee_arrayptr, i32 0
-	%binary_mul = mul i32 0, 0
-	store i32 %binary_mul, i32* %arrayptr, align 4
-	br label %for_upd
-for_end:
-;precursors: for_cond 
-;successors: while_cond 
-	%arrayptr = getelementptr inbounds i32**, i32** %new_array, i32 0
-	%pointee_arrayptr = load i32*, i32** %arrayptr, align 4
-	%arrayptr = getelementptr inbounds i32*, i32* %pointee_arrayptr, i32 9
-	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
-	%fun_cal_ret_val = call i8* @g_toString(i32 %pointee_arrayptr)
-	call void @g_println(i8* %fun_cal_ret_val)
-	br label %while_cond
-for_upd:
-;precursors: for_body 
-;successors: for_cond 
-	%pre_add = add i32 0, 1
-	store i32 %pre_add, i32 0, align 4
-	br label %for_cond
-while_cond:
-;precursors: for_end 
-;successors: while_body addphi_mid 
-	br i1 1, label %while_body, label %addphi_mid
-while_body:
-;precursors: while_cond 
-;successors: while_end 
-	br label %while_end
-addphi_mid:
-;precursors: while_cond 
-;successors: while_end 
-	br label %while_end
-while_end:
-;precursors: while_body addphi_mid 
 ;successors: 
+	call void @__init()
+	%malloc = call noalias i8* @malloc(i32 0)
+	%new_class_ptr = bitcast i8* %malloc to %struct.Cat*
+	%malloc = call noalias i8* @malloc(i32 0)
+	%new_class_ptr = bitcast i8* %malloc to %struct.Lamb*
+	%malloc = call noalias i8* @malloc(i32 8)
+	%new_class_ptr = bitcast i8* %malloc to %struct.Animals*
+	call void @cls_Animals_con_0(%struct.Animals* %new_class_ptr)
+	%this.c = getelementptr inbounds %struct.Animals, %struct.Animals* %new_class_ptr, i32 0, i32 0
+	store %struct.Cat* %new_class_ptr, %struct.Cat** %this.c, align 4
+	%this.l = getelementptr inbounds %struct.Animals, %struct.Animals* %new_class_ptr, i32 0, i32 0
+	store %struct.Lamb* %new_class_ptr, %struct.Lamb** %this.l, align 4
+	call void @cls_Animals_greet(%struct.Animals* %new_class_ptr)
 	ret i32 0
+}
+define void @cls_Lamb_greet(%struct.Lamb* %this){
+entry:
+;precursors: 
+;successors: 
+	%resolved_cls_Lamb_greet.1 = getelementptr inbounds [ 12 x i8 ], [ 12 x i8 ]* @cls_Lamb_greet.1, i32 0, i32 0
+	call void @g_println(i8* %resolved_cls_Lamb_greet.1)
+	ret void
+}
+define void @cls_Cat_greet(%struct.Cat* %this){
+entry:
+;precursors: 
+;successors: 
+	%resolved_cls_Cat_greet.0 = getelementptr inbounds [ 15 x i8 ], [ 15 x i8 ]* @cls_Cat_greet.0, i32 0, i32 0
+	call void @g_println(i8* %resolved_cls_Cat_greet.0)
+	ret void
 }

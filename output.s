@@ -1,95 +1,133 @@
 	.text
+	.globl	cls_Cat_greet
+	.p2align	1
+	.type	cls_Cat_greet,@function
+cls_Cat_greet:
+.cls_Cat_greet_entry: 
+	addi sp, sp, -16
+	sw ra, 12(sp)
+	la a0, .cls_Cat_greet.0
+	call g_println
+	lw ra, 12(sp)
+	addi sp, sp, 16
+	ret
+	.size	cls_Cat_greet, .-cls_Cat_greet
+
+	.globl	cls_Lamb_greet
+	.p2align	1
+	.type	cls_Lamb_greet,@function
+cls_Lamb_greet:
+.cls_Lamb_greet_entry: 
+	addi sp, sp, -16
+	sw ra, 12(sp)
+	la a0, .cls_Lamb_greet.1
+	call g_println
+	lw ra, 12(sp)
+	addi sp, sp, 16
+	ret
+	.size	cls_Lamb_greet, .-cls_Lamb_greet
+
+	.globl	cls_Animals_con_0
+	.p2align	1
+	.type	cls_Animals_con_0,@function
+cls_Animals_con_0:
+.cls_Animals_con_0_entry: 
+	addi sp, sp, -16
+	sw s0, 12(sp)
+	sw ra, 8(sp)
+	mv s0, a0
+	mv a0, zero
+	call malloc
+	sw a0, 0(s0)
+	mv t0, s0
+	addi s0, t0, 4
+	mv a0, zero
+	call malloc
+	sw a0, 0(s0)
+	lw s0, 12(sp)
+	lw ra, 8(sp)
+	addi sp, sp, 16
+	ret
+	.size	cls_Animals_con_0, .-cls_Animals_con_0
+
+	.globl	cls_Animals_greet
+	.p2align	1
+	.type	cls_Animals_greet,@function
+cls_Animals_greet:
+.cls_Animals_greet_entry: 
+	addi sp, sp, -16
+	sw s0, 12(sp)
+	sw ra, 8(sp)
+	mv s0, a0
+	mv t0, s0
+	lw a0, 0(t0)
+	call cls_Cat_greet
+	mv t0, s0
+	addi t0, t0, 4
+	lw a0, 0(t0)
+	call cls_Lamb_greet
+	lw s0, 12(sp)
+	lw ra, 8(sp)
+	addi sp, sp, 16
+	ret
+	.size	cls_Animals_greet, .-cls_Animals_greet
+
 	.globl	main
 	.p2align	1
 	.type	main,@function
 main:
 .main_entry: 
-	addi sp, sp, -32
-	sw s0, 12(sp)
-	sw s1, 16(sp)
-	sw s2, 20(sp)
-	sw s3, 24(sp)
-	sw s4, 28(sp)
-	sw ra, 8(sp)
+	addi sp, sp, -16
+	sw s0, 4(sp)
+	sw s1, 8(sp)
+	sw s2, 12(sp)
+	sw ra, 0(sp)
 	call __init
+	mv a0, zero
+	call malloc
+	mv s0, a0
+	mv a0, zero
+	call malloc
+	mv s2, a0
 	null
-	null
-	slt t0, s0, t0
-	addi a0, t0, 4
 	call malloc
 	mv s1, a0
-	sw s0, 0(s1)
-	addi t0, s1, 4
-	mv s0, t0
-	null
-.main_arrayincr: 
-	addi s3, t0, 1
-	null
-	bge t1, t0, .main_arraybody
-.main_arrayend: 
-	mv t0, s0
-	sw zero, 0(t0)
-	mv t0, s0
-	lw t0, 0(t0)
-	addi t0, t0, -4
-	lw a0, 0(t0)
-	call g_toString
-	call g_println
-	null
-	null
-	slt t0, s1, t0
-	addi a0, t0, 4
-	call malloc
-	sw s1, 0(a0)
-	addi t0, a0, 4
-	sw t0, 0(s0)
-.main_for_cond: 
-	null
-	blt zero, t0, .main_for_body
-.main_for_end: 
-	mv t0, s0
-	lw t0, 0(t0)
-	addi t0, t0, 36
-	lw a0, 0(t0)
-	call g_toString
-	call g_println
-.main_while_cond: 
-.main_arraybody: 
-	slli t0, t0, 2
-	add t0, s1, t0
-	mv s4, t0
-	null
-	null
-	slt t0, s2, t0
-	addi a0, t0, 4
-	call malloc
-	sw s2, 0(a0)
-	addi t0, a0, 4
-	sw t0, 0(s4)
-	mv t0, s3
-	j .main_arrayincr
-.main_for_body: 
-	mv t0, s0
-	lw t0, 0(t0)
-	slli t1, zero, 0
-	sw t1, 0(t0)
-.main_for_upd: 
-	null
-	addi t0, t0, 0
-	sw t0, 0(zero)
-	j .main_for_cond
-.main_while_body: 
-.main_addphi_mid: 
-.main_while_end: 
-	lw s0, 12(sp)
-	lw s1, 16(sp)
-	lw s2, 20(sp)
-	lw s3, 24(sp)
-	lw s4, 28(sp)
-	lw ra, 8(sp)
-	addi sp, sp, 32
+	mv a0, s1
+	call cls_Animals_con_0
+	mv t0, s1
+	sw s0, 0(t0)
+	mv t0, s1
+	sw s2, 0(t0)
+	mv a0, s1
+	call cls_Animals_greet
+	mv a0, zero
+	lw s0, 4(sp)
+	lw s1, 8(sp)
+	lw s2, 12(sp)
+	lw ra, 0(sp)
+	addi sp, sp, 16
 	ret
 	.size	main, .-main
+
+	.globl	cls_Lamb_con_0
+	.p2align	1
+	.type	cls_Lamb_con_0,@function
+cls_Lamb_con_0:
+.cls_Lamb_con_0_entry: 
+	addi sp, sp, 0
+	addi sp, sp, 0
+	ret
+	.size	cls_Lamb_con_0, .-cls_Lamb_con_0
+
+	.globl	cls_Cat_con_0
+	.p2align	1
+	.type	cls_Cat_con_0,@function
+cls_Cat_con_0:
+.cls_Cat_con_0_entry: 
+	addi sp, sp, 0
+	addi sp, sp, 0
+	ret
+	.size	cls_Cat_con_0, .-cls_Cat_con_0
 
 	.globl	__init
 	.p2align	1
@@ -100,4 +138,16 @@ __init:
 	addi sp, sp, 0
 	ret
 	.size	__init, .-__init
+
+	.type	.cls_Lamb_greet.1,@object
+	.section	.rodata
+.cls_Lamb_greet.1:
+	.asciz	"\"MIEMIEMIE\""
+	.size	.cls_Lamb_greet.1, 12
+
+	.type	.cls_Cat_greet.0,@object
+	.section	.rodata
+.cls_Cat_greet.0:
+	.asciz	"\"MIAOMIAOMIAO\""
+	.size	.cls_Cat_greet.0, 15
 
