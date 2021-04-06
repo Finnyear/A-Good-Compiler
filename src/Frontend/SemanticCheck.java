@@ -86,7 +86,8 @@ public class SemanticCheck implements ASTVisitor {
             if(current_scope instanceof globalScope) variableNode.isglobal = true;
             varentity varent = new varentity(variableNode.name, var_type, variableNode.isglobal);
             IRType IRtype = IRroot.getIRtype(var_type);
-            if(current_class != null) {
+            if(current_class != null && current_func == null) {
+//                System.out.println("name = " + variableNode.name);
                 varent.ismember = true;
                 varent.index = new intConst(current_class.setelement(var_type), 32);
             }
@@ -164,7 +165,9 @@ public class SemanticCheck implements ASTVisitor {
         else{
             current_scope = new Scope(current_scope);
             return_type = global_scope.getType("void", it.pos);
+            current_func = it;
             it.suite.accept(this);
+            current_func = null;
             return_type = null;
             current_scope = current_scope.getParentScope();
         }

@@ -328,6 +328,7 @@ public class InstSelection {
         currentBlock = block;
         for(Inst inst = src.head_inst; inst != null; inst = src.getnxt(inst)) genLIR(inst);
         src.suc_block.forEach(suc -> {
+//            System.out.println(suc.name);
             block.sucs.add(blockmap.get(suc));
             blockmap.get(suc).pres.add(block);
         });
@@ -364,6 +365,8 @@ public class InstSelection {
             copyblock(block, lBlock);
             lfn.addblock(lBlock);
         });
+//        if(exitblock == null)
+//            System.out.println("func = " + func.name);
         for(int i = 0; i < lRoot.calleesaveregs.size(); i++)
             exitblock.addInst(new Mv(calleesavemap.get(i), lRoot.calleesaveregs.get(i), exitblock));
         exitblock.addInst(new Mv(map, lRoot.getphyreg(1), exitblock));
@@ -380,8 +383,10 @@ public class InstSelection {
         IRroot.functions.forEach((name, func) -> {
             func.blocks.forEach(block -> {
                 LBlock lBlock = new LBlock("." + func.name + "_" + block.name);
+//                System.out.println("put_" + block.name);
                 blockmap.put(block, lBlock);
             });
+//            System.out.println("hahaha   " + func.exitblock.name);
             LFn lFn = new LFn(name, blockmap.get(func.entryblock), blockmap.get(func.exitblock));
             fnmap.put(func, lFn);
             func.params.forEach(param -> lFn.addparam(regtran(param)));

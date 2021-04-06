@@ -18,6 +18,7 @@ public class IRclassType extends IRType{
     }
 
     public int geteleoffset(int idx){
+//        System.out.println(idx);
         int ans = 0;
         for(int i = 0; i < idx; i++)
             ans += types.get(i).size();

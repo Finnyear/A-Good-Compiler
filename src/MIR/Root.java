@@ -184,7 +184,12 @@ public class Root {
         function.blocks.forEach(block -> {
             if(block.suc_block.size() > 1){
                 block.suc_block.forEach(suc -> {
-                    if(suc.pre_block.size() > 1) critical.add(new blockpair(block, suc));});
+                    if(suc.pre_block.size() > 1) {
+//                        System.out.println(block.name);
+//                        System.out.println(suc.name);
+                        critical.add(new blockpair(block, suc));
+                    }
+                });
             }
         });
         critical.forEach(blockpair -> {

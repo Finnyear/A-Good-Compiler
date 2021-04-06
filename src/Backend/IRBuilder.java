@@ -196,18 +196,20 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
         current_function.exitblock.addterminate(new Return(null, current_function.exitblock));
         entryreachable = new HashSet<>();
-        returnvisited = new HashSet<>();
+//        returnvisited = new HashSet<>();
         entrydfs(current_function.entryblock);
-        for(Iterator<Return> iter = returnlist.iterator(); iter.hasNext();){
-            Return ret = iter.next();
-            if(returndfs(ret.block)){
-                iter.remove();
-                ret.block.removeinst(ret);
-            }
-        }
+//        for(Iterator<Return> iter = returnlist.iterator(); iter.hasNext();){
+//            Return ret = iter.next();
+//            if(returndfs(ret.block)){
+////                iter.remove();
+////                ret.block.removeinst(ret);
+//            }
+//        }
         entryreachable.removeIf(block -> block.terminate == null);
         current_function.blocks.addAll(entryreachable);
-        entryreachable = null; returnvisited = null;
+        if(!current_function.blocks.contains(current_function.exitblock)) current_function.blocks.add(current_function.exitblock);
+        entryreachable = null;
+//        returnvisited = null;
     }
 
     @Override
@@ -372,18 +374,19 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
 //        System.out.println(returnlist.size());
         entryreachable = new HashSet<>();
-        returnvisited = new HashSet<>();
+//        returnvisited = new HashSet<>();
         entrydfs(current_function.entryblock);
-        for(Iterator<Return> iter = returnlist.iterator(); iter.hasNext();){
-            Return ret = iter.next();
-            if(returndfs(ret.block)){
-                iter.remove();
-                ret.block.removeinst(ret);
-            }
-        }
+//        for(Iterator<Return> iter = returnlist.iterator(); iter.hasNext();){
+//            Return ret = iter.next();
+//            if(returndfs(ret.block)){
+//                iter.remove();
+//                ret.block.removeinst(ret);
+//            }
+//        }
         entryreachable.removeIf(block -> block.terminate == null);
         current_function.blocks.addAll(entryreachable);
-        entryreachable = null; returnvisited = null;
+        entryreachable = null;
+//        returnvisited = null;
 //        System.out.println(returnlist.size());
         if(returnlist.size() > 1){
             IRBlock rootreturn = new IRBlock("rootReturn");
@@ -411,8 +414,10 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             current_function.blocks.add(rootreturn);
         }
         else{
+//            System.out.println(">>>>>>>>>>>>" + returnlist.get(0).block.name);
             current_function.exitblock = returnlist.get(0).block;
         }
+        if(!current_function.blocks.contains(current_function.exitblock)) current_function.blocks.add(current_function.exitblock);
 //        System.out.println(current_function.name);
 //        System.out.println(current_function.exitblock.name);
         IRBlock entryBlock = current_function.entryblock;
@@ -429,7 +434,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(suiteNode it) {
-        it.stmts.forEach(stmtNode -> stmtNode.accept(this));//opt~break;
+        it.stmts.forEach(stmtNode -> {if(stmtNode != null)stmtNode.accept(this);});
     }
 
     @Override
@@ -488,6 +493,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 //        System.out.println(it.name);
         varentity varent = it.varent;
         if(varent.ismember == true){
+//            System.out.println("ismember");
             Param classptr = current_function.classptr;
             it.operand = new Register(varent.operand.type, "this." + it.name + "_addr");
             current_block.addinst(new Getelementptr(((IRpointerType)classptr.type).pointeeType, classptr,
@@ -878,8 +884,9 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         current_block = updblock;
         if(it.forupd != null) it.forupd.accept(this);
         if(current_block.terminate == null) current_block.addterminate(new Jump(condblock, current_block));
-        if(it.forcon != null)current_block =endblock;
-        else current_block = bodyblock;
+//        if(endblock.pre_block.size() > 0)
+        current_block =endblock;
+//        else current_block = bodyblock;
     }
 
     @Override

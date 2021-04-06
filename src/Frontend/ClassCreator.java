@@ -59,7 +59,6 @@ public class ClassCreator implements ASTVisitor {
     @Override
     public void visit(vardefNode it){
         Type var_type = it.type.getnewType(global_scope);
-//        IRType valIRtype = global_scope.getnewIRType(vartype);
         if(var_type.tp == Type.type.Void || var_type.tp == Type.type.Null ||
                 (var_type instanceof arrayType && ((arrayType) var_type).basictype.tp == Type.type.Void))
             throw new SemanticError("variable define type wrong", it.pos);
@@ -78,20 +77,16 @@ public class ClassCreator implements ASTVisitor {
             currentIRclass.addmember(type);
 
             if(type instanceof IRclassType) type = new IRpointerType(type, false);
-            Register reg = new Register(new IRpointerType(type, true), var.name + "_addr");
-            varent.operand = reg;
+            varent.operand = new Register(new IRpointerType(type, true), var.name + "_addr");
 
             var.varent = varent;
-//            if(varent.operand == null){
-//                System.out.println("???");
-//            }
             current_scope.addentity(varname, varent);
         }
     }
 
     @Override
     public void visit(fundefNode it){
-        if(it.iscon == false) {
+        if(!it.iscon) {
             if (it.name.equals(name))
                 throw new SemanticError("function named wrong", it.pos);
             ArrayList<Type> para = new ArrayList<>();
