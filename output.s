@@ -1,76 +1,50 @@
 	.text
-	.globl	cls_Cat_greet
+	.globl	cls_A_copy
 	.p2align	1
-	.type	cls_Cat_greet,@function
-cls_Cat_greet:
-.cls_Cat_greet_entry: 
-	addi sp, sp, -16
-	sw ra, 12(sp)
-	la a0, .cls_Cat_greet.0
-	call g_println
-	lw ra, 12(sp)
-	addi sp, sp, 16
+	.type	cls_A_copy,@function
+cls_A_copy:
+.cls_A_copy_entry: 
+	addi sp, sp, 0
+	addi sp, sp, 0
 	ret
-	.size	cls_Cat_greet, .-cls_Cat_greet
+	.size	cls_A_copy, .-cls_A_copy
 
-	.globl	cls_Lamb_greet
+	.globl	cls_A_set
 	.p2align	1
-	.type	cls_Lamb_greet,@function
-cls_Lamb_greet:
-.cls_Lamb_greet_entry: 
+	.type	cls_A_set,@function
+cls_A_set:
+.cls_A_set_entry: 
 	addi sp, sp, -16
-	sw ra, 12(sp)
-	la a0, .cls_Lamb_greet.1
-	call g_println
-	lw ra, 12(sp)
-	addi sp, sp, 16
-	ret
-	.size	cls_Lamb_greet, .-cls_Lamb_greet
-
-	.globl	cls_Animals_con_0
-	.p2align	1
-	.type	cls_Animals_con_0,@function
-cls_Animals_con_0:
-.cls_Animals_con_0_entry: 
-	addi sp, sp, -16
-	sw s0, 12(sp)
-	sw ra, 8(sp)
+	sw s0, 4(sp)
+	sw s1, 8(sp)
+	sw s2, 12(sp)
+	sw ra, 0(sp)
 	mv s0, a0
-	mv a0, zero
-	call malloc
-	sw a0, 0(s0)
+	mv s2, a1
+	mv s1, a2
 	mv t0, s0
-	addi s0, t0, 4
-	mv a0, zero
-	call malloc
-	sw a0, 0(s0)
-	lw s0, 12(sp)
-	lw ra, 8(sp)
-	addi sp, sp, 16
-	ret
-	.size	cls_Animals_con_0, .-cls_Animals_con_0
-
-	.globl	cls_Animals_greet
-	.p2align	1
-	.type	cls_Animals_greet,@function
-cls_Animals_greet:
-.cls_Animals_greet_entry: 
-	addi sp, sp, -16
-	sw s0, 12(sp)
-	sw ra, 8(sp)
-	mv s0, a0
-	mv t0, s0
-	lw a0, 0(t0)
-	call cls_Cat_greet
+	lw a1, 0(t0)
 	mv t0, s0
 	addi t0, t0, 4
-	lw a0, 0(t0)
-	call cls_Lamb_greet
-	lw s0, 12(sp)
-	lw ra, 8(sp)
+	lw a2, 0(t0)
+	mv a0, s0
+	call cls_A_set
+	mv t0, s0
+	lw a1, 0(t0)
+	mv t0, s0
+	lw a2, 0(t0)
+	call cls_A_set
+	mv a1, s2
+	mv a2, s1
+	call cls_A_set
+	call cls_A_getThis
+	lw s0, 4(sp)
+	lw s1, 8(sp)
+	lw s2, 12(sp)
+	lw ra, 0(sp)
 	addi sp, sp, 16
 	ret
-	.size	cls_Animals_greet, .-cls_Animals_greet
+	.size	cls_A_set, .-cls_A_set
 
 	.globl	main
 	.p2align	1
@@ -78,56 +52,62 @@ cls_Animals_greet:
 main:
 .main_entry: 
 	addi sp, sp, -16
-	sw s0, 4(sp)
-	sw s1, 8(sp)
-	sw s2, 12(sp)
-	sw ra, 0(sp)
+	sw s0, 12(sp)
+	sw ra, 8(sp)
 	call __init
-	mv a0, zero
-	call malloc
-	mv s0, a0
-	mv a0, zero
-	call malloc
-	mv s2, a0
+	lw a0, object
 	null
-	call malloc
-	mv s1, a0
-	mv a0, s1
-	call cls_Animals_con_0
-	mv t0, s1
-	sw s0, 0(t0)
-	mv t0, s1
-	sw s2, 0(t0)
-	mv a0, s1
-	call cls_Animals_greet
+	null
+	call cls_A_func1
+	lw a0, object
+	mv a1, zero
+	null
+	mv a2, s0
+	call cls_A_set
+	mv a1, s0
+	mv a2, zero
+	call cls_A_set
+	lw s0, object
+	lw a0, object
+	call cls_A_getThis
+	mv a1, a0
+	mv a0, s0
+	call cls_A_copy
+	mv s0, a0
+	lw a0, object
+	call cls_A_getThis
+	call cls_A_getThis
+	mv a1, a0
+	mv a0, s0
+	call cls_A_copy
 	mv a0, zero
-	lw s0, 4(sp)
-	lw s1, 8(sp)
-	lw s2, 12(sp)
-	lw ra, 0(sp)
+	lw s0, 12(sp)
+	lw ra, 8(sp)
 	addi sp, sp, 16
 	ret
 	.size	main, .-main
 
-	.globl	cls_Lamb_con_0
+	.globl	cls_A_getThis
 	.p2align	1
-	.type	cls_Lamb_con_0,@function
-cls_Lamb_con_0:
-.cls_Lamb_con_0_entry: 
-	addi sp, sp, 0
-	addi sp, sp, 0
+	.type	cls_A_getThis,@function
+cls_A_getThis:
+.cls_A_getThis_entry: 
+	addi sp, sp, -16
+	sw s0, 12(sp)
+	sw ra, 8(sp)
+	mv s0, a0
+	mv a0, s0
+	call cls_A_getThis
+	call cls_A_getThis
+	call cls_A_getThis
+	call cls_A_getThis
+	mv a1, s0
+	call cls_A_copy
+	lw s0, 12(sp)
+	lw ra, 8(sp)
+	addi sp, sp, 16
 	ret
-	.size	cls_Lamb_con_0, .-cls_Lamb_con_0
-
-	.globl	cls_Cat_con_0
-	.p2align	1
-	.type	cls_Cat_con_0,@function
-cls_Cat_con_0:
-.cls_Cat_con_0_entry: 
-	addi sp, sp, 0
-	addi sp, sp, 0
-	ret
-	.size	cls_Cat_con_0, .-cls_Cat_con_0
+	.size	cls_A_getThis, .-cls_A_getThis
 
 	.globl	__init
 	.p2align	1
@@ -139,15 +119,60 @@ __init:
 	ret
 	.size	__init, .-__init
 
-	.type	.cls_Lamb_greet.1,@object
-	.section	.rodata
-.cls_Lamb_greet.1:
-	.asciz	"\"MIEMIEMIE\""
-	.size	.cls_Lamb_greet.1, 12
+	.globl	cls_A_func2
+	.p2align	1
+	.type	cls_A_func2,@function
+cls_A_func2:
+.cls_A_func2_entry: 
+	addi sp, sp, -16
+	sw ra, 12(sp)
+	mv t0, a0
+	lw t1, 0(t0)
+	lw t0, 0(a0)
+	slt a1, t1, t0
+	addi t0, a0, 4
+	lw t1, 0(t0)
+	lw t0, 0(a0)
+	slt a2, t1, t0
+	call cls_A_func1
+	lw ra, 12(sp)
+	addi sp, sp, 16
+	ret
+	.size	cls_A_func2, .-cls_A_func2
 
-	.type	.cls_Cat_greet.0,@object
-	.section	.rodata
-.cls_Cat_greet.0:
-	.asciz	"\"MIAOMIAOMIAO\""
-	.size	.cls_Cat_greet.0, 15
+	.globl	cls_A_func1
+	.p2align	1
+	.type	cls_A_func1,@function
+cls_A_func1:
+.cls_A_func1_entry: 
+	addi sp, sp, -16
+	sw ra, 12(sp)
+	lw t0, 0(a0)
+	slt a1, t0, a1
+	lw t0, 0(a0)
+	slt a2, t0, a2
+	call cls_A_func2
+	lw ra, 12(sp)
+	addi sp, sp, 16
+	ret
+	.size	cls_A_func1, .-cls_A_func1
+
+	.globl	cls_A_con_0
+	.p2align	1
+	.type	cls_A_con_0,@function
+cls_A_con_0:
+.cls_A_con_0_entry: 
+	addi sp, sp, 0
+	addi sp, sp, 0
+	ret
+	.size	cls_A_con_0, .-cls_A_con_0
+
+	.type	object,@object
+	.section	.bss
+	.globl	object
+	.p2align	2
+object:
+.Lobject$local:
+	.word	0
+	.size	object, 4
 

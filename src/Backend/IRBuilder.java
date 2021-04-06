@@ -286,7 +286,13 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         current_class = (classType) gScope.getType(it.name, it.pos);
         IRclassType IRclasstype = IRroot.classtypes.get(it.name);
         it.vardefs.forEach(var -> var.accept(this));
+
+//        entity tmp_this_operand = current_this_operand;
+//        current_this_operand = it.tp.operand;
         it.fundefs.forEach(fun -> fun.accept(this));
+//        it.operand = it.mem.operand;
+//        current_this_operand = tmp_this_operand;
+
         if(it.classcon != null)it.classcon.accept(this);
         current_class = null;
     }
@@ -824,7 +830,9 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         if(it.type.tp == Type.type.Void) it.operand = null;
         else it.operand = new Register(IRroot.getIRtype(funtype.returntype), "fun_cal_ret_val");
         ArrayList<entity> params = new ArrayList<>();
-        if(funtype.inclass) params.add(getpointee(it.callee.operand));
+        if(funtype.inclass) {
+            if(it.callee.operand != null) params.add(getpointee(it.callee.operand));
+        }
         if(it.paras != null) {
             it.paras.exprs.forEach(param -> {
                 param.accept(this);
@@ -839,6 +847,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     @Override
     public void visit(funcNode it) {
         if(current_this_operand != null) it.operand = current_this_operand;
+        else it.operand = current_function.classptr;
     }
 
     @Override
