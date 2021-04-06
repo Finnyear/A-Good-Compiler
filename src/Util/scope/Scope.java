@@ -19,6 +19,14 @@ public class Scope {
 
     public funType con = null;
 
+    public Scope getcopy(){
+        Scope cp = new Scope(this.parentScope);
+        cp.vars.putAll(this.vars);
+        cp.funs.putAll(this.funs);
+        cp.entities.putAll(this.entities);
+        cp.con = this.con;
+        return cp;
+    }
 
     public Scope(Scope parentScope){
         this.parentScope = parentScope;

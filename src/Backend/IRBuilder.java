@@ -347,7 +347,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(fundefNode it) {
-//        System.out.println(it.name);
+//        System.out.println("fundef_" + it.name);
         returnlist.clear();
         current_function = it.IRfunc;
         current_block = current_function.entryblock;
@@ -504,10 +504,10 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(varExprNode it) {
-//        System.out.println(it.name);
+//        System.out.println("varexpr_" + it.name);
         varentity varent = it.varent;
-        if(varent.ismember == true){
-//            System.out.println("ismember");
+        if(varent.ismember == true && current_function.classptr != null){
+//            System.out.println("fun = " + current_function.name);
             Param classptr = current_function.classptr;
             it.operand = new Register(varent.operand.type, "this." + it.name + "_addr");
             current_block.addinst(new Getelementptr(((IRpointerType)classptr.type).pointeeType, classptr,
@@ -517,6 +517,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             it.operand = varent.operand;
         }
         addbranch(it);
+//        System.out.println("varexpr_" + it.name + "_end");
     }
 
     @Override

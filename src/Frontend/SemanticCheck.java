@@ -344,12 +344,13 @@ public class SemanticCheck implements ASTVisitor {
                 throw new SemanticError("array type has no other member.", it.pos);
             }
         } else if (it.tp.type instanceof classType) {
-            Scope tmp_scope = current_scope;
+            Scope tmp_scope = current_scope.getcopy();/////////////////////////////
             current_scope = ((classType) it.tp.type).scope;
             current_scope.parentScope = tmp_scope;
             if(it.mem instanceof varExprNode) {
                 if(current_scope.qryvar(((varExprNode) it.mem).name, false)){
-//                    it.mem.accept(this);/////////////////////////////////////////////////
+//                    System.out.println(((varExprNode) it.tp).name);
+//                    System.out.println(((varExprNode) it.mem).name);
                     it.type = current_scope.getvarType(((varExprNode) it.mem).name, false);
                     it.varent = current_scope.getentity(((varExprNode) it.mem).name, false);
                 }else throw new SemanticError("no such member", it.pos);
@@ -432,8 +433,11 @@ public class SemanticCheck implements ASTVisitor {
 
     }
     @Override public void visit(varExprNode it) {
-//        System.out.println(it.name);
-        varentity varent = current_scope.getentity(it.name, true);
+        varentity varent;
+//        if(current_scope.con != null && current_scope.parentScope != global_scope)
+//            varent = current_scope.parentScope.getentity(it.name, true);
+//        else
+            varent = current_scope.getentity(it.name, true);
 //        if(varent == null){
 //            System.out.println("haha");
 //        }
