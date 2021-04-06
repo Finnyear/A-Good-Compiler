@@ -1,12 +1,9 @@
-A b = null;
-int c = b.a;
-
-int main() {
+void haha(){
+	int a;
+	return;
 }
 
-class A{
-    int a;
-    void fun() {
-    	 a = c;
-    }
-};
+int main() {
+	print("hehe\n");
+	return 0;
+}

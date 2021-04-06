@@ -17,19 +17,8 @@ declare i1 @g_stringgt(i8* %a, i8* %b)
 declare i1 @g_stringeq(i8* %a, i8* %b)
 declare i8* @g_getString()
 declare i1 @g_stringlt(i8* %a, i8* %b)
-%struct.A = type {i32}
-@b = global %struct.A* zeroinitializer, align 4
-@c = global i32 zeroinitializer, align 4
-define void @cls_A_fun(%struct.A* %this){
-entry:
-;precursors: 
-;successors: 
-	%this.a_addr = getelementptr inbounds %struct.A, %struct.A* %this, i32 0, i32 0
-	%pointee_c = load i32, i32* @c, align 4
-	store i32 %pointee_c, i32* %this.a_addr, align 4
-	ret void
-}
-define null @cls_A_con_0(){
+@main.0 = private unnamed_addr constant [8 x i8] c"\22hehe\0A\22\00", align 1
+define void @fun_haha(){
 entry:
 ;precursors: 
 ;successors: 
@@ -39,11 +28,6 @@ define void @__init(){
 entry:
 ;precursors: 
 ;successors: 
-	store %struct.A* null, %struct.A** @b, align 4
-	%pointee_b = load %struct.A*, %struct.A** @b, align 4
-	%this.a = getelementptr inbounds %struct.A, %struct.A* %pointee_b, i32 0, i32 0
-	%pointee_this.a = load i32, i32* %this.a, align 4
-	store i32 %pointee_this.a, i32* @c, align 4
 	ret void
 }
 define i32 @main(){
@@ -51,5 +35,7 @@ entry:
 ;precursors: 
 ;successors: 
 	call void @__init()
+	%resolved_main.0 = getelementptr inbounds [ 8 x i8 ], [ 8 x i8 ]* @main.0, i32 0, i32 0
+	call void @g_print(i8* %resolved_main.0)
 	ret i32 0
 }

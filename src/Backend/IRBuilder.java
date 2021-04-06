@@ -208,7 +208,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         entryreachable.removeIf(block -> block.terminate == null);
         current_function.blocks.addAll(entryreachable);
         entryreachable = null; returnvisited = null;
-
     }
 
     @Override
@@ -219,7 +218,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     @Override
     public void visit(returnStmtNode it) {
         Return retInst;
-        if(it.expr.type.tp == null)
+        if(it.expr == null)
             retInst = new Return(null, current_block);
         else{
             it.expr.accept(this);
@@ -355,6 +354,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             current_block.addinst(new Call(IRroot.Init(), new ArrayList<>(), null, current_block));
         }
         it.suite.accept(this);
+
         if(current_block.terminate == null){
             Return ret;
             if(current_function.name.equals("main") || current_function.returnType instanceof IRintType)
@@ -369,6 +369,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             current_block.addterminate(ret);
             returnlist.add(ret);
         }
+
 //        System.out.println(returnlist.size());
         entryreachable = new HashSet<>();
         returnvisited = new HashSet<>();
@@ -384,7 +385,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         current_function.blocks.addAll(entryreachable);
         entryreachable = null; returnvisited = null;
 //        System.out.println(returnlist.size());
-
         if(returnlist.size() > 1){
             IRBlock rootreturn = new IRBlock("rootReturn");
             Register retval = returnlist.get(0).value == null ? null :
@@ -413,6 +413,8 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         else{
             current_function.exitblock = returnlist.get(0).block;
         }
+//        System.out.println(current_function.name);
+//        System.out.println(current_function.exitblock.name);
         IRBlock entryBlock = current_function.entryblock;
         current_function.allocvars.forEach(var ->{
             if (((IRpointerType)var.type).pointeeType instanceof IRpointerType)
@@ -742,8 +744,8 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             case eq, neq -> {
                 it.lhs.accept(this);
                 it.rhs.accept(this);
+                it.operand = new Register(IRroot.boolIR, it.op.toString());
                 if(condcode != null) {
-                    it.operand = new Register(IRroot.boolIR, it.op.toString());
                     current_block.addinst(new Cmp(condcode, inttran(getpointee(it.lhs.operand)), inttran(getpointee(it.rhs.operand)),
                             (Register) it.operand, current_block));
                 }
@@ -776,7 +778,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         it.ifcon.accept(this);
 
         current_block = ifblock;
-        it.ifbody.accept(this);
+        if(it.ifbody != null)it.ifbody.accept(this);
         if(current_block.terminate == null)
             current_block.addterminate(new Jump(endblock, current_block));
         if(it.elsebody != null){
@@ -850,12 +852,14 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(forStmtNode it) {
-        if(it.forinit != null)
-            it.forinit.accept(this);
         IRBlock condblock = new IRBlock("for_cond");
         IRBlock updblock =  new IRBlock("for_upd");
         IRBlock bodyblock = new IRBlock("for_body");
         IRBlock endblock =  new IRBlock("for_end");
+        it.endblock = endblock;
+        if(it.forinit != null)
+            it.forinit.accept(this);
+        it.updblock = updblock;
 
         if(it.forcon != null){
             current_block.addterminate(new Jump(condblock, current_block));
@@ -865,8 +869,8 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             it.forcon.accept(this);
         }
         else{
+            current_block.addterminate(new Jump(bodyblock, current_block));
             condblock = bodyblock;
-            current_block.addterminate(new Jump(condblock, current_block));
         }
         current_block = bodyblock;
         if(it.forbody != null)it.forbody.accept(this);
@@ -874,7 +878,8 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         current_block = updblock;
         if(it.forupd != null) it.forupd.accept(this);
         if(current_block.terminate == null) current_block.addterminate(new Jump(condblock, current_block));
-        current_block =endblock;
+        if(it.forcon != null)current_block =endblock;
+        else current_block = bodyblock;
     }
 
     @Override
