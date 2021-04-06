@@ -21,6 +21,7 @@ public class Domgen {
             union = new HashMap<>(), minVer = new HashMap<>(), dfsfather = new HashMap<>();
     private void dfs(IRBlock it){
         if(dfsorder.containsKey(it)) return ;
+//        System.out.println(it.name);
         it.idom = null;
         it.domfrontiers.clear();
         dfsindex.add(it);
@@ -31,9 +32,7 @@ public class Domgen {
         it.suc_block.forEach(suc -> {
             if(!dfsorder.containsKey(suc)){
                 dfs(suc);
-                dfsfather.put(suc
-
-                        , it);
+                dfsfather.put(suc, it);
             }
         });
     }
@@ -63,6 +62,7 @@ public class Domgen {
             tmp = dfsindex.get(i);
             for(IRBlock pre : tmp.pre_block){
                 IRBlock evalblock = eval(pre);
+//                if(evalblock == null) System.out.println("eval = " + pre.name);
                 if(dfsorder.get(sdom.get(tmp)) > dfsorder.get(sdom.get(evalblock)))
                     sdom.put(tmp, sdom.get(evalblock));
             }

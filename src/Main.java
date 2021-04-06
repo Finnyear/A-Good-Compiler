@@ -45,9 +45,9 @@ public class Main {
             new SemanticCheck(global_scope, IRroot).visit(rt);
 
             new IRBuilder(global_scope, IRroot).visit(rt);
+            new IRPrinter(new PrintStream("output.ll")).run(IRroot);
             new Mem2Reg(IRroot).run();
             IRroot.addphi();
-            new IRPrinter(new PrintStream("output.ll")).run(IRroot);
 //
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();

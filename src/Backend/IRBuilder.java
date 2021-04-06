@@ -67,6 +67,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     private void addbranch(ExprNode it){
         if(it.ifblock == null) return ;
+//        System.out.println("!!!!!!!!!!!!!!!");
         entity tmpent = getpointee(it.operand);
         if(!(tmpent.type instanceof IRboolType)) throw new myError("add not bool branch", new position(0, 0));
 //        System.out.println("addbranch");
@@ -208,6 +209,12 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         entryreachable.removeIf(block -> block.terminate == null);
         current_function.blocks.addAll(entryreachable);
         if(!current_function.blocks.contains(current_function.exitblock)) current_function.blocks.add(current_function.exitblock);
+
+        current_function.blocks.forEach(block -> {
+            block.pre_block.removeIf(tmp -> !current_function.blocks.contains(tmp));
+            block.suc_block.removeIf(tmp -> !current_function.blocks.contains(tmp));
+        });
+
         entryreachable = null;
 //        returnvisited = null;
     }
@@ -372,7 +379,9 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             returnlist.add(ret);
         }
 
-//        System.out.println(returnlist.size());
+//        System.out.println("end_blockkkkkkkkkkkkkkkkkkkk = " + current_block.name);
+
+
         entryreachable = new HashSet<>();
 //        returnvisited = new HashSet<>();
         entrydfs(current_function.entryblock);
@@ -383,7 +392,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 //                ret.block.removeinst(ret);
 //            }
 //        }
-        entryreachable.removeIf(block -> block.terminate == null);
+        entryreachable.removeIf(block -> block.terminate == null);////////////////////////////??????????????????????????????
         current_function.blocks.addAll(entryreachable);
         entryreachable = null;
 //        returnvisited = null;
@@ -418,6 +427,11 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             current_function.exitblock = returnlist.get(0).block;
         }
         if(!current_function.blocks.contains(current_function.exitblock)) current_function.blocks.add(current_function.exitblock);
+
+        current_function.blocks.forEach(block -> {
+            block.pre_block.removeIf(tmp -> !current_function.blocks.contains(tmp));
+            block.suc_block.removeIf(tmp -> !current_function.blocks.contains(tmp));
+        });
 //        System.out.println(current_function.name);
 //        System.out.println(current_function.exitblock.name);
         IRBlock entryBlock = current_function.entryblock;
@@ -698,12 +712,12 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                 else{
                     IRBlock condblock = new IRBlock("andand_cond");
                     IRBlock endblock = new IRBlock("andand_end");
+                    it.operand = new Register(IRroot.boolIR, "andand");
                     Phi lphi = new Phi(new ArrayList<IRBlock>(), new ArrayList<entity>(), (Register) it.operand, current_block);
                     logicphi.put(endblock, lphi);
-                    it.operand = new Register(IRroot.boolIR, "andand");
                     it.lhs.ifblock = condblock;
                     it.lhs.elseblock = endblock;
-                    it.accept(this);
+                    it.lhs.accept(this);
 
                     current_block = condblock;
                     it.rhs.accept(this);
@@ -730,12 +744,12 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                 else{
                     IRBlock condblock = new IRBlock("oror_cond");
                     IRBlock endblock = new IRBlock("oror_end");
+                    it.operand = new Register(IRroot.boolIR, "oror");
                     Phi lphi = new Phi(new ArrayList<IRBlock>(), new ArrayList<entity>(), (Register) it.operand, current_block);
                     logicphi.put(endblock, lphi);
-                    it.operand = new Register(IRroot.boolIR, "oror");
                     it.lhs.ifblock = endblock;
                     it.lhs.elseblock = condblock;
-                    it.accept(this);
+                    it.lhs.accept(this);
 
                     current_block = condblock;
                     it.rhs.accept(this);
@@ -781,6 +795,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
         it.ifcon.ifblock = ifblock;
         it.ifcon.elseblock = elseblock;
+//        if(it.ifcon instanceof memberExprNode) System.out.println("???????????????????????rnm");
         it.ifcon.accept(this);
 
         current_block = ifblock;
@@ -823,6 +838,8 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         else {
             entity tmp_this_operand = current_this_operand;
             current_this_operand = it.tp.operand;
+            it.mem.ifblock = it.ifblock;
+            it.mem.elseblock = it.elseblock;
             it.mem.accept(this);
             it.operand = it.mem.operand;
             current_this_operand = tmp_this_operand;
@@ -831,6 +848,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(funcalExprNode it) {
+//        if(it.ifblock == null) System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         it.callee.accept(this);
         funType funtype = (funType) it.callee.type;
 //        System.out.println(((funType)it.callee.type).returntype.tp);
@@ -848,7 +866,9 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         }
 //        if(funtype.IRfunc == null) System.out.println("...");
         current_block.addinst(new Call(funtype.IRfunc, params, (Register) it.operand, current_block));
-        if(it.operand != null) addbranch(it);
+        if(it.operand != null) {
+            addbranch(it);
+        }
     }
 
     @Override
