@@ -16,6 +16,7 @@ public class RType extends RiscInst {
         this.op1 = op1;
         this.op2 = op2;
         this.opcode = opcode;
+//        System.out.println(opcode);
     }
 
     @Override

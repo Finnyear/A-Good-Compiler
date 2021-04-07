@@ -132,13 +132,13 @@ public class InstSelection {
             }
             else if(canbeImm(op2)){
                 if(opcode == RiscInst.Calcategory.sub)
-                    lBlock.addInst(new IType(regtran(op1), new Imm(-1 * ((intConst)op2).value()), RiscInst.Calcategory.add, dest, lBlock));
+                    lBlock.addInst(new IType(regtran(op1), new Imm(-1 * ((intConst) op2).value()), RiscInst.Calcategory.add, dest, lBlock));
                 else
                     lBlock.addInst(new IType(regtran(op1), new Imm(((intConst)op2).value()), opcode, dest, lBlock));
                 return;
             }
         }
-        lBlock.addInst(new RType(regtran(op1), regtran(op2), RiscInst.Calcategory.slt, dest, currentBlock));
+        lBlock.addInst(new RType(regtran(op1), regtran(op2), opcode, dest, currentBlock));
     }
 
     public void genBranchLIR(Branch br){
