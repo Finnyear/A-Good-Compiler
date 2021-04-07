@@ -22,9 +22,10 @@ import java.io.PrintStream;
 
 public class Main {
     public static void main(String[] args) throws Exception{
-//        String name = "test.mx";
-//        InputStream input = new FileInputStream(name);
-        InputStream input = System.in;//
+        String name = "test.mx";
+        InputStream input = new FileInputStream(name);
+//        InputStream input = System.in;//
+        PrintStream output = System.out;
         try{
             ProgramNode rt;
             globalScope global_scope = new globalScope(null);
@@ -45,13 +46,13 @@ public class Main {
             new SemanticCheck(global_scope, IRroot).visit(rt);
 
             new IRBuilder(global_scope, IRroot).visit(rt);
-            new IRPrinter(new PrintStream("output.ll")).run(IRroot);
             new Mem2Reg(IRroot).run();
             IRroot.addphi();
+            new IRPrinter(new PrintStream("output.ll")).run(IRroot);
 //
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();
-            new AsmPrinter(lroot, new PrintStream("output.s"), false).run();
+            new AsmPrinter(lroot, output, true).run();
 
         } catch (Error error){
             System.err.println(error.toString());

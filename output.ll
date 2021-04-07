@@ -17,119 +17,119 @@ declare i1 @g_stringgt(i8* %a, i8* %b)
 declare i1 @g_stringeq(i8* %a, i8* %b)
 declare i8* @g_getString()
 declare i1 @g_stringlt(i8* %a, i8* %b)
-%struct.Fibonacci = type {i32, i32}
-define i32 @cls_Fibonacci_calc(%struct.Fibonacci* %this, i32 %param_cur_num){
-entry:
-;precursors: 
-;successors: if_then else_then 
-	store i32 65536, i32* %cur_num_addr, align 4
-	store i32 %param_cur_num, i32* %cur_num_addr, align 4
-	%pointee_cur_num_addr = load i32, i32* %cur_num_addr, align 4
-	%eq = icmp eq i32 %pointee_cur_num_addr, 0
-	br i1 %eq, label %if_then, label %else_then
-if_then:
-;precursors: entry 
-;successors: rootReturn 
-	br label %rootReturn
-else_then:
-;precursors: entry 
-;successors: rootReturn 
-	%pointee_cur_num_addr = load i32, i32* %cur_num_addr, align 4
-	%binary_sub = sub i32 %pointee_cur_num_addr, 1
-	%fun_cal_ret_val = call i32 @cls_Fibonacci_calc(%struct.Fibonacci* %this, i32 %binary_sub)
-	%pointee_cur_num_addr = load i32, i32* %cur_num_addr, align 4
-	%binary_mul = mul i32 %pointee_cur_num_addr, %fun_cal_ret_val
-	br label %rootReturn
-rootReturn:
-;precursors: if_then else_then 
-;successors: 
-	%rootRet = phi i32 [ 1, %if_then ], [ %binary_mul, %else_then ]
-	ret i32 %rootRet
-}
+@a = global i32* zeroinitializer, align 4
+@m = global i32 zeroinitializer, align 4
+@k = global i32 zeroinitializer, align 4
+@i = global i32 zeroinitializer, align 4
 define void @__init(){
 entry:
 ;precursors: 
 ;successors: 
+	%puresz = mul i32 50, 4
+	%metasz = add i32 %puresz, 4
+	%allocptr = call noalias i8* @malloc(i32 %metasz)
+	%allocbitcast = bitcast i8* %allocptr to i32*
+	store i32 50, i32* %allocbitcast, align 4
+	%new_array = getelementptr inbounds i32, i32* %allocbitcast, i32 1
+	store i32* %new_array, i32** @a, align 4
 	ret void
-}
-define void @cls_Fibonacci_reset(%struct.Fibonacci* %this){
-entry:
-;precursors: 
-;successors: 
-	%this.x_addr = getelementptr inbounds %struct.Fibonacci, %struct.Fibonacci* %this, i32 0, i32 0
-	store i32 0, i32* %this.x_addr, align 4
-	%this.result_addr = getelementptr inbounds %struct.Fibonacci, %struct.Fibonacci* %this, i32 0, i32 1
-	store i32 0, i32* %this.result_addr, align 4
-	ret void
-}
-define void @cls_Fibonacci_set_problem(%struct.Fibonacci* %this, i32 %param_x_in){
-entry:
-;precursors: 
-;successors: 
-	store i32 65536, i32* %x_in_addr, align 4
-	store i32 %param_x_in, i32* %x_in_addr, align 4
-	call void @cls_Fibonacci_reset(%struct.Fibonacci* %this)
-	%this.x_addr = getelementptr inbounds %struct.Fibonacci, %struct.Fibonacci* %this, i32 0, i32 0
-	%pointee_x_in_addr = load i32, i32* %x_in_addr, align 4
-	store i32 %pointee_x_in_addr, i32* %this.x_addr, align 4
-	ret void
-}
-define i32 @cls_Fibonacci_get_result(%struct.Fibonacci* %this){
-entry:
-;precursors: 
-;successors: 
-	%this.result_addr = getelementptr inbounds %struct.Fibonacci, %struct.Fibonacci* %this, i32 0, i32 1
-	%this.x_addr = getelementptr inbounds %struct.Fibonacci, %struct.Fibonacci* %this, i32 0, i32 0
-	%pointee_this.x_addr = load i32, i32* %this.x_addr, align 4
-	%fun_cal_ret_val = call i32 @cls_Fibonacci_calc(%struct.Fibonacci* %this, i32 %pointee_this.x_addr)
-	store i32 %fun_cal_ret_val, i32* %this.result_addr, align 4
-	%this.result_addr = getelementptr inbounds %struct.Fibonacci, %struct.Fibonacci* %this, i32 0, i32 1
-	ret i32* %this.result_addr
 }
 define i32 @main(){
 entry:
 ;precursors: 
 ;successors: for_cond 
-	store i32 65536, i32* %x_addr, align 4
-	store %struct.Fibonacci* null, %struct.Fibonacci** %teacher_addr, align 4
 	call void @__init()
-	%malloc = call noalias i8* @malloc(i32 8)
-	%new_class_ptr = bitcast i8* %malloc to %struct.Fibonacci*
-	store %struct.Fibonacci* %new_class_ptr, %struct.Fibonacci** %teacher_addr, align 4
-	store i32 0, i32* %x_addr, align 4
+	%fun_cal_ret_val = call i32 @g_getInt()
+	store i32 %fun_cal_ret_val, i32* @m, align 4
+	%fun_cal_ret_val = call i32 @g_getInt()
+	store i32 %fun_cal_ret_val, i32* @k, align 4
+	store i32 0, i32* @i, align 4
 	br label %for_cond
 for_cond:
 ;precursors: entry for_upd 
 ;successors: for_body for_end 
-	%pointee_x_addr = load i32, i32* %x_addr, align 4
-	%cmp_slt = icmp slt i32 %pointee_x_addr, 5
+	%pointee_i = load i32, i32* @i, align 4
+	%pointee_m = load i32, i32* @m, align 4
+	%cmp_slt = icmp slt i32 %pointee_i, %pointee_m
 	br i1 %cmp_slt, label %for_body, label %for_end
 for_body:
 ;precursors: for_cond 
 ;successors: for_upd 
-	%pointee_teacher_addr = load %struct.Fibonacci*, %struct.Fibonacci** %teacher_addr, align 4
-	%pointee_x_addr = load i32, i32* %x_addr, align 4
-	call void @cls_Fibonacci_set_problem(%struct.Fibonacci* %pointee_teacher_addr, i32 %pointee_x_addr)
-	%pointee_teacher_addr = load %struct.Fibonacci*, %struct.Fibonacci** %teacher_addr, align 4
-	%fun_cal_ret_val = call i32 @cls_Fibonacci_get_result(%struct.Fibonacci* %pointee_teacher_addr)
-	%fun_cal_ret_val = call i8* @g_toString(i32 %fun_cal_ret_val)
-	call void @g_println(i8* %fun_cal_ret_val)
+	%pointee_a = load i32*, i32** @a, align 4
+	%pointee_i = load i32, i32* @i, align 4
+	%arrayptr = getelementptr inbounds i32*, i32* %pointee_a, i32 %pointee_i
+	%fun_cal_ret_val = call i32 @g_getInt()
+	store i32 %fun_cal_ret_val, i32* %arrayptr, align 4
 	br label %for_upd
 for_end:
 ;precursors: for_cond 
-;successors: 
-	ret i32 0
+;successors: for_cond 
+	store i32 0, i32* @i, align 4
+	br label %for_cond
 for_upd:
 ;precursors: for_body 
 ;successors: for_cond 
-	%pointee_x_addr = load i32, i32* %x_addr, align 4
-	%suf_tmp = add i32 %pointee_x_addr, 1
-	store i32 %suf_tmp, i32* %x_addr, align 4
+	%pointee_i = load i32, i32* @i, align 4
+	%suf_tmp = add i32 %pointee_i, 1
+	store i32 %suf_tmp, i32* @i, align 4
 	br label %for_cond
-}
-define null @cls_Fibonacci_con_0(){
-entry:
-;precursors: 
+for_cond:
+;precursors: for_end for_upd 
+;successors: land_cond addphi_mid 
+	%pointee_a = load i32*, i32** @a, align 4
+	%pointee_i = load i32, i32* @i, align 4
+	%arrayptr = getelementptr inbounds i32*, i32* %pointee_a, i32 %pointee_i
+	%pointee_k = load i32, i32* @k, align 4
+	%binary_sub = sub i32 %pointee_k, 1
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32*, i32* %pointee_a, i32 %binary_sub
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%cmp_sge = icmp sge i32 %pointee_arrayptr, %pointee_arrayptr
+	br i1 %cmp_sge, label %land_cond, label %addphi_mid
+land_cond:
+;precursors: for_cond 
+;successors: land_cond addphi_mid 
+	%pointee_a = load i32*, i32** @a, align 4
+	%pointee_i = load i32, i32* @i, align 4
+	%arrayptr = getelementptr inbounds i32*, i32* %pointee_a, i32 %pointee_i
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%cmp_sgt = icmp sgt i32 %pointee_arrayptr, 0
+	br i1 %cmp_sgt, label %land_cond, label %addphi_mid
+addphi_mid:
+;precursors: for_cond 
+;successors: for_end 
+	br label %for_end
+land_cond:
+;precursors: land_cond 
+;successors: for_body addphi_mid 
+	%pointee_i = load i32, i32* @i, align 4
+	%pointee_m = load i32, i32* @m, align 4
+	%cmp_slt = icmp slt i32 %pointee_i, %pointee_m
+	br i1 %cmp_slt, label %for_body, label %addphi_mid
+addphi_mid:
+;precursors: land_cond 
+;successors: for_end 
+	br label %for_end
+for_end:
+;precursors: addphi_mid addphi_mid addphi_mid 
 ;successors: 
-	ret void
+	%pointee_i = load i32, i32* @i, align 4
+	call void @g_printInt(i32 %pointee_i)
+	ret i32 0
+for_body:
+;precursors: land_cond 
+;successors: for_upd 
+	br label %for_upd
+addphi_mid:
+;precursors: land_cond 
+;successors: for_end 
+	br label %for_end
+for_upd:
+;precursors: for_body 
+;successors: for_cond 
+	%pointee_i = load i32, i32* @i, align 4
+	%suf_tmp = add i32 %pointee_i, 1
+	store i32 %suf_tmp, i32* @i, align 4
+	br label %for_cond
 }
