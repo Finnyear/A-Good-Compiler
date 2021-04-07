@@ -115,7 +115,7 @@ public class IRBlock {
     public void replacesuc(IRBlock old, IRBlock neww){
         if(terminate instanceof Jump){
 //            System.out.println("Jump");
-            removeterminate();
+            terminate.removeself(true);
             addterminate(new Jump(neww, this));
         }
         else{

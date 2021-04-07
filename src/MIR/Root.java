@@ -176,7 +176,14 @@ public class Root {
     }
 
     public void addphi(){
-        this.functions.forEach((name, function) -> {addphi_fun(function);});
+        this.functions.forEach((name, function) -> {
+            addphi_fun(function);
+            function.blocks.forEach(block -> {
+                block.pre_block.removeIf(tmp -> !function.blocks.contains(tmp));
+                block.suc_block.removeIf(tmp -> !function.blocks.contains(tmp));
+            });
+        });
+
     }
 
     private void addphi_fun(IRFunction function){
@@ -223,12 +230,13 @@ public class Root {
         });
         canMix.forEach(block -> {
             IRBlock suc = block;
-//            System.out.println("canMin = " + block.name);
             do {
                 suc = ((Jump) suc.terminate).destblock;
             } while(canMix.contains(suc));
             HashSet<IRBlock> precursors = new HashSet<>(block.pre_block);
-            for (IRBlock pre : precursors) pre.replacesuc(block, suc);
+            for (IRBlock pre : precursors) {
+                pre.replacesuc(block, suc);
+            }
             if (block == function.entryblock) function.entryblock = suc;
         });
         function.blocks.removeAll(canMix);

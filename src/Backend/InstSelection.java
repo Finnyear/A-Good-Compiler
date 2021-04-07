@@ -332,7 +332,9 @@ public class InstSelection {
         src.suc_block.forEach(suc -> {
 //            System.out.println(suc.name);
             block.sucs.add(blockmap.get(suc));
-            blockmap.get(suc).pres.add(block);
+            if(blockmap.get(suc) != null)
+                blockmap.get(suc).pres.add(block);
+            else System.out.println(suc.name);
         });
     }
 

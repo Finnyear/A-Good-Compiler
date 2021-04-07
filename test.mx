@@ -1,8 +1,13 @@
 int n;
 int r;
+int c;
+int i;
+int j;
 int main()
 {
-    n = getInt();
-	if(n==1) {r=1;printInt(r);}
+		for (j=0;j<5;j++)
+		{
+		    if (n==1){r = j;}
+		}
 	return 0;
 }

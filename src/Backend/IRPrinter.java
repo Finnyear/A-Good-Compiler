@@ -41,6 +41,7 @@ public class IRPrinter {
         while(!blocks.isEmpty()){
             IRBlock check = blocks.poll();
             check.suc_block.forEach(block -> {
+//                if(!func.blocks.contains(block)){check.suc_block.remove(block);}
                 if(block != null && !visited.contains(block)){
                     blocks.add(block);
                     visited.add(block);
@@ -68,7 +69,7 @@ public class IRPrinter {
         out.println(fnhead(func, false));
         visited.clear();
         colletwithrename(func);
-        visited.forEach(this::printblock);
+        func.blocks.forEach(this::printblock);
         out.println("}");
     }
 
