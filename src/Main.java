@@ -67,7 +67,7 @@ public class Main {
 //
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();
-            new AsmPrinter(lroot, output, false).run();
+            new AsmPrinter(lroot, output, true).run();
 
         } catch (Error error){
             System.err.println(error.toString());
