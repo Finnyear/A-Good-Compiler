@@ -22,9 +22,20 @@ import java.io.PrintStream;
 
 public class Main {
     public static void main(String[] args) throws Exception{
-        String name = "test.mx";
-        InputStream input = new FileInputStream(name);
-//        InputStream input = System.in;//
+        boolean SemanticOnly = false, emitLLVM = false;
+        int optLevel = 0;
+        if(args.length > 0) {
+            for (String arg : args) {
+                switch (arg) {
+                    case "-semantic": SemanticOnly = true;break;
+                    case "-ll": emitLLVM = true;break;
+                    default: break;
+                }
+            }
+        }
+//        String name = "test.mx";
+//        InputStream input = new FileInputStream(name);
+        InputStream input = System.in;//
         PrintStream output = System.out;
         try{
             ProgramNode rt;
@@ -45,10 +56,12 @@ public class Main {
 //            System.out.println("111");
             new SemanticCheck(global_scope, IRroot).visit(rt);
 
+            if(SemanticOnly) return;
+
             new IRBuilder(global_scope, IRroot).visit(rt);
             new Mem2Reg(IRroot).run();
             IRroot.addphi();
-            new IRPrinter(new PrintStream("output.ll")).run(IRroot);
+            if(emitLLVM) new IRPrinter(new PrintStream("output.ll")).run(IRroot);
 //
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();
