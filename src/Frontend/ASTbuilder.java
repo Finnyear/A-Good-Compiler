@@ -223,10 +223,12 @@ public class ASTbuilder extends MxBaseVisitor<ASTNode> {
 //                new Type(Type.type.Bool, null, 0),
                 "bool",
                 ctx.False().getText());
-        if(ctx.ConstString() != null) return new constExprNode(new position(ctx),
+        if(ctx.ConstString() != null) {
+            return new constExprNode(new position(ctx),
 //                new Type(Type.type.String, null, 0),
-                "string",
-                ctx.ConstString().getText());
+                    "string",
+                    ctx.ConstString().getText().substring(1, ctx.ConstString().getText().length() - 1));
+        }
         return null;
     }
 

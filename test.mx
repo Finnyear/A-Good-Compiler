@@ -1,13 +1,5 @@
-int n;
-int r;
-int c;
-int i;
-int j;
+
 int main()
 {
-		for (j=0;j<5;j++)
-		{
-		    if (n==1){r = j;}
-		}
-	return 0;
+    print("NO");
 }

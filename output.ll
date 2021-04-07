@@ -17,11 +17,7 @@ declare i1 @g_stringgt(i8* %a, i8* %b)
 declare i1 @g_stringeq(i8* %a, i8* %b)
 declare i8* @g_getString()
 declare i1 @g_stringlt(i8* %a, i8* %b)
-@n = global i32 zeroinitializer, align 4
-@r = global i32 zeroinitializer, align 4
-@c = global i32 zeroinitializer, align 4
-@i = global i32 zeroinitializer, align 4
-@j = global i32 zeroinitializer, align 4
+@main.0 = private unnamed_addr constant [3 x i8] c"NO\00", align 1
 define void @__init(){
 entry:
 ;precursors: 
@@ -31,37 +27,9 @@ entry:
 define i32 @main(){
 entry:
 ;precursors: 
-;successors: for_cond 
-	call void @__init()
-	store i32 0, i32* @j, align 4
-	br label %for_cond
-for_body:
-;precursors: for_cond 
-;successors: if_then for_upd 
-	%pointee_n = load i32, i32* @n, align 4
-	%eq = icmp eq i32 %pointee_n, 1
-	br i1 %eq, label %if_then, label %for_upd
-for_cond:
-;precursors: entry for_upd 
-;successors: for_body for_end 
-	%pointee_j = load i32, i32* @j, align 4
-	%cmp_slt = icmp slt i32 %pointee_j, 5
-	br i1 %cmp_slt, label %for_body, label %for_end
-for_upd:
-;precursors: for_body if_then 
-;successors: for_cond 
-	%pointee_j = load i32, i32* @j, align 4
-	%suf_tmp = add i32 %pointee_j, 1
-	store i32 %suf_tmp, i32* @j, align 4
-	br label %for_cond
-if_then:
-;precursors: for_body 
-;successors: for_upd 
-	%pointee_j = load i32, i32* @j, align 4
-	store i32 %pointee_j, i32* @r, align 4
-	br label %for_upd
-for_end:
-;precursors: for_cond 
 ;successors: 
+	call void @__init()
+	%resolved_main.0 = getelementptr inbounds [ 3 x i8 ], [ 3 x i8 ]* @main.0, i32 0, i32 0
+	call void @g_print(i8* %resolved_main.0)
 	ret i32 0
 }
