@@ -1,15 +1,8 @@
 int n;
 int r;
-int c;
-int i;
-int j;
-int abs(int c){
-    if(c>0) return c;
-    return -c;
-}
-
 int main()
 {
-    printInt(abs(2-r) + abs(2-c));
+    n = getInt();
+	if(n==1) {r=1;printInt(r);}
 	return 0;
 }

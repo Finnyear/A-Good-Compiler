@@ -114,14 +114,16 @@ public class IRBlock {
 
     public void replacesuc(IRBlock old, IRBlock neww){
         if(terminate instanceof Jump){
+//            System.out.println("Jump");
             removeterminate();
             addterminate(new Jump(neww, this));
         }
         else{
+//            System.out.println("Branch");
             Branch oldbr = (Branch) terminate, newbr;
             if(oldbr.true_br_block == old) newbr = new Branch(oldbr.cond, neww, oldbr.false_br_block, this);
             else newbr = new Branch(oldbr.cond, oldbr.true_br_block, neww, this);
-            removeterminate();
+            terminate.removeself(true);
             addterminate(newbr);
         }
     }

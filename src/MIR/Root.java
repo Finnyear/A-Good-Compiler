@@ -215,6 +215,23 @@ public class Root {
             }
         })));
         copymap.forEach(((irBlock, parcpy) -> addphi_block(irBlock, parcpy)));
+
+
+        HashSet<IRBlock> canMix = new HashSet<>();
+        function.blocks.forEach(block -> {
+            if (block.head_inst instanceof Jump || (block.head_inst == null && block.terminate instanceof Jump)) canMix.add(block);
+        });
+        canMix.forEach(block -> {
+            IRBlock suc = block;
+//            System.out.println("canMin = " + block.name);
+            do {
+                suc = ((Jump) suc.terminate).destblock;
+            } while(canMix.contains(suc));
+            HashSet<IRBlock> precursors = new HashSet<>(block.pre_block);
+            for (IRBlock pre : precursors) pre.replacesuc(block, suc);
+            if (block == function.entryblock) function.entryblock = suc;
+        });
+        function.blocks.removeAll(canMix);
     }
 
     private void addphi_block(IRBlock block, paracopy parcpy){

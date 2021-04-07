@@ -19,9 +19,6 @@ declare i8* @g_getString()
 declare i1 @g_stringlt(i8* %a, i8* %b)
 @n = global i32 zeroinitializer, align 4
 @r = global i32 zeroinitializer, align 4
-@c = global i32 zeroinitializer, align 4
-@i = global i32 zeroinitializer, align 4
-@j = global i32 zeroinitializer, align 4
 define void @__init(){
 entry:
 ;precursors: 
@@ -31,39 +28,22 @@ entry:
 define i32 @main(){
 entry:
 ;precursors: 
-;successors: 
-	call void @__init()
-	%pointee_r = load i32, i32* @r, align 4
-	%binary_sub = sub i32 2, %pointee_r
-	%fun_cal_ret_val = call i32 @fun_abs(i32 %binary_sub)
-	%pointee_c = load i32, i32* @c, align 4
-	%binary_sub = sub i32 2, %pointee_c
-	%fun_cal_ret_val = call i32 @fun_abs(i32 %binary_sub)
-	%binary_add = add i32 %fun_cal_ret_val, %fun_cal_ret_val
-	call void @g_printInt(i32 %binary_add)
-	ret i32 0
-}
-define i32 @fun_abs(i32 %param_c){
-entry:
-;precursors: 
 ;successors: if_then if_end 
-	%cmp_sgt = icmp sgt i32 %param_c, 0
-	br i1 %cmp_sgt, label %if_then, label %if_end
+	call void @__init()
+	%fun_cal_ret_val = call i32 @g_getInt()
+	store i32 %fun_cal_ret_val, i32* @n, align 4
+	%pointee_n = load i32, i32* @n, align 4
+	%eq = icmp eq i32 %pointee_n, 1
+	br i1 %eq, label %if_then, label %if_end
 if_then:
 ;precursors: entry 
-;successors: rootReturn 
-	mv i32* %rootRet %c_addr
-	br label %rootReturn
+;successors: if_end 
+	store i32 1, i32* @r, align 4
+	%pointee_r = load i32, i32* @r, align 4
+	call void @g_printInt(i32 %pointee_r)
+	br label %if_end
 if_end:
-;precursors: entry 
-;successors: rootReturn 
-	%pre_mns = sub i32 %param_c, -1
-	store i32 %pre_mns, i32 %param_c, align 4
-	mv i32 %rootRet %pre_mns
-	br label %rootReturn
-rootReturn:
-;precursors: if_then if_end 
+;precursors: if_then addphi_mid entry 
 ;successors: 
-	%rootRet = phi i32* [ %c_addr, %if_then ], [ %pre_mns, %if_end ]
-	ret i32* %rootRet
+	ret i32 0
 }

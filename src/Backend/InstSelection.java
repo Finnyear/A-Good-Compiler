@@ -74,7 +74,9 @@ public class InstSelection {
     private boolean inbounds(int val){return (val < (1 << 11)) && (val > (-1 * (1 << 11)));}
     private boolean isbranchreg(Register reg, IRBlock block){
         HashSet<Inst> uses = reg.uses;
-        if(uses.size() == 1) for(Inst use : uses) if(use == block.terminate) return true;
+        if(uses.size() == 1) {
+            for (Inst use : uses) if (use == block.terminate) return true;
+        }
         return false;
     }
     private boolean canbeImm(entity src){return src instanceof intConst && inbounds(((intConst) src).value());}
