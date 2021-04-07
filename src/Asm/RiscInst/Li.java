@@ -39,6 +39,6 @@ public class Li extends RiscInst{
 
     @Override
     public String toString() {
-        return null;
+        return "li " + dest + " " + ", " + val;
     }
 }

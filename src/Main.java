@@ -23,7 +23,7 @@ import java.io.PrintStream;
 public class Main {
     public static void main(String[] args) throws Exception{
         boolean SemanticOnly = false, emitLLVM = false;
-        int optLevel = 0;
+//        int optLevel = 0;
         if(args.length > 0) {
             for (String arg : args) {
                 switch (arg) {
@@ -35,6 +35,7 @@ public class Main {
         }
 //        String name = "test.mx";
 //        InputStream input = new FileInputStream(name);
+//        PrintStream output = new PrintStream("output.s");
         InputStream input = System.in;//
         PrintStream output = System.out;
         try{
@@ -61,11 +62,12 @@ public class Main {
             new IRBuilder(global_scope, IRroot).visit(rt);
             new Mem2Reg(IRroot).run();
             IRroot.addphi();
-            if(emitLLVM) new IRPrinter(new PrintStream("output.ll")).run(IRroot);
+            if(emitLLVM)
+                new IRPrinter(new PrintStream("output.ll")).run(IRroot);
 //
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();
-            new AsmPrinter(lroot, output, true).run();
+            new AsmPrinter(lroot, output, false).run();
 
         } catch (Error error){
             System.err.println(error.toString());
