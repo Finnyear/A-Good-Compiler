@@ -3,13 +3,13 @@
 	.p2align	1
 	.type	fun_abs,@function
 fun_abs:
-.fun_abs_entry: 
+.fun_abs_b.0: 
 	addi sp, sp, 0
-	blt zero, a0, .fun_abs_rootReturn
-.fun_abs_if_end: 
+	blt zero, a0, .fun_abs_b.2
+.fun_abs_b.1: 
 	addi t0, a0, 1
 	sw t0, 0(a0)
-.fun_abs_rootReturn: 
+.fun_abs_b.2: 
 	addi sp, sp, 0
 	ret
 	.size	fun_abs, .-fun_abs
@@ -18,7 +18,7 @@ fun_abs:
 	.p2align	1
 	.type	__init,@function
 __init:
-.__init_entry: 
+.__init_b.0: 
 	addi sp, sp, 0
 	addi sp, sp, 0
 	ret
@@ -28,7 +28,7 @@ __init:
 	.p2align	1
 	.type	main,@function
 main:
-.main_entry: 
+.main_b.0: 
 	addi sp, sp, -16
 	sw s0, 8(sp)
 	sw s1, 12(sp)
@@ -36,11 +36,11 @@ main:
 	call __init
 	lui t0, %hi(i)
 	sw zero, %lo(i)(t0)
-.main_for_cond: 
+.main_b.1: 
 	lw t1, i
 	li t0 , 5
-	blt t1, t0, .main_for_body
-.main_for_end: 
+	blt t1, t0, .main_b.2
+.main_b.3: 
 	lw t0, r
 	li s0 , 2
 	slt a0, s0, t0
@@ -57,43 +57,43 @@ main:
 	lw ra, 4(sp)
 	addi sp, sp, 16
 	ret
-.main_for_body: 
+.main_b.2: 
 	lui t0, %hi(j)
 	sw zero, %lo(j)(t0)
-.main_for_cond: 
+.main_b.4: 
 	lw t1, j
 	li t0 , 5
-	blt t1, t0, .main_for_body
-.main_for_end: 
-.main_for_body: 
+	blt t1, t0, .main_b.5
+.main_b.6: 
+.main_b.5: 
 	call g_getInt
 	lui t0, %hi(n)
 	sw a0, %lo(n)(t0)
 	lw t0, n
 	xori t0, t0, 1
 	seqz t0, t0
-	beqz t0, .main_addphi_mid
-.main_if_then: 
+	beqz t0, .main_b.8
+.main_b.7: 
 	lw t1, i
 	lui t0, %hi(r)
 	sw t1, %lo(r)(t0)
 	lw t1, j
 	lui t0, %hi(c)
 	sw t1, %lo(c)(t0)
-.main_if_end: 
-.main_addphi_mid: 
-.main_for_upd: 
+.main_b.10: 
+.main_b.8: 
+.main_b.9: 
 	lw t0, i
 	addi t1, t0, 1
 	lui t0, %hi(i)
 	sw t1, %lo(i)(t0)
-	j .main_for_cond
-.main_for_upd: 
+	j .main_b.1
+.main_b.11: 
 	lw t0, j
 	addi t1, t0, 1
 	lui t0, %hi(j)
 	sw t1, %lo(j)(t0)
-	j .main_for_cond
+	j .main_b.4
 	.size	main, .-main
 
 	.type	r,@object
