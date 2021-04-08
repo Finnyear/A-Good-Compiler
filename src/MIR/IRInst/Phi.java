@@ -39,7 +39,7 @@ public class Phi extends Inst{
         return null;
     }
 
-    public void addsrc(entity ent, IRBlock blo){entities.add(ent); blocks.add(blo);}
+    public void addsrc(entity ent, IRBlock blo){entities.add(ent); ent.adduse(this); blocks.add(blo);}
 
     @Override
     public String toString() {

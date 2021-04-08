@@ -35,5 +35,9 @@ public class Register extends entity{
         uses.remove(inst);
     }
 
-    public void replaceusewith(entity neww){uses.forEach(inst -> inst.replaceentity(this, neww));}
+    public void replaceusewith(entity neww){
+        uses.forEach(inst -> {
+            inst.replaceentity(this, neww);
+                neww.adduse(inst);
+        });}
 }

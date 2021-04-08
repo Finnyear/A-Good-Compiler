@@ -126,7 +126,6 @@ public class Mem2Reg {
             }
         });
         rmap.forEach((reg, rep) -> ((Register)reg).replaceusewith(replace(rmap, rep)));
-        //remove all alloc
     }
 
     public boolean run(){
