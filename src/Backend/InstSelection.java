@@ -300,6 +300,7 @@ public class InstSelection {
         }
         else if(inst instanceof Return){
             entity val = ((Return)inst).value;
+//            System.out.println(inst);
             if(val != null){
                 Reg reg = regtran(val);
                 if(reg instanceof GReg) lBlock.addInst(new La((GReg) reg, lRoot.getphyreg(10), lBlock));
@@ -328,13 +329,13 @@ public class InstSelection {
     public void copyblock(IRBlock src, LBlock block){
 //        System.out.println("copy block");
         currentBlock = block;
-        for(Inst inst = src.head_inst; inst != null; inst = src.getnxt(inst)) genLIR(inst);
+        for(Inst inst = (src.head_inst == null ? src.terminate : src.head_inst); inst != null; inst = src.getnxt(inst)) genLIR(inst);
         src.suc_block.forEach(suc -> {
 //            System.out.println(suc.name);
             block.sucs.add(blockmap.get(suc));
             if(blockmap.get(suc) != null)
                 blockmap.get(suc).pres.add(block);
-            else System.out.println(suc.name);
+//            else System.out.println(suc.name);
         });
     }
 

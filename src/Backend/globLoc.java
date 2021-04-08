@@ -32,7 +32,7 @@ public class globLoc {
             HashSet<GlobalVar> alldef = new HashSet<>();
             HashSet<IRFunction> allcall = new HashSet<>();
             func.blocks.forEach(block -> {
-                for(Inst inst = block.head_inst; inst != null; inst = block.getnxt(inst)){
+                for(Inst inst = block.head_inst == null ?block.terminate :block.head_inst; inst != null; inst = block.getnxt(inst)){
                     for(entity use : inst)
                 }
             });
