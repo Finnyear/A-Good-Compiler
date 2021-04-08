@@ -17,55 +17,25 @@ declare i1 @g_stringgt(i8* %a, i8* %b)
 declare i1 @g_stringeq(i8* %a, i8* %b)
 declare i8* @g_getString()
 declare i1 @g_stringlt(i8* %a, i8* %b)
-@n = global i32 zeroinitializer, align 4
-@r = global i32 zeroinitializer, align 4
-@c = global i32 zeroinitializer, align 4
-@i = global i32 zeroinitializer, align 4
-@j = global i32 zeroinitializer, align 4
+define i32 @fun_qpow(i32 %param_a, i32 %param_p, i32 %param_mod){
+entry:
+;precursors:
+;successors:
+	call void @g_printlnInt(i32 1)
+	ret i32* %t_addr
+}
 define void @__init(){
 entry:
-;precursors: 
-;successors: 
+;precursors:
+;successors:
 	ret void
 }
 define i32 @main(){
 entry:
-;precursors: 
-;successors: for_cond 
+;precursors:
+;successors:
 	call void @__init()
-	store i32 0, i32* @j, align 4
-	br label %for_cond
-for_cond:
-;precursors: entry for_upd 
-;successors: for_body for_end 
-	%pointee_j = load i32, i32* @j, align 4
-	%cmp_slt = icmp slt i32 %pointee_j, 5
-	br i1 %cmp_slt, label %for_body, label %for_end
-for_body:
-;precursors: for_cond 
-;successors: if_then if_end 
-	%pointee_n = load i32, i32* @n, align 4
-	%eq = icmp eq i32 %pointee_n, 1
-	br i1 %eq, label %if_then, label %if_end
-for_end:
-;precursors: for_cond 
-;successors: 
+	%fun_cal_ret_val = call i32 @fun_qpow(i32 2, i32 10, i32 10000)
+	call void @g_printlnInt(i32 %fun_cal_ret_val)
 	ret i32 0
-if_then:
-;precursors: for_body 
-;successors: if_end 
-	%pointee_j = load i32, i32* @j, align 4
-	store i32 %pointee_j, i32* @r, align 4
-	br label %if_end
-if_end:
-;precursors: for_body if_then 
-;successors: for_upd 
-	br label %for_upd
-for_upd:
-;precursors: if_end 
-;successors: for_cond 
-	%pointee_j = load i32, i32* @j, align 4
-	%suf_tmp = add i32 %pointee_j, 1
-	store i32 %suf_tmp, i32* @j, align 4
-	br label %for_cond
 }

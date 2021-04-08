@@ -1,21 +1,14 @@
-int qpow(int a,int p) {
+int qpow(int a,int p,int mod) {
     int t = 1;
-    int y = a;
-    printlnInt(y);
-    while(p>0){
-        printlnInt(y);
-        printlnInt(p);
-        printlnInt(t);
-        if((p&1) == 1){
-            t=t*y;
-        }
-        y=y*y;
-        p=p / 2;
-    }
+    printlnInt(t);
     return t;
 }
 
+
+
+
+
 int main() {
-    printlnInt(qpow(2,1));
+    printlnInt(qpow(2,10,10000));
     return 0;
 }

@@ -232,7 +232,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         else{
             it.expr.accept(this);
             entity retval;
-            retval = it.expr.operand;//maybe sth wrong?...
+            retval = getpointee(it.expr.operand);
             retInst = new Return(retval, current_block);
         }
         current_block.addterminate(retInst);

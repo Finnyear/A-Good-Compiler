@@ -33,11 +33,11 @@ public class Main {
                 }
             }
         }
-//        String name = "test.mx";
-//        InputStream input = new FileInputStream(name);
-//        PrintStream output = new PrintStream("output.s");
-        InputStream input = System.in;//
-        PrintStream output = System.out;
+        String name = "test.mx";
+        InputStream input = new FileInputStream(name);
+        PrintStream output = new PrintStream("output.s");
+//        InputStream input = System.in;//
+//        PrintStream output = System.out;
         try{
             ProgramNode rt;
             globalScope global_scope = new globalScope(null);
@@ -64,7 +64,7 @@ public class Main {
             new Mem2Reg(IRroot).run();
             IRroot.addphi();
 //            if(emitLLVM)
-//            new IRPrinter(new PrintStream("output.ll")).run(IRroot);
+            new IRPrinter(new PrintStream("output.ll")).run(IRroot);
 //
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();
