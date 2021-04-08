@@ -17,39 +17,46 @@ declare i1 @g_stringgt(i8* %a, i8* %b)
 declare i1 @g_stringeq(i8* %a, i8* %b)
 declare i8* @g_getString()
 declare i1 @g_stringlt(i8* %a, i8* %b)
+@n = global i32 zeroinitializer, align 4
+@r = global i32 zeroinitializer, align 4
+@c = global i32 zeroinitializer, align 4
 @i = global i32 zeroinitializer, align 4
-@x = global i32 zeroinitializer, align 4
-@main.0 = private unnamed_addr constant [4 x i8] c"YES\00", align 1
-@main.1 = private unnamed_addr constant [3 x i8] c"NO\00", align 1
+@j = global i32 zeroinitializer, align 4
 define void @__init(){
 entry:
 ;precursors: 
 ;successors: 
-	store i32 0, i32* @x, align 4
 	ret void
 }
 define i32 @main(){
 entry:
 ;precursors: 
-;successors: if_then else_then 
+;successors: 
 	call void @__init()
-	%pointee_x = load i32, i32* @x, align 4
-	%eq = icmp eq i32 %pointee_x, 0
-	br i1 %eq, label %if_then, label %else_then
+	%fun_cal_ret_val = call i32 @fun_abs(i32 0)
+	call void @g_printlnInt(i32 %fun_cal_ret_val)
+	ret i32 0
+}
+define i32 @fun_abs(i32 %param_c){
+entry:
+;precursors: 
+;successors: if_then if_end 
+	%cmp_sgt = icmp sgt i32 %param_c, 0
+	br i1 %cmp_sgt, label %if_then, label %if_end
+if_end:
+;precursors: entry 
+;successors: rootReturn 
+	%pre_mns = sub i32 0, %param_c
+	mv i32 %rootRet %pre_mns
+	br label %rootReturn
 if_then:
 ;precursors: entry 
-;successors: if_end 
-	%resolved_main.0 = getelementptr inbounds [ 4 x i8 ], [ 4 x i8 ]* @main.0, i32 0, i32 0
-	call void @g_print(i8* %resolved_main.0)
-	br label %if_end
-if_end:
-;precursors: if_then else_then 
+;successors: rootReturn 
+	mv i32* %rootRet %c_addr
+	br label %rootReturn
+rootReturn:
+;precursors: if_then if_end 
 ;successors: 
-	ret i32 0
-else_then:
-;precursors: entry 
-;successors: if_end 
-	%resolved_main.1 = getelementptr inbounds [ 3 x i8 ], [ 3 x i8 ]* @main.1, i32 0, i32 0
-	call void @g_print(i8* %resolved_main.1)
-	br label %if_end
+	%rootRet = phi i32* [ %c_addr, %if_then ], [ %pre_mns, %if_end ]
+	ret i32* %rootRet
 }

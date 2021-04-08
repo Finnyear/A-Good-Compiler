@@ -1,8 +1,15 @@
+int n;
+int r;
+int c;
 int i;
-int x = 0;
+int j;
+int abs(int c){
+    if(c>0) return c;
+    return -c;
+}
+
 int main()
 {
-    if(x==0)
-    print("YES");
-    else print("NO");
+    printlnInt(abs(0));
+	return 0;
 }
