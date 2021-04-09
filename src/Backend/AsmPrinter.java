@@ -43,6 +43,8 @@ public class AsmPrinter {
 
     private HashSet<LBlock> visited = new HashSet<>();
     private void runforblock(LBlock block) {
+        if (visited.contains(block)) return;
+//        System.out.println("run for " + block.name);
         visited.add(block);
         out.println(block.name + ": ");
         for (RiscInst inst = block.head; inst != null; inst = inst.nxt)
@@ -61,6 +63,7 @@ public class AsmPrinter {
 
         runforblock(func.entryblock);
         visitlist.forEach(block -> {
+//            System.out.println(block.name);
             if (!visited.contains(block) && !block.hasPrior) runforblock(block);
         });
         out.println("\t.size\t" + func.name + ", " + ".-" + func.name + "\n");
