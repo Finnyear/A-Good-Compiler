@@ -354,6 +354,7 @@ public class SemanticCheck implements ASTVisitor {
                 if(current_scope.qryvar(((varExprNode) it.mem).name, false)){
 //                    System.out.println(((varExprNode) it.tp).name);
 //                    System.out.println(((varExprNode) it.mem).name);
+                    it.memoff = ((classType) it.tp.type).Indexes.get(((varExprNode) it.mem).name);
                     it.type = current_scope.getvarType(((varExprNode) it.mem).name, false);
                     it.varent = current_scope.getentity(((varExprNode) it.mem).name, false);
                 }else throw new SemanticError("no such member", it.pos);
