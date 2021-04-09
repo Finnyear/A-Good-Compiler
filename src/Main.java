@@ -64,7 +64,7 @@ public class Main {
             new Mem2Reg(IRroot).run();
             IRroot.addphi();
 //            if(emitLLVM)
-            new IRPrinter(new PrintStream("output.ll")).run(IRroot);
+//            new IRPrinter(new PrintStream("output.ll")).run(IRroot);
 //
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();
