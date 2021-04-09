@@ -55,24 +55,23 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     }
 
     private entity getpointee(entity ptr){
-//        if(ptr == null) return null;
         if(ptr.type.isresolvable()){
-//            System.out.println("pointee_" + getname(ptr));
             String name = getname(ptr);
             Register dest = new Register(((IRpointerType)ptr.type).pointeeType, "pointee_" + getname(ptr));
             current_block.addinst(new Load(ptr, dest, current_block));
-            return dest;
+            if (dest.type instanceof IRintType && dest.type.size() == 8) {
+                Register zextDest = new Register(new IRboolType(), "zext_" + dest.name);
+                current_block.addinst(new Zext(dest, zextDest, current_block));
+                return zextDest;
+            } else return dest;
         }else return ptr;
     }
 
     private void addbranch(ExprNode it){
         if(it.ifblock == null) return ;
-//        System.out.println("!!!!!!!!!!!!!!!");
         entity tmpent = getpointee(it.operand);
         if(!(tmpent.type instanceof IRboolType)) throw new myError("add not bool branch", new position(0, 0));
-//        System.out.println("addbranch");
         current_block.addterminate(new Branch(tmpent, it.ifblock, it.elseblock, current_block));
-        //add some phi node ?...
         if(logicphi.containsKey(it.ifblock)){
             Phi tmp = logicphi.get(it.ifblock);
             tmp.entities.add(new boolConst(true));
@@ -87,7 +86,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     void assign(entity reg, ExprNode expr){
         expr.accept(this);
-//        System.out.println("assign");
         entity tmp = getpointee(expr.operand);
         if(!(reg.type instanceof IRpointerType)) throw new myError("assign to sth not pointer", new position(0,0));
         if(tmp.type instanceof IRboolType){
@@ -103,12 +101,10 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
 
     private void entrydfs(IRBlock it) {
-//        System.out.println("entry_dfs_" + it.name);
         entryreachable.add(it);
         it.suc_block.forEach(suc -> { if (!entryreachable.contains(suc)) entrydfs(suc); });
     }
     private boolean returndfs(IRBlock it) {
-//        System.out.println("return_dfs_" + it.name);
         returnvisited.add(it);
         ArrayList<IRBlock> precursors = new ArrayList<>(it.pre_block);
         for (IRBlock pre : precursors) {
@@ -189,8 +185,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                 IRroot.addfun(IRfunc.name, IRfunc);
             }
         });
-//        it.parts.forEach(part -> {if(part.classdef != null) part.accept(this);});
-//        it.parts.forEach(part -> {if(part.classdef == null) part.accept(this);});
         it.parts.forEach(part -> part.accept(this));
 
         current_function = IRroot.functions.get("__init");
@@ -259,13 +253,10 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(preExprNode it) {
-//        System.out.println(it.op);
-//        System.out.println("...");
         IRType type;
         if(it.op == preExprNode.preop.lnot) type = Root.boolIR;
         else type = Root.intIR;
         it.operand = new Register(type, "pre_" + it.op.toString());
-//        System.out.println("...");
         if(type == Root.boolIR && it.ifblock != null) {
             it.expr.ifblock = it.elseblock;
             it.expr.elseblock = it.ifblock;
@@ -274,7 +265,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         }
         it.expr.accept(this);
         entity tmp = getpointee(it.expr.operand);//first time thought need to get pointee
-//        System.out.println(tmp.toString());
         switch (it.op){
             case add -> {
                 current_block.addinst(new Binary(Binary.Opcode.add, tmp, new intConst(1, 32),(Register) it.operand, current_block));
@@ -347,13 +337,12 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(fundefNode it) {
-//        System.out.println("fundef_" + it.name);
         returnlist.clear();
         current_function = it.IRfunc;
         current_block = current_function.entryblock;
         if(current_class != null)
-            current_function.setclass(new Param(IRroot.getIRtype(current_class), "this"));
-        current_function.setrettype(IRroot.getIRtype(it.type.getnewType(gScope)));
+            current_function.setclass(new Param(IRroot.getIRtype(current_class, false), "this"));
+        current_function.setrettype(IRroot.getIRtype(it.type.getnewType(gScope), false));
 
         isparam = true;
         it.fun_par_list.variables.forEach(param -> param.accept(this));
@@ -379,7 +368,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             returnlist.add(ret);
         }
 
-//        System.out.println("end_blockkkkkkkkkkkkkkkkkkkk = " + current_block.name);
 
 
         entryreachable = new HashSet<>();
@@ -396,7 +384,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         current_function.blocks.addAll(entryreachable);
         entryreachable = null;
 //        returnvisited = null;
-//        System.out.println(returnlist.size());
         if(returnlist.size() > 1){
             IRBlock rootreturn = new IRBlock("rootReturn");
             Register retval = returnlist.get(0).value == null ? null :
@@ -423,7 +410,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             current_function.blocks.add(rootreturn);
         }
         else{
-//            System.out.println(">>>>>>>>>>>>" + returnlist.get(0).block.name);
             current_function.exitblock = returnlist.get(0).block;
         }
         if(!current_function.blocks.contains(current_function.exitblock)) current_function.blocks.add(current_function.exitblock);
@@ -432,8 +418,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             block.pre_block.removeIf(tmp -> !current_function.blocks.contains(tmp));
             block.suc_block.removeIf(tmp -> !current_function.blocks.contains(tmp));
         });
-//        System.out.println(current_function.name);
-//        System.out.println(current_function.exitblock.name);
         IRBlock entryBlock = current_function.entryblock;
         current_function.allocvars.forEach(var ->{
             if (((IRpointerType)var.type).pointeeType instanceof IRpointerType)
@@ -463,7 +447,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(variableNode it) {
-        IRType type = IRroot.getIRtype(it.varent.type);
+        IRType type = IRroot.getIRtype(it.varent.type, true);
         if(it.isglobal == true){
             GlobalVar reg = (GlobalVar) it.varent.operand;
             IRroot.globalVars.add(reg);
@@ -504,10 +488,8 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(varExprNode it) {
-//        System.out.println("varexpr_" + it.name);
         varentity varent = it.varent;
         if(varent.ismember == true && current_function.classptr != null){
-//            System.out.println("fun = " + current_function.name);
             Param classptr = current_function.classptr;
             it.operand = new Register(varent.operand.type, "this." + it.name + "_addr");
             current_block.addinst(new Getelementptr(((IRpointerType)classptr.type).pointeeType, classptr,
@@ -517,12 +499,11 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             it.operand = varent.operand;
         }
         addbranch(it);
-//        System.out.println("varexpr_" + it.name + "_end");
     }
 
     @Override
     public void visit(arraycrtNode it) {
-        it.operand = new Register(IRroot.getIRtype(it.type), "new_array");
+        it.operand = new Register(IRroot.getIRtype(it.type, true), "new_array");
         arraymalloc(0, it, (Register) it.operand);
     }
 
@@ -597,8 +578,8 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         it.dim.accept(this);
         entity ptr = getpointee(it.name.operand);
         entity dim = getpointee(it.dim.operand);
-        it.operand = new Register(new IRpointerType(IRroot.getIRtype(it.type), true), "arrayptr");
-        current_block.addinst(new Getelementptr(((IRpointerType)it.name.operand.type).pointeeType, ptr,
+        it.operand = new Register(new IRpointerType(IRroot.getIRtype(it.type, true), true), "arrayptr");
+        current_block.addinst(new Getelementptr(((IRpointerType) ptr.type).pointeeType, ptr,
                 dim, null, (Register) it.operand, current_block));
         addbranch(it);
     }
@@ -665,7 +646,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                 it.lhs.accept(this);
                 it.rhs.accept(this);
                 if(opcode != null) {
-//                System.out.println("???????");
                     op1 = getpointee(it.lhs.operand);
                     op2 = getpointee(it.rhs.operand);
                     it.operand = new Register(Root.intIR, "binary_" + opcode.toString());
@@ -796,7 +776,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
         it.ifcon.ifblock = ifblock;
         it.ifcon.elseblock = elseblock;
-//        if(it.ifcon instanceof memberExprNode) System.out.println("???????????????????????rnm");
         it.ifcon.accept(this);
 
         current_block = ifblock;
@@ -849,12 +828,10 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 
     @Override
     public void visit(funcalExprNode it) {
-//        if(it.ifblock == null) System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         it.callee.accept(this);
         funType funtype = (funType) it.callee.type;
-//        System.out.println(((funType)it.callee.type).returntype.tp);
         if(it.type.tp == Type.type.Void) it.operand = null;
-        else it.operand = new Register(IRroot.getIRtype(funtype.returntype), "fun_cal_ret_val");
+        else it.operand = new Register(IRroot.getIRtype(funtype.returntype, false), "fun_cal_ret_val");
         ArrayList<entity> params = new ArrayList<>();
         if(funtype.inclass) {
             if(it.callee.operand != null) params.add(getpointee(it.callee.operand));
@@ -865,7 +842,6 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                 params.add(getpointee(param.operand));
             });
         }
-//        if(funtype.IRfunc == null) System.out.println("...");
         current_block.addinst(new Call(funtype.IRfunc, params, (Register) it.operand, current_block));
         if(it.operand != null) {
             addbranch(it);
@@ -949,7 +925,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
     @Override
     public void visit(classcrtNode it) {
         Register tmp = new Register(IRroot.stringIR, "malloc");
-        it.operand = new Register(IRroot.getIRtype(it.type), "new_class_ptr");
+        it.operand = new Register(IRroot.getIRtype(it.type, false), "new_class_ptr");
         current_block.addinst(new Malloc(new intConst(((classType)it.type).allocsz / 8, 32), tmp, current_block));
         current_block.addinst(new Bitcast(tmp, (Register) it.operand, current_block));
         if(((classType)it.type).scope.con != null) {

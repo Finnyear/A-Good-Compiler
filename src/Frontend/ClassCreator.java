@@ -73,7 +73,7 @@ public class ClassCreator implements ASTVisitor {
             varentity varent = new varentity(varname, var_type, false);
             varent.ismember = true;
             varent.index = new intConst(classType.setelement(var_type), 32);
-            IRType type = IRroot.getIRtype(var_type);
+            IRType type = IRroot.getIRtype(var_type, true);
             currentIRclass.addmember(type);
 
             if(type instanceof IRclassType) type = new IRpointerType(type, false);

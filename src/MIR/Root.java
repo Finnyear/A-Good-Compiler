@@ -120,14 +120,17 @@ public class Root {
     }
     public boolean isbuiltin(String name){return builtinfunc.containsKey(name);}
 
-    public IRType getIRtype(Type type){
+    public IRType getIRtype(Type type, boolean ismemset){
         if(type instanceof arrayType){
-            IRType IRtype = getIRtype(((arrayType) type).basictype);
+            IRType IRtype = getIRtype(((arrayType) type).basictype, ismemset);
             for(int i = 0; i < ((arrayType) type).dimision; i++)
                 IRtype = new IRpointerType(IRtype, false);
             return IRtype;
         }
-        if(type.tp == Type.type.Bool) return boolIR;
+        if(type.tp == Type.type.Bool) {
+            if(ismemset) return charIR;
+            else return boolIR;
+        }
         if(type.tp == Type.type.Int) return intIR;
         if(type.tp == Type.type.Class){
             if(type.class_name.equals("string")) return stringIR;
