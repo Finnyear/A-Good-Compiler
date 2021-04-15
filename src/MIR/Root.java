@@ -221,15 +221,21 @@ public class Root {
             for(int i = 0; i < sz; i++){
                 IRBlock pre = phi.blocks.get(i);
                 entity val = phi.entities.get(i);
-                copymap.get(pre).addmove(new Move(val, register, false, pre));// spit the phi to register
+                copymap.get(pre).addmove(new Move(val, register, false, pre));// split the phi to register
             }
         })));
         copymap.forEach(((irBlock, parcpy) -> addphi_block(irBlock, parcpy)));
 
+//        System.out.println("name = " + function.entryblock.name);
+
 
         HashSet<IRBlock> canMix = new HashSet<>();
         function.blocks.forEach(block -> {
-            if (block.head_inst instanceof Jump || (block.head_inst == null && block.terminate instanceof Jump)) canMix.add(block);
+            if (block.head_inst instanceof Jump || (block.head_inst == null && block.terminate instanceof Jump)) {
+//                System.out.println("...... = " + block.name);
+                if(block != function.entryblock)
+                    canMix.add(block);
+            }
         });
         canMix.forEach(block -> {
             IRBlock suc = block;

@@ -47,6 +47,8 @@ public class Ld extends RiscInst{
     @Override
     public String toString() {
         return "l" + ((sz == 1) ? "b" : ((sz == 2) ? "h" : "w")) + " " + dest
-                + ", " + ((addr instanceof GReg) ? addr : (offset + "(" + addr + ")"));
+                + ", " + offset + "(" + addr + ")";
+//        return "l" + ((sz == 1) ? "b" : ((sz == 2) ? "h" : "w")) + " " + dest
+//                + ", " + ((addr instanceof GReg) ? addr : (offset + "(" + addr + ")"));
     }
 }

@@ -380,7 +380,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 //                ret.block.removeinst(ret);
 //            }
 //        }
-        entryreachable.removeIf(block -> block.terminate == null);////////////////////////////??????????????????????????????
+        entryreachable.removeIf(block -> block != current_function.entryblock && block.terminate == null);////////////////////////////??????????????????????????????
         current_function.blocks.addAll(entryreachable);
         entryreachable = null;
 //        returnvisited = null;
@@ -428,6 +428,8 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
         returnlist.clear();
         current_function = null;
         current_block = null;
+
+
     }
 
     @Override

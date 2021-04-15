@@ -275,11 +275,20 @@ public class InstSelection {
         else if(inst instanceof Cmp){ genCmpLIR((Cmp) inst); }
         else if(inst instanceof Getelementptr){genGetelementptrLIR((Getelementptr) inst);}
         else if(inst instanceof Jump){
+//            System.out.println(inst);
+//            System.out.println(new Jp(blockmap.get(((Jump) inst).destblock), lBlock));
             lBlock.addInst(new Jp(blockmap.get(((Jump) inst).destblock), lBlock));
         }
         else if(inst instanceof Load){
             entity addr = ((Load) inst).addr, dest = inst.dest;
-            lBlock.addInst(new Ld(regtran(addr), dest.type.size() / 8, new Imm(0), regtran(dest),  lBlock));
+            Reg addrreg = regtran(addr);
+            if(addrreg instanceof GReg){
+                VirReg tmp = new VirReg(4, cnt++);
+                Relocation rel = new Relocation((GReg) addrreg, true);
+                lBlock.addInst(new Lui(rel, tmp, lBlock));
+                lBlock.addInst(new Ld(tmp, dest.type.size() / 8, new Relocation((GReg) addrreg, false), regtran(dest), lBlock));
+            }
+            else lBlock.addInst(new Ld(regtran(addr), dest.type.size() / 8, new Imm(0), regtran(dest),  lBlock));
         }
         else if(inst instanceof Malloc){
             lBlock.addInst(new Mv(regtran(((Malloc)inst).sz), lRoot.getphyreg(10), lBlock));
@@ -329,7 +338,7 @@ public class InstSelection {
     public void copyblock(IRBlock src, LBlock block){
 //        System.out.println("copy block");
         currentBlock = block;
-        for(Inst inst = (src.head_inst == null ? src.terminate : src.head_inst); inst != null; inst = src.getnxt(inst)) genLIR(inst);
+        for(Inst inst = src.gethead(); inst != null; inst = src.getnxt(inst)) genLIR(inst);
         src.suc_block.forEach(suc -> {
 //            System.out.println(suc.name);
             block.sucs.add(blockmap.get(suc));
@@ -337,11 +346,10 @@ public class InstSelection {
                 blockmap.get(suc).pres.add(block);
 //            else System.out.println(suc.name);
         });
+
     }
 
     public void runforfn(IRFunction func){
-//        System.out.println("run for func");
-//        System.out.println(func.blocks.size());
         LFn lfn = fnmap.get(func);
         currentLFn = lfn;
         cnt = 0;
@@ -370,14 +378,13 @@ public class InstSelection {
             copyblock(block, lBlock);
             lfn.addblock(lBlock);
         });
-//        if(exitblock == null)
-//            System.out.println("func = " + func.name);
         for(int i = 0; i < lRoot.calleesaveregs.size(); i++)
             exitblock.addInst(new Mv(calleesavemap.get(i), lRoot.calleesaveregs.get(i), exitblock));
         exitblock.addInst(new Mv(map, lRoot.getphyreg(1), exitblock));
         exitblock.addInst(new IType(lRoot.getphyreg(2), new SLImm(0), RiscInst.Calcategory.add, lRoot.getphyreg(2), exitblock));
         exitblock.addInst(new Ret(lRoot, exitblock));
         lfn.cnt = cnt;
+
     }
     public LRoot run(){
         IRroot.builtinfunc.forEach((name, func) -> {
@@ -388,10 +395,8 @@ public class InstSelection {
         IRroot.functions.forEach((name, func) -> {
             func.blocks.forEach(block -> {
                 LBlock lBlock = new LBlock("." + func.name + "_" + block.name);
-//                System.out.println("put_" + block.name);
                 blockmap.put(block, lBlock);
             });
-//            System.out.println("hahaha   " + func.exitblock.name);
             LFn lFn = new LFn(name, blockmap.get(func.entryblock), blockmap.get(func.exitblock));
             fnmap.put(func, lFn);
             func.params.forEach(param -> lFn.addparam(regtran(param)));

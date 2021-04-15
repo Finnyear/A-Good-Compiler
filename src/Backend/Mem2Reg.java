@@ -126,6 +126,8 @@ public class Mem2Reg {
             }
         });
         rmap.forEach((reg, rep) -> ((Register)reg).replaceusewith(replace(rmap, rep)));
+
+
     }
 
     public boolean run(){

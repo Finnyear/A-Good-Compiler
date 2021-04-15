@@ -1,133 +1,674 @@
 declare i32 @g_getInt()
-declare void @g_println(i8* %0)
-declare i8* @malloc(i32 %0)
-declare i8* @g_stringadd(i8* %0, i8* %1)
-declare i32 @l_string_parseInt(i8* %0)
-declare void @g_print(i8* %0)
-declare i1 @g_stringge(i8* %0, i8* %1)
-declare void @g_printlnInt(i32 %0)
-declare i8* @g_toString(i32 %0)
-declare i1 @g_stringle(i8* %0, i8* %1)
-declare i32 @l_string_length(i8* %0)
-declare i1 @g_stringne(i8* %0, i8* %1)
-declare i8* @l_string_substring(i8* %0, i32 %1, i32 %2)
-declare void @g_printInt(i32 %0)
-declare i8 @l_string_ord(i8* %0)
-declare i1 @g_stringgt(i8* %0, i8* %1)
-declare i1 @g_stringeq(i8* %0, i8* %1)
+declare void @g_println(i8* %s)
+declare i8* @malloc(i32 %a)
+declare i8* @g_stringadd(i8* %a, i8* %b)
+declare i32 @l_string_parseInt(i8* %s)
+declare void @g_print(i8* %s)
+declare i1 @g_stringge(i8* %a, i8* %b)
+declare void @g_printlnInt(i32 %v)
+declare i8* @g_toString(i32 %i)
+declare i1 @g_stringle(i8* %a, i8* %b)
+declare i32 @l_string_length(i8* %s)
+declare i1 @g_stringne(i8* %a, i8* %b)
+declare i8* @l_string_substring(i8* %s, i32 %left, i32 %right)
+declare void @g_printInt(i32 %v)
+declare i8 @l_string_ord(i8* %s)
+declare i1 @g_stringgt(i8* %a, i8* %b)
+declare i1 @g_stringeq(i8* %a, i8* %b)
 declare i8* @g_getString()
-declare i1 @g_stringlt(i8* %0, i8* %1)
-@main.0 = private unnamed_addr constant [2 x i8] c"\0A\00", align 1
-define void @__init(){
-b.0:
+declare i1 @g_stringlt(i8* %a, i8* %b)
+@n = global i32 zeroinitializer, align 4
+@h = global i32 zeroinitializer, align 4
+@now = global i32 zeroinitializer, align 4
+@a = global i32* zeroinitializer, align 4
+@A = global i32 zeroinitializer, align 4
+@M = global i32 zeroinitializer, align 4
+@Q = global i32 zeroinitializer, align 4
+@R = global i32 zeroinitializer, align 4
+@seed = global i32 zeroinitializer, align 4
+@main.2 = private unnamed_addr constant [80 x i8] c"Sorry, the number n must be a number s.t. there exists i satisfying n=1+2+...+i\00", align 1
+@fun_show.1 = private unnamed_addr constant [1 x i8] c"\00", align 1
+@main.3 = private unnamed_addr constant [13 x i8] c"Let's start!\00", align 1
+@main.4 = private unnamed_addr constant [6 x i8] c"step \00", align 1
+@main.5 = private unnamed_addr constant [2 x i8] c":\00", align 1
+@fun_show.0 = private unnamed_addr constant [2 x i8] c" \00", align 1
+@main.6 = private unnamed_addr constant [8 x i8] c"Total: \00", align 1
+@main.7 = private unnamed_addr constant [9 x i8] c" step(s)\00", align 1
+define i1 @fun_win(){
+entry:
+;precursors: 
+;successors: if_then if_end 
+	%puresz = mul i32 100, 4
+	%metasz = add i32 %puresz, 4
+	%allocptr = call noalias i8* @malloc(i32 %metasz)
+	%allocbitcast = bitcast i8* %allocptr to i32*
+	store i32 100, i32* %allocbitcast, align 4
+	%new_array = getelementptr inbounds i32, i32* %allocbitcast, i32 1
+	%pointee_now = load i32, i32* @now, align 4
+	%pointee_h = load i32, i32* @h, align 4
+	%neq = icmp ne i32 %pointee_now, %pointee_h
+	br i1 %neq, label %if_then, label %if_end
+if_then:
+;precursors: entry 
+;successors: rootReturn 
+	%temp_addr_phi = add i32 65536, 0
+	%j_addr_phi = add i32 65536, 0
+	%i_addr_phi = add i32 65536, 0
+	%rootRet = add i1 0, 0
+	br label %rootReturn
+if_end:
+;precursors: entry 
+;successors: for_cond 
+	%j_addr_phi = add i32 0, 0
+	br label %for_cond
+rootReturn:
+;precursors: if_then if_then for_end 
+;successors: 
+	%temp_addr_phi = phi i32 [ 65536, %if_then ], [ %temp_addr_phi, %if_then ], [ %temp_addr_phi, %for_end ]
+	%j_addr_phi = phi i32 [ 65536, %if_then ], [ %j_addr_phi, %if_then ], [ %j_addr_phi, %for_end ]
+	%i_addr_phi = phi i32 [ 65536, %if_then ], [ %i_addr_phi, %if_then ], [ %i_addr_phi, %for_end ]
+	%rootRet = phi i1 [ 0, %if_then ], [ 0, %if_then ], [ 1, %for_end ]
+	ret i1 %rootRet
+for_cond:
+;precursors: if_end for_upd 
+;successors: for_body for_end 
+	%j_addr_phi = phi i32 [ 0, %if_end ], [ %pre_add, %for_upd ]
+	%pointee_now = load i32, i32* @now, align 4
+	%cmp_slt = icmp slt i32 %j_addr_phi, %pointee_now
+	br i1 %cmp_slt, label %for_body, label %for_end
+for_body:
+;precursors: for_cond 
+;successors: for_upd 
+	%arrayptr = getelementptr inbounds i32, i32* %new_array, i32 %j_addr_phi
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %j_addr_phi
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	store i32 %pointee_arrayptr, i32* %arrayptr, align 4
+	br label %for_upd
+for_end:
+;precursors: for_cond 
+;successors: for_cond 
+	%j_addr_phi = add i32 %j_addr_phi, 0
+	%temp_addr_phi = add i32 65536, 0
+	%i_addr_phi = add i32 0, 0
+	br label %for_cond
+for_upd:
+;precursors: for_body 
+;successors: for_cond 
+	%pre_add = add i32 %j_addr_phi, 1
+	%j_addr_phi = add i32 %pre_add, 0
+	br label %for_cond
+for_cond:
+;precursors: for_end for_upd 
+;successors: for_body for_end 
+	%j_addr_phi = phi i32 [ %j_addr_phi, %for_end ], [ %j_addr_phi, %for_upd ]
+	%temp_addr_phi = phi i32 [ 65536, %for_end ], [ %temp_addr_phi, %for_upd ]
+	%i_addr_phi = phi i32 [ 0, %for_end ], [ %pre_add, %for_upd ]
+	%pointee_now = load i32, i32* @now, align 4
+	%binary_sub = sub i32 %pointee_now, 1
+	%cmp_slt = icmp slt i32 %i_addr_phi, %binary_sub
+	br i1 %cmp_slt, label %for_body, label %for_end
+for_body:
+;precursors: for_cond 
+;successors: for_cond 
+	%binary_add = add i32 %i_addr_phi, 1
+	%temp_addr_phi = add i32 %temp_addr_phi, 0
+	%j_addr_phi = add i32 %binary_add, 0
+	br label %for_cond
+for_end:
+;precursors: for_cond 
+;successors: for_cond 
+	%i_addr_phi = add i32 0, 0
+	br label %for_cond
+for_cond:
+;precursors: for_body for_upd 
+;successors: for_body for_upd 
+	%temp_addr_phi = phi i32 [ %temp_addr_phi, %for_body ], [ %temp_addr_phi, %for_upd ]
+	%j_addr_phi = phi i32 [ %binary_add, %for_body ], [ %pre_add, %for_upd ]
+	%pointee_now = load i32, i32* @now, align 4
+	%cmp_slt = icmp slt i32 %j_addr_phi, %pointee_now
+	br i1 %cmp_slt, label %for_body, label %for_upd
+for_cond:
+;precursors: for_end for_upd 
+;successors: for_body for_end 
+	%i_addr_phi = phi i32 [ 0, %for_end ], [ %pre_add, %for_upd ]
+	%pointee_now = load i32, i32* @now, align 4
+	%cmp_slt = icmp slt i32 %i_addr_phi, %pointee_now
+	br i1 %cmp_slt, label %for_body, label %for_end
+for_body:
+;precursors: for_cond 
+;successors: if_then addphi_mid 
+	%arrayptr = getelementptr inbounds i32, i32* %new_array, i32 %i_addr_phi
+	%arrayptr = getelementptr inbounds i32, i32* %new_array, i32 %j_addr_phi
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%cmp_sgt = icmp sgt i32 %pointee_arrayptr, %pointee_arrayptr
+	br i1 %cmp_sgt, label %if_then, label %addphi_mid
+for_upd:
+;precursors: for_cond 
+;successors: for_cond 
+	%pre_add = add i32 %i_addr_phi, 1
+	%j_addr_phi = add i32 %j_addr_phi, 0
+	%temp_addr_phi = add i32 %temp_addr_phi, 0
+	%i_addr_phi = add i32 %pre_add, 0
+	br label %for_cond
+for_body:
+;precursors: for_cond 
+;successors: if_then for_upd 
+	%arrayptr = getelementptr inbounds i32, i32* %new_array, i32 %i_addr_phi
+	%binary_add = add i32 %i_addr_phi, 1
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%neq = icmp ne i32 %pointee_arrayptr, %binary_add
+	br i1 %neq, label %if_then, label %for_upd
+for_end:
+;precursors: for_cond 
+;successors: rootReturn 
+	%temp_addr_phi = add i32 %temp_addr_phi, 0
+	%j_addr_phi = add i32 %j_addr_phi, 0
+	%i_addr_phi = add i32 %i_addr_phi, 0
+	%rootRet = add i1 1, 0
+	br label %rootReturn
+if_then:
+;precursors: for_body 
+;successors: for_upd 
+	%arrayptr = getelementptr inbounds i32, i32* %new_array, i32 %i_addr_phi
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %new_array, i32 %i_addr_phi
+	%arrayptr = getelementptr inbounds i32, i32* %new_array, i32 %j_addr_phi
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	store i32 %pointee_arrayptr, i32* %arrayptr, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %new_array, i32 %j_addr_phi
+	store i32 %pointee_arrayptr, i32* %arrayptr, align 4
+	%temp_addr_phi = add i32 %pointee_arrayptr, 0
+	br label %for_upd
+addphi_mid:
+;precursors: for_body 
+;successors: for_upd 
+	%temp_addr_phi = add i32 %temp_addr_phi, 0
+	br label %for_upd
+if_then:
+;precursors: for_body 
+;successors: rootReturn 
+	%temp_addr_phi = add i32 %temp_addr_phi, 0
+	%j_addr_phi = add i32 %j_addr_phi, 0
+	%i_addr_phi = add i32 %i_addr_phi, 0
+	%rootRet = add i1 0, 0
+	br label %rootReturn
+for_upd:
+;precursors: for_body 
+;successors: for_cond 
+	%pre_add = add i32 %i_addr_phi, 1
+	%i_addr_phi = add i32 %pre_add, 0
+	br label %for_cond
+for_upd:
+;precursors: if_then addphi_mid 
+;successors: for_cond 
+	%pre_add = add i32 %j_addr_phi, 1
+	%temp_addr_phi = add i32 %temp_addr_phi, 0
+	%j_addr_phi = add i32 %pre_add, 0
+	br label %for_cond
+}
+define void @fun_move(){
+entry:
+;precursors: 
+;successors: for_cond 
+	%i_addr_phi = add i32 0, 0
+	br label %for_cond
+for_cond:
+;precursors: entry for_upd 
+;successors: for_body for_end 
+	%i_addr_phi = phi i32 [ 0, %entry ], [ %binary_add, %for_upd ]
+	%pointee_now = load i32, i32* @now, align 4
+	%cmp_slt = icmp slt i32 %i_addr_phi, %pointee_now
+	br i1 %cmp_slt, label %for_body, label %for_end
+for_body:
+;precursors: for_cond 
+;successors: for_upd 
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %i_addr_phi
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%pre_sub = sub i32 %pointee_arrayptr, 1
+	store i32 %pre_sub, i32* %arrayptr, align 4
+	%binary_add = add i32 %i_addr_phi, 1
+	br label %for_upd
+for_end:
+;precursors: for_cond 
+;successors: 
+	%pointee_a = load i32*, i32** @a, align 4
+	%pointee_now = load i32, i32* @now, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %pointee_now
+	%pointee_now = load i32, i32* @now, align 4
+	store i32 %pointee_now, i32* %arrayptr, align 4
+	%pointee_now = load i32, i32* @now, align 4
+	%suf_tmp = add i32 %pointee_now, 1
+	store i32 %suf_tmp, i32* @now, align 4
+	ret void
+for_upd:
+;precursors: for_body 
+;successors: for_cond 
+	%i_addr_phi = add i32 %binary_add, 0
+	br label %for_cond
+}
+define void @fun_swap(i32 %param_x, i32 %param_y){
+entry:
 ;precursors: 
 ;successors: 
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %param_x
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %param_x
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %param_y
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	store i32 %pointee_arrayptr, i32* %arrayptr, align 4
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %param_y
+	store i32 %pointee_arrayptr, i32* %arrayptr, align 4
+	ret void
+}
+define i1 @fun_pd(i32 %param_x){
+entry:
+;precursors: 
+;successors: for_cond 
+	br label %for_cond
+for_cond:
+;precursors: entry for_upd 
+;successors: for_body for_end 
+	%pointee_h = load i32, i32* @h, align 4
+	%cmp_sle = icmp sle i32 %pointee_h, %param_x
+	br i1 %cmp_sle, label %for_body, label %for_end
+for_body:
+;precursors: for_cond 
+;successors: if_then for_upd 
+	%pointee_h = load i32, i32* @h, align 4
+	%binary_add = add i32 %pointee_h, 1
+	%pointee_h = load i32, i32* @h, align 4
+	%binary_mul = mul i32 %pointee_h, %binary_add
+	%binary_sdiv = sdiv i32 %binary_mul, 2
+	%eq = icmp eq i32 %param_x, %binary_sdiv
+	br i1 %eq, label %if_then, label %for_upd
+for_end:
+;precursors: for_cond 
+;successors: rootReturn 
+	%rootRet = add i1 0, 0
+	br label %rootReturn
+if_then:
+;precursors: for_body 
+;successors: rootReturn 
+	%rootRet = add i1 1, 0
+	br label %rootReturn
+for_upd:
+;precursors: for_body 
+;successors: for_cond 
+	%pointee_h = load i32, i32* @h, align 4
+	%pre_add = add i32 %pointee_h, 1
+	store i32 %pre_add, i32* @h, align 4
+	br label %for_cond
+rootReturn:
+;precursors: if_then for_end 
+;successors: 
+	%rootRet = phi i1 [ 1, %if_then ], [ 0, %for_end ]
+	ret i1 %rootRet
+}
+define void @__init(){
+entry:
+;precursors: 
+;successors: 
+	store i32 48271, i32* @A, align 4
+	store i32 2147483647, i32* @M, align 4
+	store i32 1, i32* @seed, align 4
 	ret void
 }
 define i32 @main(){
-b.0:
+entry:
 ;precursors: 
-;successors: b.1 
+;successors: if_end if_then 
 	call void @__init()
-	%0 = mul i32 2801, 4
-	%1 = add i32 %0, 4
-	%2 = call noalias i8* @malloc(i32 %1)
-	%3 = bitcast i8* %2 to i32*
-	store i32 2801, i32* %3, align 4
-	%4 = getelementptr inbounds i32, i32* %3, i32 1
-	br label %b.1
-b.1:
-;precursors: b.0 b.4 
-;successors: b.2 b.3 
-	%5 = phi i32 [ 0, %b.0 ], [ %10, %b.4 ]
-	%6 = sub i32 %5, 2800
-	%7 = icmp ne i32 %6, 0
-	br i1 %7, label %b.2, label %b.3
-b.2:
-;precursors: b.1 
-;successors: b.4 
-	%8 = getelementptr inbounds i32, i32* %4, i32 %5
-	%9 = sdiv i32 10000, 5
-	store i32 %9, i32* %8, align 4
-	br label %b.4
-b.3:
-;precursors: b.1 
-;successors: b.5 
-	br label %b.5
-b.4:
-;precursors: b.2 
-;successors: b.1 
-	%10 = add i32 %5, 1
-	br label %b.1
-b.5:
-;precursors: b.3 b.14 
-;successors: b.6 b.7 
-	%11 = phi i32 [ 0, %b.3 ], [ %29, %b.14 ]
-	%12 = phi i32 [ 2800, %b.3 ], [ %33, %b.14 ]
-	%13 = phi i32 [ %5, %b.3 ], [ %31, %b.14 ]
-	%14 = phi i32 [ 0, %b.3 ], [ %30, %b.14 ]
-	%15 = phi i32 [ 0, %b.3 ], [ %38, %b.14 ]
-	%16 = mul i32 %12, 2
-	%17 = icmp eq i32 %16, 0
-	br i1 %17, label %b.6, label %b.7
-b.6:
-;precursors: b.5 
-;successors: b.8 
-	br label %b.8
-b.7:
-;precursors: b.5 
-;successors: b.9 
-	br label %b.9
-b.8:
-;precursors: b.6 
+	%binary_mul = mul i32 3, 7
+	%binary_mul = mul i32 %binary_mul, 10
+	store i32 %binary_mul, i32* @n, align 4
+	store i32 0, i32* @h, align 4
+	%puresz = mul i32 100, 4
+	%metasz = add i32 %puresz, 4
+	%allocptr = call noalias i8* @malloc(i32 %metasz)
+	%allocbitcast = bitcast i8* %allocptr to i32*
+	store i32 100, i32* %allocbitcast, align 4
+	%new_array = getelementptr inbounds i32, i32* %allocbitcast, i32 1
+	store i32* %new_array, i32** @a, align 4
+	%pointee_M = load i32, i32* @M, align 4
+	%pointee_A = load i32, i32* @A, align 4
+	%binary_sdiv = sdiv i32 %pointee_M, %pointee_A
+	store i32 %binary_sdiv, i32* @Q, align 4
+	%pointee_M = load i32, i32* @M, align 4
+	%pointee_A = load i32, i32* @A, align 4
+	%binary_srem = srem i32 %pointee_M, %pointee_A
+	store i32 %binary_srem, i32* @R, align 4
+	%pointee_n = load i32, i32* @n, align 4
+	%fun_cal_ret_val = call i1 @fun_pd(i32 %pointee_n)
+	br i1 %fun_cal_ret_val, label %if_end, label %if_then
+if_end:
+;precursors: entry 
+;successors: for_cond 
+	%resolved_main.3 = getelementptr inbounds [ 13 x i8 ], [ 13 x i8 ]* @main.3, i32 0, i32 0
+	call void @g_println(i8* %resolved_main.3)
+	call void @fun_initialize(i32 3654898)
+	%fun_cal_ret_val = call i32 @fun_random()
+	%binary_srem = srem i32 %fun_cal_ret_val, 10
+	%binary_add = add i32 %binary_srem, 1
+	store i32 %binary_add, i32* @now, align 4
+	%pointee_now = load i32, i32* @now, align 4
+	%fun_cal_ret_val = call i8* @g_toString(i32 %pointee_now)
+	call void @g_println(i8* %fun_cal_ret_val)
+	%temp_addr_phi = add i32 0, 0
+	%i_addr_phi = add i32 0, 0
+	br label %for_cond
+if_then:
+;precursors: entry 
+;successors: rootReturn 
+	%resolved_main.2 = getelementptr inbounds [ 80 x i8 ], [ 80 x i8 ]* @main.2, i32 0, i32 0
+	call void @g_println(i8* %resolved_main.2)
+	%i_addr_phi = add i32 0, 0
+	%count_addr_phi = add i32 0, 0
+	%temp_addr_phi = add i32 0, 0
+	%rootRet = add i32 1, 0
+	br label %rootReturn
+for_cond:
+;precursors: if_end for_upd 
+;successors: for_body for_end 
+	%temp_addr_phi = phi i32 [ 0, %if_end ], [ %binary_add, %for_upd ]
+	%i_addr_phi = phi i32 [ 0, %if_end ], [ %pre_add, %for_upd ]
+	%pointee_now = load i32, i32* @now, align 4
+	%binary_sub = sub i32 %pointee_now, 1
+	%cmp_slt = icmp slt i32 %i_addr_phi, %binary_sub
+	br i1 %cmp_slt, label %for_body, label %for_end
+rootReturn:
+;precursors: if_then while_end 
 ;successors: 
-	%18 = getelementptr inbounds [ 2 x i8 ], [ 2 x i8 ]* @main.0, i32 0, i32 0
-	call void @g_print(i8* %18)
-	ret i32 0
-b.9:
-;precursors: b.7 b.13 
-;successors: b.10 b.11 
-	%19 = phi i32 [ 0, %b.7 ], [ %37, %b.13 ]
-	%20 = phi i32 [ %16, %b.7 ], [ %30, %b.13 ]
-	%21 = phi i32 [ %12, %b.7 ], [ %31, %b.13 ]
-	%22 = getelementptr inbounds i32, i32* %4, i32 %21
-	%23 = load i32, i32* %22, align 4
-	%24 = mul i32 %23, 10000
-	%25 = add i32 %19, %24
-	%26 = getelementptr inbounds i32, i32* %4, i32 %21
-	%27 = sub i32 %20, 1
-	%28 = srem i32 %25, %27
-	store i32 %28, i32* %26, align 4
-	%29 = sdiv i32 %25, %27
-	%30 = sub i32 %27, 1
-	%31 = sub i32 %21, 1
-	%32 = icmp eq i32 %31, 0
-	br i1 %32, label %b.10, label %b.11
-b.10:
-;precursors: b.9 
-;successors: b.12 
-	br label %b.12
-b.11:
-;precursors: b.9 
-;successors: b.13 
-	br label %b.13
-b.12:
-;precursors: b.10 
-;successors: b.14 
-	%33 = sub i32 %12, 14
-	%34 = sdiv i32 %29, 10000
-	%35 = add i32 %15, %34
-	%36 = call i8* @g_toString(i32 %35)
-	call void @g_print(i8* %36)
-	br label %b.14
-b.13:
-;precursors: b.11 
-;successors: b.9 
-	%37 = mul i32 %29, %31
-	br label %b.9
-b.14:
-;precursors: b.12 
-;successors: b.5 
-	%38 = srem i32 %29, 10000
-	br label %b.5
+	%i_addr_phi = phi i32 [ 0, %if_then ], [ %i_addr_phi, %while_end ]
+	%count_addr_phi = phi i32 [ 0, %if_then ], [ %count_addr_phi, %while_end ]
+	%temp_addr_phi = phi i32 [ 0, %if_then ], [ %temp_addr_phi, %while_end ]
+	%rootRet = phi i32 [ 1, %if_then ], [ 0, %while_end ]
+	ret i32 %rootRet
+for_body:
+;precursors: for_cond 
+;successors: while_cond 
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %i_addr_phi
+	%fun_cal_ret_val = call i32 @fun_random()
+	%binary_srem = srem i32 %fun_cal_ret_val, 10
+	%binary_add = add i32 %binary_srem, 1
+	store i32 %binary_add, i32* %arrayptr, align 4
+	br label %while_cond
+for_end:
+;precursors: for_cond 
+;successors: while_cond 
+	%pointee_now = load i32, i32* @now, align 4
+	%binary_sub = sub i32 %pointee_now, 1
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %binary_sub
+	%pointee_n = load i32, i32* @n, align 4
+	%binary_sub = sub i32 %pointee_n, %temp_addr_phi
+	store i32 %binary_sub, i32* %arrayptr, align 4
+	call void @fun_show()
+	call void @fun_merge()
+	%count_addr_phi = add i32 0, 0
+	br label %while_cond
+while_cond:
+;precursors: for_body while_body 
+;successors: while_body while_end 
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %i_addr_phi
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%binary_add = add i32 %pointee_arrayptr, %temp_addr_phi
+	%pointee_n = load i32, i32* @n, align 4
+	%cmp_sgt = icmp sgt i32 %binary_add, %pointee_n
+	br i1 %cmp_sgt, label %while_body, label %while_end
+while_cond:
+;precursors: for_end while_body 
+;successors: while_end while_body 
+	%count_addr_phi = phi i32 [ 0, %for_end ], [ %pre_add, %while_body ]
+	%fun_cal_ret_val = call i1 @fun_win()
+	br i1 %fun_cal_ret_val, label %while_end, label %while_body
+while_body:
+;precursors: while_cond 
+;successors: while_cond 
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %i_addr_phi
+	%fun_cal_ret_val = call i32 @fun_random()
+	%binary_srem = srem i32 %fun_cal_ret_val, 10
+	%binary_add = add i32 %binary_srem, 1
+	store i32 %binary_add, i32* %arrayptr, align 4
+	br label %while_cond
+while_end:
+;precursors: while_cond 
+;successors: for_upd 
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %i_addr_phi
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%binary_add = add i32 %temp_addr_phi, %pointee_arrayptr
+	br label %for_upd
+while_end:
+;precursors: while_cond 
+;successors: rootReturn 
+	%resolved_main.6 = getelementptr inbounds [ 8 x i8 ], [ 8 x i8 ]* @main.6, i32 0, i32 0
+	%fun_cal_ret_val = call i8* @g_toString(i32 %count_addr_phi)
+	%binary_add_string = call i8* @g_stringadd(i8* %resolved_main.6, i8* %fun_cal_ret_val)
+	%resolved_main.7 = getelementptr inbounds [ 9 x i8 ], [ 9 x i8 ]* @main.7, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %resolved_main.7)
+	call void @g_println(i8* %binary_add_string)
+	%i_addr_phi = add i32 %i_addr_phi, 0
+	%count_addr_phi = add i32 %count_addr_phi, 0
+	%temp_addr_phi = add i32 %temp_addr_phi, 0
+	%rootRet = add i32 0, 0
+	br label %rootReturn
+while_body:
+;precursors: while_cond 
+;successors: while_cond 
+	%resolved_main.4 = getelementptr inbounds [ 6 x i8 ], [ 6 x i8 ]* @main.4, i32 0, i32 0
+	%pre_add = add i32 %count_addr_phi, 1
+	%fun_cal_ret_val = call i8* @g_toString(i32 %pre_add)
+	%binary_add_string = call i8* @g_stringadd(i8* %resolved_main.4, i8* %fun_cal_ret_val)
+	%resolved_main.5 = getelementptr inbounds [ 2 x i8 ], [ 2 x i8 ]* @main.5, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %resolved_main.5)
+	call void @g_println(i8* %binary_add_string)
+	call void @fun_move()
+	call void @fun_merge()
+	call void @fun_show()
+	%count_addr_phi = add i32 %pre_add, 0
+	br label %while_cond
+for_upd:
+;precursors: while_end 
+;successors: for_cond 
+	%pre_add = add i32 %i_addr_phi, 1
+	%temp_addr_phi = add i32 %binary_add, 0
+	%i_addr_phi = add i32 %pre_add, 0
+	br label %for_cond
+}
+define void @fun_show(){
+entry:
+;precursors: 
+;successors: for_cond 
+	%i_addr_phi = add i32 0, 0
+	br label %for_cond
+for_cond:
+;precursors: entry for_upd 
+;successors: for_body for_end 
+	%i_addr_phi = phi i32 [ 0, %entry ], [ %pre_add, %for_upd ]
+	%pointee_now = load i32, i32* @now, align 4
+	%cmp_slt = icmp slt i32 %i_addr_phi, %pointee_now
+	br i1 %cmp_slt, label %for_body, label %for_end
+for_body:
+;precursors: for_cond 
+;successors: for_upd 
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %i_addr_phi
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%fun_cal_ret_val = call i8* @g_toString(i32 %pointee_arrayptr)
+	%resolved_fun_show.0 = getelementptr inbounds [ 2 x i8 ], [ 2 x i8 ]* @fun_show.0, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %fun_cal_ret_val, i8* %resolved_fun_show.0)
+	call void @g_print(i8* %binary_add_string)
+	br label %for_upd
+for_end:
+;precursors: for_cond 
+;successors: 
+	%resolved_fun_show.1 = getelementptr inbounds [ 1 x i8 ], [ 1 x i8 ]* @fun_show.1, i32 0, i32 0
+	call void @g_println(i8* %resolved_fun_show.1)
+	ret void
+for_upd:
+;precursors: for_body 
+;successors: for_cond 
+	%pre_add = add i32 %i_addr_phi, 1
+	%i_addr_phi = add i32 %pre_add, 0
+	br label %for_cond
+}
+define i32 @fun_random(){
+entry:
+;precursors: 
+;successors: if_then else_then 
+	%pointee_seed = load i32, i32* @seed, align 4
+	%pointee_Q = load i32, i32* @Q, align 4
+	%binary_srem = srem i32 %pointee_seed, %pointee_Q
+	%pointee_A = load i32, i32* @A, align 4
+	%binary_mul = mul i32 %pointee_A, %binary_srem
+	%pointee_seed = load i32, i32* @seed, align 4
+	%pointee_Q = load i32, i32* @Q, align 4
+	%binary_sdiv = sdiv i32 %pointee_seed, %pointee_Q
+	%pointee_R = load i32, i32* @R, align 4
+	%binary_mul = mul i32 %pointee_R, %binary_sdiv
+	%binary_sub = sub i32 %binary_mul, %binary_mul
+	%cmp_sge = icmp sge i32 %binary_sub, 0
+	br i1 %cmp_sge, label %if_then, label %else_then
+if_then:
+;precursors: entry 
+;successors: if_end 
+	store i32 %binary_sub, i32* @seed, align 4
+	br label %if_end
+else_then:
+;precursors: entry 
+;successors: if_end 
+	%pointee_M = load i32, i32* @M, align 4
+	%binary_add = add i32 %binary_sub, %pointee_M
+	store i32 %binary_add, i32* @seed, align 4
+	br label %if_end
+if_end:
+;precursors: if_then else_then 
+;successors: 
+	%pointee_seed = load i32, i32* @seed, align 4
+	ret i32 %pointee_seed
+}
+define void @fun_initialize(i32 %param_val){
+entry:
+;precursors: 
+;successors: 
+	store i32 %param_val, i32* @seed, align 4
+	ret void
+}
+define void @fun_merge(){
+entry:
+;precursors: 
+;successors: for_cond 
+	%i_addr_phi = add i32 0, 0
+	%j_addr_phi = add i32 65536, 0
+	br label %for_cond
+for_cond:
+;precursors: entry for_upd 
+;successors: for_body for_end 
+	%i_addr_phi = phi i32 [ 0, %entry ], [ %pre_add, %for_upd ]
+	%j_addr_phi = phi i32 [ 65536, %entry ], [ %j_addr_phi, %for_upd ]
+	%pointee_now = load i32, i32* @now, align 4
+	%cmp_slt = icmp slt i32 %i_addr_phi, %pointee_now
+	br i1 %cmp_slt, label %for_body, label %for_end
+for_body:
+;precursors: for_cond 
+;successors: if_then addphi_mid 
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %i_addr_phi
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%eq = icmp eq i32 %pointee_arrayptr, 0
+	br i1 %eq, label %if_then, label %addphi_mid
+for_end:
+;precursors: for_cond 
+;successors: for_cond 
+	%i_addr_phi = add i32 0, 0
+	br label %for_cond
+if_then:
+;precursors: for_body 
+;successors: for_cond 
+	%binary_add = add i32 %i_addr_phi, 1
+	%j_addr_phi = add i32 %binary_add, 0
+	br label %for_cond
+addphi_mid:
+;precursors: for_body 
+;successors: for_upd 
+	%j_addr_phi = add i32 %j_addr_phi, 0
+	br label %for_upd
+for_cond:
+;precursors: for_end for_upd 
+;successors: for_body for_end 
+	%i_addr_phi = phi i32 [ 0, %for_end ], [ %pre_add, %for_upd ]
+	%pointee_now = load i32, i32* @now, align 4
+	%cmp_slt = icmp slt i32 %i_addr_phi, %pointee_now
+	br i1 %cmp_slt, label %for_body, label %for_end
+for_cond:
+;precursors: if_then for_upd 
+;successors: for_body for_end 
+	%j_addr_phi = phi i32 [ %binary_add, %if_then ], [ %pre_add, %for_upd ]
+	%pointee_now = load i32, i32* @now, align 4
+	%cmp_slt = icmp slt i32 %j_addr_phi, %pointee_now
+	br i1 %cmp_slt, label %for_body, label %for_end
+for_upd:
+;precursors: addphi_mid for_end 
+;successors: for_cond 
+	%pre_add = add i32 %i_addr_phi, 1
+	%i_addr_phi = add i32 %pre_add, 0
+	%j_addr_phi = add i32 %j_addr_phi, 0
+	br label %for_cond
+for_body:
+;precursors: for_cond 
+;successors: if_then for_upd 
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %i_addr_phi
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%eq = icmp eq i32 %pointee_arrayptr, 0
+	br i1 %eq, label %if_then, label %for_upd
+for_end:
+;precursors: if_then for_cond 
+;successors: 
+	ret void
+for_body:
+;precursors: for_cond 
+;successors: if_then for_upd 
+	%pointee_a = load i32*, i32** @a, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %j_addr_phi
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%neq = icmp ne i32 %pointee_arrayptr, 0
+	br i1 %neq, label %if_then, label %for_upd
+for_end:
+;precursors: if_then for_cond 
+;successors: for_upd 
+	%j_addr_phi = add i32 %j_addr_phi, 0
+	br label %for_upd
+if_then:
+;precursors: for_body 
+;successors: for_end 
+	store i32 %i_addr_phi, i32* @now, align 4
+	br label %for_end
+for_upd:
+;precursors: for_body 
+;successors: for_cond 
+	%pre_add = add i32 %i_addr_phi, 1
+	%i_addr_phi = add i32 %pre_add, 0
+	br label %for_cond
+if_then:
+;precursors: for_body 
+;successors: for_end 
+	call void @fun_swap(i32 %i_addr_phi, i32 %j_addr_phi)
+	br label %for_end
+for_upd:
+;precursors: for_body 
+;successors: for_cond 
+	%pre_add = add i32 %j_addr_phi, 1
+	%j_addr_phi = add i32 %pre_add, 0
+	br label %for_cond
 }
