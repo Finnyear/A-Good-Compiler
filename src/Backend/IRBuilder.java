@@ -271,7 +271,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
                 if(it.expr.isAssignable()) current_block.addinst(new Store(it.operand, it.expr.operand, current_block));
             }
             case sub -> {
-                current_block.addinst(new Binary(Binary.Opcode.sub, tmp, new intConst(-1, 32), (Register) it.operand, current_block));
+                current_block.addinst(new Binary(Binary.Opcode.sub, tmp, new intConst(1, 32), (Register) it.operand, current_block));
                 if(it.expr.isAssignable()) current_block.addinst(new Store(it.operand, it.expr.operand, current_block));
             }
             case pls -> it.operand = it.expr.operand;

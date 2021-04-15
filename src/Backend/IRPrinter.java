@@ -16,9 +16,20 @@ public class IRPrinter {
     private int symbolcounter, blockcounter;
     private ArrayList<IRBlock> visited = new ArrayList<>();
     private PrintStream out;
+    private boolean rename;
 
-    public IRPrinter(PrintStream out){
-        this.out = out;
+    public IRPrinter(PrintStream out, boolean rename){
+        this.out = out; this.rename = rename;
+    }
+
+    private void renameblock(IRBlock block){
+        block.Phis.forEach((register, phi) -> register.name = "" + symbolcounter++);
+        for(Inst inst = block.gethead(); inst != null; inst = block.getnxt(inst)){
+            if(inst.dest != null) {
+                inst.dest.name = "" + symbolcounter++;
+//                System.out.println(inst);
+            }
+        }
     }
 
     public void printblock(IRBlock block){
@@ -30,7 +41,7 @@ public class IRPrinter {
         block.suc_block.forEach(suc -> out.print(suc.name + " "));
         out.print("\n");
         block.Phis.forEach((reg, phi) -> out.println("\t" + phi.toString()));
-        for(Inst inst = block.head_inst == null ? block.terminate : block.head_inst; inst != null; inst = block.getnxt(inst))
+        for(Inst inst = block.gethead(); inst != null; inst = block.getnxt(inst))
             out.println("\t" + inst.toString());
     }
 
@@ -40,6 +51,7 @@ public class IRPrinter {
         visited.add(func.entryblock);
         while(!blocks.isEmpty()){
             IRBlock check = blocks.poll();
+            if(rename) check.name = "b." + blockcounter++;
             check.suc_block.forEach(block -> {
 //                if(!func.blocks.contains(block)){check.suc_block.remove(block);}
                 if(block != null && !visited.contains(block)){
@@ -56,6 +68,7 @@ public class IRPrinter {
         int sz = func.params.size();
         for(int i = 0; i < sz; i++){
             Param param = func.params.get(i);
+            if (rename) param.name = "" + symbolcounter++;
             ret.append(param.type.toString()).append(" ");
             ret.append(param.toString()).append(i == sz - 1 ? ")" : ", ");
         }
@@ -69,7 +82,8 @@ public class IRPrinter {
         out.println(fnhead(func, false));
         visited.clear();
         colletwithrename(func);
-        func.blocks.forEach(this::printblock);
+        if (rename) visited.forEach(this::renameblock);
+        visited.forEach(this::printblock);
         out.println("}");
     }
 

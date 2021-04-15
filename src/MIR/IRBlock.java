@@ -25,6 +25,11 @@ public class IRBlock {
         else return inst.nxt;
     }
 
+    public Inst gethead(){
+        if(head_inst == null) return terminate;
+        return head_inst;
+    }
+
     public Inst gettail(){
         if(terminate == null) return tail_inst;
         else return terminate;

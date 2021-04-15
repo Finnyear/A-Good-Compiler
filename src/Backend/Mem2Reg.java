@@ -45,7 +45,7 @@ public class Mem2Reg {
 
 
         for (IRBlock block : func.blocks) {
-            for (Inst inst = block.head_inst == null ? block.terminate : block.head_inst; inst != null;) {
+            for (Inst inst = block.gethead(); inst != null;) {
                 Inst tmp = block.getnxt(inst);
                 if (inst instanceof Load) {
                     entity addr = ((Load) inst).addr;

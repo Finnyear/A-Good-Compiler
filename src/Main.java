@@ -62,9 +62,9 @@ public class Main {
             new IRBuilder(global_scope, IRroot).visit(rt);
 //            System.out.println("add_phi");
             new Mem2Reg(IRroot).run();
+//            new IRPrinter(new PrintStream("output.ll"), true).run(IRroot);
             IRroot.addphi();
 //            if(emitLLVM)
-            new IRPrinter(new PrintStream("output.ll")).run(IRroot);
 //
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();

@@ -21,7 +21,7 @@ public class IRFnGraph {
         IRroot.functions.forEach((name, func) -> {
             func.callfunctions.clear();
             func.blocks.forEach(block -> {
-                for(Inst inst = block.head_inst == null ? block.terminate : block.head_inst; inst != null; inst = block.getnxt(inst)){
+                for(Inst inst = block.gethead(); inst != null; inst = block.getnxt(inst)){
                     if(inst instanceof Call && !(IRroot.isbuiltin(((Call)inst).callee.name))){
                         func.addcalleefunction(((Call)inst).callee);
                         if(callercollect) caller.get(((Call)inst).callee).add(func);
