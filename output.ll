@@ -36,7 +36,7 @@ else_then:
 	%rootRet = add i32 %binary_add, 0
 	br label %rootReturn
 if_then:
-;precursors: if_then lor_cond 
+;precursors: lor_cond if_then 
 ;successors: rootReturn 
 	%fun_cal_ret_val = call i32 @fun_test(i32 %param_w, i32 %param_e, i32 %param_r, i32 %param_t, i32 %param_y, i32 %param_u, i32 %param_i, i32 %param_o, i32 %param_p, i32 %param_q)
 	%binary_add = add i32 %fun_cal_ret_val, 1
@@ -62,10 +62,66 @@ else_then:
 	%rootRet = add i32 %binary_add, 0
 	br label %rootReturn
 }
+define i32 @fun_rng(i32 %param_rng_seed){
+entry:
+;precursors: 
+;successors: 
+	%fun_cal_ret_val = call i32 @fun_unsigned_shl(i32 %param_rng_seed, i32 13)
+	%binary_xor = xor i32 %param_rng_seed, %fun_cal_ret_val
+	%fun_cal_ret_val = call i32 @fun_unsigned_shr(i32 %binary_xor, i32 17)
+	%binary_xor = xor i32 %binary_xor, %fun_cal_ret_val
+	%fun_cal_ret_val = call i32 @fun_unsigned_shl(i32 %binary_xor, i32 5)
+	%binary_xor = xor i32 %binary_xor, %fun_cal_ret_val
+	%binary_and = and i32 %binary_xor, 1073741823
+	ret i32 %binary_and
+}
+define i32 @fun_unsigned_shr(i32 %param_x, i32 %param_k){
+entry:
+;precursors: 
+;successors: if_then else_then 
+	%binary_shl = shl i32 1, 31
+	%cmp_sge = icmp sge i32 %param_x, 0
+	br i1 %cmp_sge, label %if_then, label %else_then
+if_then:
+;precursors: entry 
+;successors: rootReturn 
+	%binary_ashr = ashr i32 %param_x, %param_k
+	%rootRet = add i32 %binary_ashr, 0
+	br label %rootReturn
+else_then:
+;precursors: entry 
+;successors: rootReturn 
+	%binary_sub = sub i32 31, %param_k
+	%binary_shl = shl i32 1, %binary_sub
+	%binary_xor = xor i32 %param_x, %binary_shl
+	%binary_ashr = ashr i32 %binary_xor, %param_k
+	%binary_or = or i32 %binary_shl, %binary_ashr
+	%rootRet = add i32 %binary_or, 0
+	br label %rootReturn
+rootReturn:
+;precursors: if_then else_then 
+;successors: 
+	%rootRet = phi i32 [ %binary_ashr, %if_then ], [ %binary_or, %else_then ]
+	ret i32 %rootRet
+}
+define void @__init(){
+entry:
+;precursors: 
+;successors: 
+	ret void
+}
+define i32 @fun_unsigned_shl(i32 %param_x, i32 %param_k){
+entry:
+;precursors: 
+;successors: 
+	%binary_shl = shl i32 %param_x, %param_k
+	ret i32 %binary_shl
+}
 define i32 @main(){
 entry:
 ;precursors: 
 ;successors: for_body 
+	call void @__init()
 	%w_addr_phi = add i32 65536, 0
 	%rng_seed_addr_phi = add i32 19260817, 0
 	%y_addr_phi = add i32 65536, 0
@@ -77,256 +133,60 @@ entry:
 	%v_addr_phi = add i32 65536, 0
 	br label %for_body
 for_body:
-;precursors: for_upd entry 
-;successors: if_then_inline_inline else_then_inline_inline 
-	%w_addr_phi = phi i32 [ 65536, %entry ], [ %binary_and, %for_upd ]
-	%rng_seed_addr_phi = phi i32 [ 19260817, %entry ], [ %binary_and, %for_upd ]
-	%y_addr_phi = phi i32 [ 65536, %entry ], [ %binary_and, %for_upd ]
-	%zz_addr_phi = phi i32 [ 65536, %entry ], [ %binary_and, %for_upd ]
-	%u_addr_phi = phi i32 [ 65536, %entry ], [ %binary_and, %for_upd ]
-	%z_addr_phi = phi i32 [ 65536, %entry ], [ %binary_and, %for_upd ]
-	%x_addr_phi = phi i32 [ 65536, %entry ], [ %binary_and, %for_upd ]
-	%sum_addr_phi = phi i32 [ 0, %entry ], [ %binary_xor, %for_upd ]
-	%v_addr_phi = phi i32 [ 65536, %entry ], [ %binary_and, %for_upd ]
-	%binary_shl = shl i32 %rng_seed_addr_phi, 13
-	%binary_xor = xor i32 %rng_seed_addr_phi, %binary_shl
-	%binary_shl = shl i32 1, 31
-	%cmp_sge = icmp sge i32 %binary_xor, 0
-	br i1 %cmp_sge, label %if_then_inline_inline, label %else_then_inline_inline
-if_then_inline_inline:
-;precursors: for_body 
-;successors: rootReturn_inline_inline 
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%rootRet = add i32 %binary_ashr, 0
-	br label %rootReturn_inline_inline
-else_then_inline_inline:
-;precursors: for_body 
-;successors: rootReturn_inline_inline 
-	%binary_sub = sub i32 31, 17
-	%binary_shl = shl i32 1, %binary_sub
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%binary_or = or i32 %binary_shl, %binary_ashr
-	%rootRet = add i32 %binary_or, 0
-	br label %rootReturn_inline_inline
-rootReturn_inline_inline:
-;precursors: else_then_inline_inline if_then_inline_inline 
-;successors: if_then_inline_inline else_then_inline_inline 
-	%rootRet = phi i32 [ %binary_ashr, %if_then_inline_inline ], [ %binary_or, %else_then_inline_inline ]
-	%binary_xor = xor i32 %binary_xor, %rootRet
-	%binary_shl = shl i32 %binary_xor, 5
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_and = and i32 %binary_xor, 1073741823
-	%binary_shl = shl i32 %binary_and, 13
-	%binary_xor = xor i32 %binary_and, %binary_shl
-	%binary_shl = shl i32 1, 31
-	%cmp_sge = icmp sge i32 %binary_xor, 0
-	br i1 %cmp_sge, label %if_then_inline_inline, label %else_then_inline_inline
-if_then_inline_inline:
-;precursors: rootReturn_inline_inline 
-;successors: rootReturn_inline_inline 
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%rootRet = add i32 %binary_ashr, 0
-	br label %rootReturn_inline_inline
-else_then_inline_inline:
-;precursors: rootReturn_inline_inline 
-;successors: rootReturn_inline_inline 
-	%binary_sub = sub i32 31, 17
-	%binary_shl = shl i32 1, %binary_sub
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%binary_or = or i32 %binary_shl, %binary_ashr
-	%rootRet = add i32 %binary_or, 0
-	br label %rootReturn_inline_inline
-rootReturn_inline_inline:
-;precursors: else_then_inline_inline if_then_inline_inline 
+;precursors: entry for_upd 
 ;successors: if_then for_end 
-	%rootRet = phi i32 [ %binary_ashr, %if_then_inline_inline ], [ %binary_or, %else_then_inline_inline ]
-	%binary_xor = xor i32 %binary_xor, %rootRet
-	%binary_shl = shl i32 %binary_xor, 5
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_and = and i32 %binary_xor, 1073741823
-	%binary_and = and i32 %binary_and, 255
-	%binary_and = and i32 %binary_and, 255
+	%w_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
+	%rng_seed_addr_phi = phi i32 [ 19260817, %entry ], [ %fun_cal_ret_val, %for_upd ]
+	%y_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
+	%zz_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
+	%u_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
+	%z_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
+	%x_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
+	%sum_addr_phi = phi i32 [ 0, %entry ], [ %binary_xor, %for_upd ]
+	%v_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
+	%fun_cal_ret_val = call i32 @fun_rng(i32 %rng_seed_addr_phi)
+	%fun_cal_ret_val = call i32 @fun_rng(i32 %fun_cal_ret_val)
+	%binary_and = and i32 %fun_cal_ret_val, 255
+	%binary_and = and i32 %fun_cal_ret_val, 255
 	%neq = icmp ne i32 %binary_and, %binary_and
 	br i1 %neq, label %if_then, label %for_end
 if_then:
-;precursors: rootReturn_inline_inline 
-;successors: if_then_inline else_then_inline 
-	%binary_shl = shl i32 %binary_and, 13
-	%binary_xor = xor i32 %binary_and, %binary_shl
-	%binary_shl = shl i32 1, 31
-	%cmp_sge = icmp sge i32 %binary_xor, 0
-	br i1 %cmp_sge, label %if_then_inline, label %else_then_inline
-for_end:
-;precursors: rootReturn_inline_inline 
-;successors: 
-	%binary_sub = sub i32 %sum_addr_phi, 19
-	ret i32 %binary_sub
-if_then_inline:
-;precursors: if_then 
-;successors: rootReturn_inline 
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%rootRet = add i32 %binary_ashr, 0
-	br label %rootReturn_inline
-else_then_inline:
-;precursors: if_then 
-;successors: rootReturn_inline 
-	%binary_sub = sub i32 31, 17
-	%binary_shl = shl i32 1, %binary_sub
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%binary_or = or i32 %binary_shl, %binary_ashr
-	%rootRet = add i32 %binary_or, 0
-	br label %rootReturn_inline
-rootReturn_inline:
-;precursors: else_then_inline if_then_inline 
-;successors: if_then_inline else_then_inline 
-	%rootRet = phi i32 [ %binary_ashr, %if_then_inline ], [ %binary_or, %else_then_inline ]
-	%binary_xor = xor i32 %binary_xor, %rootRet
-	%binary_shl = shl i32 %binary_xor, 5
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_and = and i32 %binary_xor, 1073741823
-	%binary_shl = shl i32 %binary_and, 13
-	%binary_xor = xor i32 %binary_and, %binary_shl
-	%binary_shl = shl i32 1, 31
-	%cmp_sge = icmp sge i32 %binary_xor, 0
-	br i1 %cmp_sge, label %if_then_inline, label %else_then_inline
-if_then_inline:
-;precursors: rootReturn_inline 
-;successors: rootReturn_inline 
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%rootRet = add i32 %binary_ashr, 0
-	br label %rootReturn_inline
-else_then_inline:
-;precursors: rootReturn_inline 
-;successors: rootReturn_inline 
-	%binary_sub = sub i32 31, 17
-	%binary_shl = shl i32 1, %binary_sub
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%binary_or = or i32 %binary_shl, %binary_ashr
-	%rootRet = add i32 %binary_or, 0
-	br label %rootReturn_inline
-rootReturn_inline:
-;precursors: else_then_inline if_then_inline 
-;successors: if_then_inline else_then_inline 
-	%rootRet = phi i32 [ %binary_ashr, %if_then_inline ], [ %binary_or, %else_then_inline ]
-	%binary_xor = xor i32 %binary_xor, %rootRet
-	%binary_shl = shl i32 %binary_xor, 5
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_and = and i32 %binary_xor, 1073741823
-	%binary_shl = shl i32 %binary_and, 13
-	%binary_xor = xor i32 %binary_and, %binary_shl
-	%binary_shl = shl i32 1, 31
-	%cmp_sge = icmp sge i32 %binary_xor, 0
-	br i1 %cmp_sge, label %if_then_inline, label %else_then_inline
-if_then_inline:
-;precursors: rootReturn_inline 
-;successors: rootReturn_inline 
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%rootRet = add i32 %binary_ashr, 0
-	br label %rootReturn_inline
-else_then_inline:
-;precursors: rootReturn_inline 
-;successors: rootReturn_inline 
-	%binary_sub = sub i32 31, 17
-	%binary_shl = shl i32 1, %binary_sub
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%binary_or = or i32 %binary_shl, %binary_ashr
-	%rootRet = add i32 %binary_or, 0
-	br label %rootReturn_inline
-rootReturn_inline:
-;precursors: else_then_inline if_then_inline 
-;successors: if_then_inline_inline else_then_inline_inline 
-	%rootRet = phi i32 [ %binary_ashr, %if_then_inline ], [ %binary_or, %else_then_inline ]
-	%binary_xor = xor i32 %binary_xor, %rootRet
-	%binary_shl = shl i32 %binary_xor, 5
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_and = and i32 %binary_xor, 1073741823
-	%binary_shl = shl i32 %binary_and, 13
-	%binary_xor = xor i32 %binary_and, %binary_shl
-	%binary_shl = shl i32 1, 31
-	%cmp_sge = icmp sge i32 %binary_xor, 0
-	br i1 %cmp_sge, label %if_then_inline_inline, label %else_then_inline_inline
-if_then_inline_inline:
-;precursors: rootReturn_inline 
-;successors: rootReturn_inline_inline 
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%rootRet = add i32 %binary_ashr, 0
-	br label %rootReturn_inline_inline
-else_then_inline_inline:
-;precursors: rootReturn_inline 
-;successors: rootReturn_inline_inline 
-	%binary_sub = sub i32 31, 17
-	%binary_shl = shl i32 1, %binary_sub
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%binary_or = or i32 %binary_shl, %binary_ashr
-	%rootRet = add i32 %binary_or, 0
-	br label %rootReturn_inline_inline
-rootReturn_inline_inline:
-;precursors: else_then_inline_inline if_then_inline_inline 
-;successors: if_then_inline_inline else_then_inline_inline 
-	%rootRet = phi i32 [ %binary_ashr, %if_then_inline_inline ], [ %binary_or, %else_then_inline_inline ]
-	%binary_xor = xor i32 %binary_xor, %rootRet
-	%binary_shl = shl i32 %binary_xor, 5
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_and = and i32 %binary_xor, 1073741823
-	%binary_shl = shl i32 %binary_and, 13
-	%binary_xor = xor i32 %binary_and, %binary_shl
-	%binary_shl = shl i32 1, 31
-	%cmp_sge = icmp sge i32 %binary_xor, 0
-	br i1 %cmp_sge, label %if_then_inline_inline, label %else_then_inline_inline
-if_then_inline_inline:
-;precursors: rootReturn_inline_inline 
-;successors: rootReturn_inline_inline 
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%rootRet = add i32 %binary_ashr, 0
-	br label %rootReturn_inline_inline
-else_then_inline_inline:
-;precursors: rootReturn_inline_inline 
-;successors: rootReturn_inline_inline 
-	%binary_sub = sub i32 31, 17
-	%binary_shl = shl i32 1, %binary_sub
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_ashr = ashr i32 %binary_xor, 17
-	%binary_or = or i32 %binary_shl, %binary_ashr
-	%rootRet = add i32 %binary_or, 0
-	br label %rootReturn_inline_inline
-rootReturn_inline_inline:
-;precursors: else_then_inline_inline if_then_inline_inline 
+;precursors: for_body 
 ;successors: for_upd 
-	%rootRet = phi i32 [ %binary_ashr, %if_then_inline_inline ], [ %binary_or, %else_then_inline_inline ]
-	%binary_xor = xor i32 %binary_xor, %rootRet
-	%binary_shl = shl i32 %binary_xor, 5
-	%binary_xor = xor i32 %binary_xor, %binary_shl
-	%binary_and = and i32 %binary_xor, 1073741823
-	%binary_and = and i32 %binary_and, 3
-	%binary_ashr = ashr i32 %binary_and, 28
-	%binary_and = and i32 %binary_and, 1
-	%binary_ashr = ashr i32 %binary_and, 29
-	%binary_ashr = ashr i32 %binary_and, 25
-	%binary_and = and i32 %binary_and, 31
-	%binary_ashr = ashr i32 %binary_and, 15
-	%binary_and = and i32 %binary_and, 32767
-	%binary_ashr = ashr i32 %binary_and, 15
-	%binary_and = and i32 %binary_and, 32767
+	%fun_cal_ret_val = call i32 @fun_rng(i32 %fun_cal_ret_val)
+	%fun_cal_ret_val = call i32 @fun_rng(i32 %fun_cal_ret_val)
+	%fun_cal_ret_val = call i32 @fun_rng(i32 %fun_cal_ret_val)
+	%fun_cal_ret_val = call i32 @fun_rng(i32 %fun_cal_ret_val)
+	%fun_cal_ret_val = call i32 @fun_rng(i32 %fun_cal_ret_val)
+	%binary_and = and i32 %fun_cal_ret_val, 3
+	%binary_ashr = ashr i32 %fun_cal_ret_val, 28
+	%binary_and = and i32 %fun_cal_ret_val, 1
+	%binary_ashr = ashr i32 %fun_cal_ret_val, 29
+	%binary_ashr = ashr i32 %fun_cal_ret_val, 25
+	%binary_and = and i32 %fun_cal_ret_val, 31
+	%binary_ashr = ashr i32 %fun_cal_ret_val, 15
+	%binary_and = and i32 %fun_cal_ret_val, 32767
+	%binary_ashr = ashr i32 %fun_cal_ret_val, 15
+	%binary_and = and i32 %fun_cal_ret_val, 32767
 	%fun_cal_ret_val = call i32 @fun_test(i32 %binary_and, i32 %binary_ashr, i32 %binary_and, i32 %binary_ashr, i32 %binary_ashr, i32 %binary_and, i32 %binary_ashr, i32 %binary_and, i32 %binary_ashr, i32 %binary_and)
 	%binary_xor = xor i32 %sum_addr_phi, %fun_cal_ret_val
 	br label %for_upd
+for_end:
+;precursors: for_body 
+;successors: 
+	%binary_sub = sub i32 %sum_addr_phi, 19
+	ret i32 %binary_sub
 for_upd:
-;precursors: rootReturn_inline_inline 
+;precursors: if_then 
 ;successors: for_body 
-	%w_addr_phi = add i32 %binary_and, 0
-	%rng_seed_addr_phi = add i32 %binary_and, 0
-	%y_addr_phi = add i32 %binary_and, 0
-	%zz_addr_phi = add i32 %binary_and, 0
-	%u_addr_phi = add i32 %binary_and, 0
-	%z_addr_phi = add i32 %binary_and, 0
-	%x_addr_phi = add i32 %binary_and, 0
+	%w_addr_phi = add i32 %fun_cal_ret_val, 0
+	%rng_seed_addr_phi = add i32 %fun_cal_ret_val, 0
+	%y_addr_phi = add i32 %fun_cal_ret_val, 0
+	%zz_addr_phi = add i32 %fun_cal_ret_val, 0
+	%u_addr_phi = add i32 %fun_cal_ret_val, 0
+	%z_addr_phi = add i32 %fun_cal_ret_val, 0
+	%x_addr_phi = add i32 %fun_cal_ret_val, 0
 	%sum_addr_phi = add i32 %binary_xor, 0
-	%v_addr_phi = add i32 %binary_and, 0
+	%v_addr_phi = add i32 %fun_cal_ret_val, 0
 	br label %for_body
 }

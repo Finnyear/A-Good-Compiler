@@ -62,7 +62,10 @@ public class Main {
 
             new IRBuilder(global_scope, IRroot).visit(rt);
             new Mem2Reg(IRroot).run();
-            if(doOptimization) new Finline(IRroot).run();
+            if(doOptimization) {
+                new Finline(IRroot, false).run();
+                new Finline(IRroot, true).run();
+            }
             IRroot.resolvephi();
             new IRPrinter(new PrintStream("output.ll"), false).run(IRroot);
             LRoot lroot = new InstSelection(IRroot).run();
