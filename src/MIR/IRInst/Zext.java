@@ -3,6 +3,7 @@ package MIR.IRInst;
 import MIR.IRBlock;
 import MIR.IROperand.Register;
 import MIR.IROperand.entity;
+import Util.IRMirror;
 
 import java.util.HashSet;
 
@@ -32,6 +33,11 @@ public class Zext extends Inst{
         HashSet<entity> ret = new HashSet<>();
         ret.add(src);
         return ret;
+    }
+
+    @Override
+    public void addmirror(IRBlock block, IRMirror mirror) {
+        block.addinst(new Zext(mirror.opMir(src), (Register) mirror.opMir(dest), block));
     }
 
     @Override

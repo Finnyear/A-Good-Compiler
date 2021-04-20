@@ -33,4 +33,10 @@ public class Param extends entity{
     public void removeuse(Inst inst) {
         uses.remove(inst);
     }
+
+
+    @Override
+    public entity copy() {
+        return new Param(type, name);
+    }
 }

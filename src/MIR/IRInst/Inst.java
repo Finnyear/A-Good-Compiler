@@ -3,6 +3,7 @@ package MIR.IRInst;
 import MIR.IRBlock;
 import MIR.IROperand.Register;
 import MIR.IROperand.entity;
+import Util.IRMirror;
 
 import java.util.HashSet;
 
@@ -16,6 +17,7 @@ abstract public class Inst {
     public abstract void removeself(boolean isremovefromblock);
     public abstract void replaceentity(entity old, entity neww);
     public abstract HashSet<entity> uses();
+    public abstract void addmirror(IRBlock block, IRMirror mirror);
 
     public abstract String toString();
 }

@@ -35,6 +35,12 @@ public class Register extends entity{
         uses.remove(inst);
     }
 
+
+    @Override
+    public entity copy() {
+        return new Register(type, name);
+    }
+
     public void replaceusewith(entity neww){
         uses.forEach(inst -> {
             inst.replaceentity(this, neww);

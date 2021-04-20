@@ -3,6 +3,7 @@ package MIR.IRInst;
 import MIR.IRBlock;
 import MIR.IROperand.Register;
 import MIR.IROperand.entity;
+import Util.IRMirror;
 
 import java.util.HashSet;
 
@@ -31,6 +32,12 @@ public class Bitcast extends Inst{
         HashSet<entity> ret = new HashSet<>();
         ret.add(value);
         return ret;
+    }
+
+
+    @Override
+    public void addmirror(IRBlock block, IRMirror mirror) {
+        block.addinst(new Bitcast(mirror.opMir(value), (Register) mirror.opMir(dest), block));
     }
 
     @Override

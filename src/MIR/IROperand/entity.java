@@ -14,4 +14,5 @@ public abstract class entity {
     public abstract HashSet<Inst> uses();
     public abstract void adduse(Inst inst);
     public abstract void removeuse(Inst inst);
+    public abstract entity copy();
 }

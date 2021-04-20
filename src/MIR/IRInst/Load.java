@@ -3,6 +3,7 @@ package MIR.IRInst;
 import MIR.IRBlock;
 import MIR.IROperand.Register;
 import MIR.IROperand.entity;
+import Util.IRMirror;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,6 +33,11 @@ public class Load extends Inst{
         HashSet<entity> ret = new HashSet<>();
         ret.add(addr);
         return ret;
+    }
+
+    @Override
+    public void addmirror(IRBlock block, IRMirror mirror) {
+        block.addinst(new Load(mirror.opMir(addr), (Register) mirror.opMir(dest), block));
     }
 
     @Override

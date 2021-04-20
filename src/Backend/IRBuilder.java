@@ -230,6 +230,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             retInst = new Return(retval, current_block);
         }
         current_block.addterminate(retInst);
+//        System.out.println(retInst + " ... " + retInst.block.name + " ... " + current_function.name);
         returnlist.add(retInst);
     }
 
@@ -382,6 +383,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
 //        }
         entryreachable.removeIf(block -> block != current_function.entryblock && block.terminate == null);////////////////////////////??????????????????????????????
         current_function.blocks.addAll(entryreachable);
+        returnlist.removeIf(ret -> !entryreachable.contains(ret.block));
         entryreachable = null;
 //        returnvisited = null;
         if(returnlist.size() > 1){
@@ -845,6 +847,7 @@ public class IRBuilder implements ASTVisitor {//unfinished 3 visit !
             });
         }
         current_block.addinst(new Call(funtype.IRfunc, params, (Register) it.operand, current_block));
+        if(!(IRroot.builtinfunc.containsKey(funtype.IRfunc.name))) current_function.addcalleefunction(funtype.IRfunc);
         if(it.operand != null) {
             addbranch(it);
         }

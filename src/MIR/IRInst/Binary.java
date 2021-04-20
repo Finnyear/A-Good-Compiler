@@ -3,6 +3,7 @@ package MIR.IRInst;
 import MIR.IRBlock;
 import MIR.IROperand.Register;
 import MIR.IROperand.entity;
+import Util.IRMirror;
 
 import java.util.HashSet;
 
@@ -46,6 +47,11 @@ public class Binary extends Inst{
         HashSet<entity> ret = new HashSet<>();
         ret.add(op1); ret.add(op2);
         return ret;
+    }
+
+    @Override
+    public void addmirror(IRBlock block, IRMirror mirror) {
+        block.addinst(new Binary(opcode, mirror.opMir(op1), mirror.opMir(op2), (Register) mirror.opMir(dest), block));
     }
 
 

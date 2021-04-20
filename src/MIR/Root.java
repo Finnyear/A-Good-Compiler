@@ -157,7 +157,7 @@ public class Root {
 
 
 
-    //addphi
+    //resolvephi
     private static class blockpair{
         public IRBlock pre, suc;
         public blockpair(IRBlock pre, IRBlock suc){this.pre = pre; this.suc = suc;}
@@ -178,9 +178,9 @@ public class Root {
         }
     }
 
-    public void addphi(){
+    public void resolvephi(){
         this.functions.forEach((name, function) -> {
-            addphi_fun(function);
+            resolvephi_fun(function);
             function.blocks.forEach(block -> {
                 block.pre_block.removeIf(tmp -> !function.blocks.contains(tmp));
                 block.suc_block.removeIf(tmp -> !function.blocks.contains(tmp));
@@ -189,7 +189,7 @@ public class Root {
 
     }
 
-    private void addphi_fun(IRFunction function){
+    private void resolvephi_fun(IRFunction function){
         HashSet<blockpair> critical = new HashSet<>();
         function.blocks.forEach(block -> {
             if(block.suc_block.size() > 1){
@@ -204,7 +204,7 @@ public class Root {
         });
         critical.forEach(blockpair -> {
             IRBlock pre = blockpair.pre, suc = blockpair.suc;
-            IRBlock mid = new IRBlock("addphi_mid");
+            IRBlock mid = new IRBlock("resolvephi_mid");
             function.blocks.add(mid);
             mid.addterminate(new Jump(suc, mid));
             suc.Phis.forEach((register, phi) -> {
@@ -221,10 +221,14 @@ public class Root {
             for(int i = 0; i < sz; i++){
                 IRBlock pre = phi.blocks.get(i);
                 entity val = phi.entities.get(i);
+                if(copymap.get(pre) == null){
+                    System.out.println(block.name);
+//                    System.out.println(pre.name);
+                }
                 copymap.get(pre).addmove(new Move(val, register, false, pre));// split the phi to register
             }
         })));
-        copymap.forEach(((irBlock, parcpy) -> addphi_block(irBlock, parcpy)));
+        copymap.forEach(((irBlock, parcpy) -> resolvephi_block(irBlock, parcpy)));
 
 //        System.out.println("name = " + function.entryblock.name);
 
@@ -251,7 +255,7 @@ public class Root {
         function.blocks.removeAll(canMix);
     }
 
-    private void addphi_block(IRBlock block, paracopy parcpy){
+    private void resolvephi_block(IRBlock block, paracopy parcpy){
         boolean bo = true;
         while (bo) {
             boolean hasmore = false;

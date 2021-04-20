@@ -28,4 +28,10 @@ public class Null extends entity{
     public void removeuse(Inst inst) {
 
     }
+
+
+    @Override
+    public entity copy() {
+        return new Null();
+    }
 }

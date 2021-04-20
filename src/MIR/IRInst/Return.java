@@ -2,6 +2,7 @@ package MIR.IRInst;
 
 import MIR.IRBlock;
 import MIR.IROperand.entity;
+import Util.IRMirror;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -30,6 +31,11 @@ public class Return extends TerminalInst {
         HashSet<entity> ret = new HashSet<>();
         if(value != null) ret.add(value);
         return ret;
+    }
+
+    @Override
+    public void addmirror(IRBlock block, IRMirror mirror) {
+        block.addterminate(new Return(value == null ? null : mirror.opMir(value), this.block));
     }
 
     @Override

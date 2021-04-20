@@ -132,4 +132,50 @@ public class IRBlock {
             addterminate(newbr);
         }
     }
+
+    public void merge(IRBlock block){
+        suc_block.addAll(block.suc_block);
+        block.suc_block.forEach(suc_block -> {
+            suc_block.pre_block.remove(block);
+            suc_block.pre_block.add(this);
+            suc_block.Phis.forEach(((register, phi) -> {
+                int sz = phi.blocks.size();
+                for(int i = 0; i < sz; i++)
+                    if(phi.blocks.get(i) == block) phi.blocks.set(i, this);
+            }));
+        });
+        block.Phis.forEach(((register, phi) -> phi.block = this));
+        for(Inst inst = block.gethead(); inst != null; inst = block.getnxt(inst))
+            inst.block = this;
+        if(gettail() != null) gettail().nxt = block.gethead();
+        if(block.gethead() != null) block.gethead().pre = gettail();
+        if(gethead() == null) head_inst = block.head_inst;
+        if(block.tail_inst != null) tail_inst = block.tail_inst;
+        terminate = block.terminate;
+    }
+
+    public void split(IRBlock block, Inst inst) {
+        suc_block.forEach(suc -> {
+            suc.Phis.forEach(((register, phi) -> {
+                int sz = phi.blocks.size();
+                for(int i = 0; i < sz; i++)
+                    if(phi.blocks.get(i) == this) phi.blocks.set(i, block);
+            }));
+            suc.pre_block.remove(this);
+            suc.pre_block.add(block);
+        });
+        block.suc_block.addAll(suc_block);
+        suc_block.clear();
+
+        block.head_inst = inst.nxt;
+        block.tail_inst = tail_inst;
+        if(inst.nxt != null)inst.nxt.pre = null;
+        for(Inst instr = getnxt(inst);instr != null; instr = getnxt(instr))
+            instr.block = block;
+        block.terminate = terminate;
+        terminate = null;
+        tail_inst = inst.pre;
+        if (tail_inst != null) tail_inst.nxt = null;
+        if (head_inst == inst) head_inst = null;
+    }
 }

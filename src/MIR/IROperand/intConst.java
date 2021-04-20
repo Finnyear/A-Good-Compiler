@@ -33,4 +33,10 @@ public class intConst extends entity{
     public void removeuse(Inst inst) {
 
     }
+
+
+    @Override
+    public entity copy() {
+        return new intConst(val, type.size());
+    }
 }

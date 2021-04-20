@@ -35,4 +35,9 @@ public class boolConst extends entity{
     public void removeuse(Inst inst) {
 
     }
+
+    @Override
+    public entity copy() {
+        return new boolConst(val);
+    }
 }

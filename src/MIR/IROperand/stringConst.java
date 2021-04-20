@@ -45,4 +45,10 @@ public class stringConst extends entity{
     public void removeuse(Inst inst) {
 
     }
+
+
+    @Override
+    public entity copy() {
+        return new stringConst(name, value);
+    }
 }

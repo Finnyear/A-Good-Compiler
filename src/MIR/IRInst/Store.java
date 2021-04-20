@@ -4,6 +4,7 @@ import MIR.IRBlock;
 import MIR.IROperand.Null;
 import MIR.IROperand.entity;
 import MIR.IRType.IRpointerType;
+import Util.IRMirror;
 
 import java.util.HashSet;
 
@@ -35,6 +36,11 @@ public class Store extends Inst{
         HashSet<entity> ret = new HashSet<>();
         ret.add(value); ret.add(addr);
         return ret;
+    }
+
+    @Override
+    public void addmirror(IRBlock block, IRMirror mirror) {
+        block.addinst(new Store(mirror.opMir(value), mirror.opMir(addr), block));
     }
 
 

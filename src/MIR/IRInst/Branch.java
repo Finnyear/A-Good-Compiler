@@ -1,7 +1,9 @@
 package MIR.IRInst;
 
 import MIR.IRBlock;
+import MIR.IROperand.Register;
 import MIR.IROperand.entity;
+import Util.IRMirror;
 
 import java.util.HashSet;
 
@@ -33,6 +35,12 @@ public class Branch extends TerminalInst {
         HashSet<entity> ret = new HashSet<>();
         ret.add(cond);
         return ret;
+    }
+
+
+    @Override
+    public void addmirror(IRBlock block, IRMirror mirror) {
+        block.addterminate(new Branch(mirror.opMir(cond), mirror.blockMir(true_br_block), mirror.blockMir(false_br_block), block));
     }
 
     @Override

@@ -5,6 +5,7 @@ import MIR.IROperand.Register;
 import MIR.IROperand.entity;
 import MIR.IROperand.intConst;
 import MIR.IRType.IRType;
+import Util.IRMirror;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,6 +27,11 @@ public class Getelementptr extends Inst{
         dest.def = this;
     }
 
+    @Override
+    public void addmirror(IRBlock block, IRMirror mirror) {
+        block.addinst(new Getelementptr(basetype, mirror.opMir(pointer), mirror.opMir(arrayindex),
+                eleindex, (Register) mirror.opMir(dest), block));
+    }
 
     @Override
     public void removeself(boolean bo) {

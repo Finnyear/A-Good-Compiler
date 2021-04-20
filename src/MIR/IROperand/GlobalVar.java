@@ -34,4 +34,9 @@ public class GlobalVar extends entity{
     public void removeuse(Inst inst) {
         uses.remove(inst);
     }
+
+    @Override
+    public entity copy() {
+        return this; //Not accessible
+    }
 }

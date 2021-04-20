@@ -4,6 +4,7 @@ import MIR.IRBlock;
 import MIR.IROperand.Null;
 import MIR.IROperand.Register;
 import MIR.IROperand.entity;
+import Util.IRMirror;
 
 import java.util.HashSet;
 
@@ -23,6 +24,11 @@ public class Cmp extends Inst{
         op1.adduse(this);
         op2.adduse(this);
         dest.def = this;
+    }
+
+    @Override
+    public void addmirror(IRBlock block, IRMirror mirror) {
+        block.addinst(new Cmp(condcode, mirror.opMir(op1), mirror.opMir(op2), (Register) mirror.opMir(dest), block));
     }
 
     @Override

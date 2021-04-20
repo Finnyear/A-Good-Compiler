@@ -5,6 +5,7 @@ import MIR.IROperand.Register;
 import MIR.IROperand.entity;
 import MIR.IRType.IRType;
 import MIR.IRType.IRarrayType;
+import Util.IRMirror;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,6 +20,16 @@ public class Phi extends Inst{
         this.entities = entities;
         entities.forEach(entity -> entity.adduse(this));
         dest.def = this;
+    }
+
+
+    @Override
+    public void addmirror(IRBlock Block, IRMirror mirror) {
+        ArrayList<IRBlock> mirrorBlocks = new ArrayList<>();
+        ArrayList<entity> mirrorEntities = new ArrayList<>();
+        blocks.forEach(block -> mirrorBlocks.add(mirror.blockMir(block)));
+        entities.forEach(entity -> mirrorEntities.add(mirror.opMir(entity)));
+        Block.addphi(new Phi(mirrorBlocks, mirrorEntities, (Register)mirror.opMir(dest), Block));
     }
 
     @Override

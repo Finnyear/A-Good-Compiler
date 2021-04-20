@@ -1,10 +1,12 @@
 package MIR.IRInst;
 
+import Asm.LOperand.Reg;
 import MIR.IRBlock;
 import MIR.IRFunction;
 import MIR.IROperand.Register;
 import MIR.IROperand.entity;
 import MIR.IRType.IRType;
+import Util.IRMirror;
 import Util.error.myError;
 import Util.position;
 
@@ -22,6 +24,14 @@ public class Call extends Inst{
         this.parameters = parameters;
         parameters.forEach(param -> param.adduse(this));
         if(dest != null) dest.def = this;
+    }
+
+
+    @Override
+    public void addmirror(IRBlock block, IRMirror mirror) {
+        ArrayList<entity> mirror_param = new ArrayList<>();
+        parameters.forEach(param -> mirror_param.add(mirror.opMir(param)));
+        block.addinst(new Call(callee, mirror_param, dest == null ? null : (Register)mirror.opMir(dest), block));
     }
 
     @Override

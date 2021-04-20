@@ -2,6 +2,7 @@ package MIR.IRInst;
 
 import MIR.IRBlock;
 import MIR.IROperand.entity;
+import Util.IRMirror;
 
 import java.util.HashSet;
 
@@ -25,6 +26,11 @@ public class Jump extends TerminalInst{
     @Override
     public HashSet<entity> uses() {
         return new HashSet<>();
+    }
+
+    @Override
+    public void addmirror(IRBlock block, IRMirror mirror) {
+        block.addterminate(new Jump(mirror.blockMir(destblock), block));
     }
 
     @Override

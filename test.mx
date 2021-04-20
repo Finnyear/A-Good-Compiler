@@ -1,122 +1,52 @@
-int n;
-int h;
-int now;
-int[] a;
-int A = 48271;
-int M = 2147483647;
-int Q;
-int R;
-int seed=1;
-int random() {
-    int tempseed = A * (seed % Q) - R * (seed / Q);
-    if (tempseed >= 0)
-		seed = tempseed;
-    else
-		seed = tempseed + M;
-	return seed;
+int unsigned_shl(int x, int k) {
+    return x << k;
 }
-void initialize(int val) {
-    seed = val;
+
+int unsigned_shr(int x, int k) { // k should be (0, 31)
+    int INT_MIN = 1 << 31;
+    if (x >= 0) return x >> k;
+    else return (1 << (31 - k)) | ((x ^ INT_MIN) >> k);
 }
-void swap(int x,int y) {
-    int temp = a[x];
-    a[x] = a[y];
-    a[y] = temp;
+
+int rng(int rng_seed) {
+    int rng_mask = 1073741823;
+    int x = rng_seed;
+    x = x ^ unsigned_shl(x, 13);
+    x = x ^ unsigned_shr(x, 17);
+    x = x ^ unsigned_shl(x, 5);
+    x = x & rng_mask;
+    return x;
 }
-bool pd(int x) {
-    for (;h <= x; ++h)
-        if (x == h * (h + 1) / 2)
-			return true;
-    return false;
+
+int test(int q, int w, int e, int r, int t, int y, int u, int i, int o, int p) { // long parameter list test
+    if (q == w) {
+		if (w != e || e != r) {
+			return test(w, e, r, t, y, u, i, o, p, q) + 1;
+		} else {
+			return test(w, e, r, t, y - 1, u - 2, i, o, p, q) + 2;
+		}
+	} else {
+		return q + w + q;
+	}
 }
-void show() {
-    int i;
-    for (i = 0; i < now; ++i)
-        print(toString(a[i]) + " ");
-    println("");
-}
-bool win()
-{
-    int i;
-	int j;
-	int[] b = new int[100];
-	int temp;
-    if (now != h)
-		return false;
-    for (j = 0; j < now; ++j)
-        b[j] = a[j];
-    for (i = 0;i < now - 1; ++i)
-        for (j = i + 1;j < now; ++j)
-            if (b[i] > b[j]) {
-                temp = b[i];
-                b[i] = b[j];
-                b[j] = temp;
-            }
-    for (i = 0; i < now; ++i)
-        if (b[i] != i + 1)
-			return false;
-    return true;
-}
-void merge()
-{
-    int i;
-    for (i = 0;i < now; ++i)
-        if (a[i] == 0) {
-            int j;
-            for (j = i+1; j < now; ++j)
-                if (a[j] != 0) {
-                    swap(i,j);
-                    break;
-                }
-        }
-    for (i=0;i<now;++i)
-        if (a[i] == 0) {
-            now = i;
-            break;
-        }
-}
-void move() {
-    int i = 0;
-    for (; i < now; ) {
-        --a[i];
-        i = i + 1;
-    }
-    a[now] = now;
-    now++;
-}
+
 int main() {
-    int i = 0;
-	int temp = 0;
-	int count = 0;
-	n = 3 * 7 * 10;
-	h = 0;
-	a = new int[100];
-    Q = M / A;
-    R = M % A;
-    if (!pd(n)) {
-        println("Sorry, the number n must be a number s.t. there exists i satisfying n=1+2+...+i");
-        return 1;
+    int rng_seed = 19260817;
+    int sum = 0;
+    for ( ; ; ) {
+        int u = rng(rng_seed);
+        int v = rng(u);
+        rng_seed = v;
+        if ((u & 255) != (v & 255)) {
+            int w = rng(rng_seed);
+            int x = rng(w);
+			int y = rng(x);
+			int z = rng(y);
+			int zz = rng(z);
+			rng_seed = zz;
+            sum = sum ^ test(w & 3, w >> 28, x & 1, x >> 29, y >> 25, y & 31, z >> 15, z & 32767, zz >> 15, zz & 32767);
+        }
+		else break;
     }
-    println("Let's start!");
-    initialize(3654898);
-    now = random() % 10 + 1;
-    println(toString(now));
-    for (; i < now - 1; ++i)
-    {
-        a[i] = random() % 10 + 1;
-        while (a[i] + temp > n)
-            a[i] = random() % 10 + 1;
-        temp = temp + a[i];
-    }
-    a[now - 1] = n - temp;
-    show();
-    merge();
-    while (!win()) {
-        println("step " + toString(++count) + ":");
-        move();
-        merge();
-        show();
-    }
-    println("Total: " + toString(count) + " step(s)");
-    return 0;
+    return sum - 19;
 }

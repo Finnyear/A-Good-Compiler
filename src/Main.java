@@ -5,6 +5,7 @@ import Frontend.ClassCreator;
 import Frontend.SemanticCheck;
 import Frontend.SymbolCollector;
 import MIR.Root;
+import Optimize.Finline;
 import Parser.MxLexer;
 import Parser.MxParser;
 import Util.MxErrorListener;
@@ -22,11 +23,12 @@ import java.io.PrintStream;
 
 public class Main {
     public static void main(String[] args) throws Exception{
-        boolean SemanticOnly = false, emitLLVM = false;
+        boolean SemanticOnly = false, emitLLVM = false, doOptimization = false;
 //        int optLevel = 0;
         if(args.length > 0) {
             for (String arg : args) {
                 switch (arg) {
+                    case "-O2": doOptimization = true; break;
                     case "-semantic": SemanticOnly = true;break;
                     case "-ll": emitLLVM = true;break;
                     default: break;
@@ -54,18 +56,15 @@ public class Main {
             Root IRroot = new Root();
             new SymbolCollector(global_scope, IRroot).visit(rt);
             new ClassCreator(global_scope, IRroot).visit(rt);
-//            System.out.println("111");
             new SemanticCheck(global_scope, IRroot).visit(rt);
 
             if(SemanticOnly) return;
 
             new IRBuilder(global_scope, IRroot).visit(rt);
-//            System.out.println("add_phi");
             new Mem2Reg(IRroot).run();
-            IRroot.addphi();
-//            if(emitLLVM)
+            if(doOptimization) new Finline(IRroot).run();
+            IRroot.resolvephi();
             new IRPrinter(new PrintStream("output.ll"), false).run(IRroot);
-//
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();
             new AsmPrinter(lroot, output, true).run();
