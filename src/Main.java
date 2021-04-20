@@ -23,7 +23,7 @@ import java.io.PrintStream;
 
 public class Main {
     public static void main(String[] args) throws Exception{
-        boolean SemanticOnly = false, emitLLVM = false, doOptimization = false;
+        boolean SemanticOnly = false, emitLLVM = false, doOptimization = true;
 //        int optLevel = 0;
         if(args.length > 0) {
             for (String arg : args) {
