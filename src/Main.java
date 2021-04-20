@@ -23,12 +23,11 @@ import java.io.PrintStream;
 
 public class Main {
     public static void main(String[] args) throws Exception{
-        boolean SemanticOnly = false, emitLLVM = false, doOptimization = true;
+        boolean SemanticOnly = false, emitLLVM = false;
 //        int optLevel = 0;
         if(args.length > 0) {
             for (String arg : args) {
                 switch (arg) {
-                    case "-O2": doOptimization = true; break;
                     case "-semantic": SemanticOnly = true;break;
                     case "-ll": emitLLVM = true;break;
                     default: break;
@@ -62,7 +61,7 @@ public class Main {
 
             new IRBuilder(global_scope, IRroot).visit(rt);
             new Mem2Reg(IRroot).run();
-            if(doOptimization) {
+            {//optimize
                 new Finline(IRroot, false).run();
                 new Finline(IRroot, true).run();
             }

@@ -17,176 +17,150 @@ declare i1 @g_stringgt(i8* %a, i8* %b)
 declare i1 @g_stringeq(i8* %a, i8* %b)
 declare i8* @g_getString()
 declare i1 @g_stringlt(i8* %a, i8* %b)
-define i32 @fun_test(i32 %param_q, i32 %param_w, i32 %param_e, i32 %param_r, i32 %param_t, i32 %param_y, i32 %param_u, i32 %param_i, i32 %param_o, i32 %param_p){
-entry:
-;precursors: 
-;successors: if_then else_then 
-	%eq = icmp eq i32 %param_q, %param_w
-	br i1 %eq, label %if_then, label %else_then
-if_then:
-;precursors: entry 
-;successors: if_then lor_cond 
-	%neq = icmp ne i32 %param_w, %param_e
-	br i1 %neq, label %if_then, label %lor_cond
-else_then:
-;precursors: entry 
-;successors: rootReturn 
-	%binary_add = add i32 %param_q, %param_w
-	%binary_add = add i32 %binary_add, %param_q
-	%rootRet = add i32 %binary_add, 0
-	br label %rootReturn
-if_then:
-;precursors: lor_cond if_then 
-;successors: rootReturn 
-	%fun_cal_ret_val = call i32 @fun_test(i32 %param_w, i32 %param_e, i32 %param_r, i32 %param_t, i32 %param_y, i32 %param_u, i32 %param_i, i32 %param_o, i32 %param_p, i32 %param_q)
-	%binary_add = add i32 %fun_cal_ret_val, 1
-	%rootRet = add i32 %binary_add, 0
-	br label %rootReturn
-lor_cond:
-;precursors: if_then 
-;successors: if_then else_then 
-	%neq = icmp ne i32 %param_e, %param_r
-	br i1 %neq, label %if_then, label %else_then
-rootReturn:
-;precursors: if_then else_then else_then 
-;successors: 
-	%rootRet = phi i32 [ %binary_add, %if_then ], [ %binary_add, %else_then ], [ %binary_add, %else_then ]
-	ret i32 %rootRet
-else_then:
-;precursors: lor_cond 
-;successors: rootReturn 
-	%binary_sub = sub i32 %param_y, 1
-	%binary_sub = sub i32 %param_u, 2
-	%fun_cal_ret_val = call i32 @fun_test(i32 %param_w, i32 %param_e, i32 %param_r, i32 %param_t, i32 %binary_sub, i32 %binary_sub, i32 %param_i, i32 %param_o, i32 %param_p, i32 %param_q)
-	%binary_add = add i32 %fun_cal_ret_val, 2
-	%rootRet = add i32 %binary_add, 0
-	br label %rootReturn
-}
-define i32 @fun_rng(i32 %param_rng_seed){
-entry:
-;precursors: 
-;successors: 
-	%fun_cal_ret_val = call i32 @fun_unsigned_shl(i32 %param_rng_seed, i32 13)
-	%binary_xor = xor i32 %param_rng_seed, %fun_cal_ret_val
-	%fun_cal_ret_val = call i32 @fun_unsigned_shr(i32 %binary_xor, i32 17)
-	%binary_xor = xor i32 %binary_xor, %fun_cal_ret_val
-	%fun_cal_ret_val = call i32 @fun_unsigned_shl(i32 %binary_xor, i32 5)
-	%binary_xor = xor i32 %binary_xor, %fun_cal_ret_val
-	%binary_and = and i32 %binary_xor, 1073741823
-	ret i32 %binary_and
-}
-define i32 @fun_unsigned_shr(i32 %param_x, i32 %param_k){
-entry:
-;precursors: 
-;successors: if_then else_then 
-	%binary_shl = shl i32 1, 31
-	%cmp_sge = icmp sge i32 %param_x, 0
-	br i1 %cmp_sge, label %if_then, label %else_then
-if_then:
-;precursors: entry 
-;successors: rootReturn 
-	%binary_ashr = ashr i32 %param_x, %param_k
-	%rootRet = add i32 %binary_ashr, 0
-	br label %rootReturn
-else_then:
-;precursors: entry 
-;successors: rootReturn 
-	%binary_sub = sub i32 31, %param_k
-	%binary_shl = shl i32 1, %binary_sub
-	%binary_xor = xor i32 %param_x, %binary_shl
-	%binary_ashr = ashr i32 %binary_xor, %param_k
-	%binary_or = or i32 %binary_shl, %binary_ashr
-	%rootRet = add i32 %binary_or, 0
-	br label %rootReturn
-rootReturn:
-;precursors: if_then else_then 
-;successors: 
-	%rootRet = phi i32 [ %binary_ashr, %if_then ], [ %binary_or, %else_then ]
-	ret i32 %rootRet
-}
-define void @__init(){
-entry:
-;precursors: 
-;successors: 
-	ret void
-}
-define i32 @fun_unsigned_shl(i32 %param_x, i32 %param_k){
-entry:
-;precursors: 
-;successors: 
-	%binary_shl = shl i32 %param_x, %param_k
-	ret i32 %binary_shl
-}
+%struct.TA = type {i8*, i32}
+@init_anger = global i32 zeroinitializer, align 4
+@work_anger = global i32 zeroinitializer, align 4
+@main.3 = private unnamed_addr constant [15 x i8] c"the leading TA\00", align 1
+@main.4 = private unnamed_addr constant [16 x i8] c"the striking TA\00", align 1
+@fun_work.2 = private unnamed_addr constant [23 x i8] c" wants to give up!!!!!\00", align 1
+@main.5 = private unnamed_addr constant [3 x i8] c"MR\00", align 1
+@fun_work.1 = private unnamed_addr constant [22 x i8] c" enjoys this work. XD\00", align 1
+@main.6 = private unnamed_addr constant [5 x i8] c"Mars\00", align 1
+@fun_work.0 = private unnamed_addr constant [3 x i8] c", \00", align 1
 define i32 @main(){
 entry:
 ;precursors: 
-;successors: for_body 
-	call void @__init()
-	%w_addr_phi = add i32 65536, 0
-	%rng_seed_addr_phi = add i32 19260817, 0
-	%y_addr_phi = add i32 65536, 0
-	%zz_addr_phi = add i32 65536, 0
-	%u_addr_phi = add i32 65536, 0
-	%z_addr_phi = add i32 65536, 0
-	%x_addr_phi = add i32 65536, 0
-	%sum_addr_phi = add i32 0, 0
-	%v_addr_phi = add i32 65536, 0
-	br label %for_body
-for_body:
-;precursors: entry for_upd 
-;successors: if_then for_end 
-	%w_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
-	%rng_seed_addr_phi = phi i32 [ 19260817, %entry ], [ %fun_cal_ret_val, %for_upd ]
-	%y_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
-	%zz_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
-	%u_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
-	%z_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
-	%x_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
-	%sum_addr_phi = phi i32 [ 0, %entry ], [ %binary_xor, %for_upd ]
-	%v_addr_phi = phi i32 [ 65536, %entry ], [ %fun_cal_ret_val, %for_upd ]
-	%fun_cal_ret_val = call i32 @fun_rng(i32 %rng_seed_addr_phi)
-	%fun_cal_ret_val = call i32 @fun_rng(i32 %fun_cal_ret_val)
-	%binary_and = and i32 %fun_cal_ret_val, 255
-	%binary_and = and i32 %fun_cal_ret_val, 255
-	%neq = icmp ne i32 %binary_and, %binary_and
-	br i1 %neq, label %if_then, label %for_end
-if_then:
-;precursors: for_body 
-;successors: for_upd 
-	%fun_cal_ret_val = call i32 @fun_rng(i32 %fun_cal_ret_val)
-	%fun_cal_ret_val = call i32 @fun_rng(i32 %fun_cal_ret_val)
-	%fun_cal_ret_val = call i32 @fun_rng(i32 %fun_cal_ret_val)
-	%fun_cal_ret_val = call i32 @fun_rng(i32 %fun_cal_ret_val)
-	%fun_cal_ret_val = call i32 @fun_rng(i32 %fun_cal_ret_val)
-	%binary_and = and i32 %fun_cal_ret_val, 3
-	%binary_ashr = ashr i32 %fun_cal_ret_val, 28
-	%binary_and = and i32 %fun_cal_ret_val, 1
-	%binary_ashr = ashr i32 %fun_cal_ret_val, 29
-	%binary_ashr = ashr i32 %fun_cal_ret_val, 25
-	%binary_and = and i32 %fun_cal_ret_val, 31
-	%binary_ashr = ashr i32 %fun_cal_ret_val, 15
-	%binary_and = and i32 %fun_cal_ret_val, 32767
-	%binary_ashr = ashr i32 %fun_cal_ret_val, 15
-	%binary_and = and i32 %fun_cal_ret_val, 32767
-	%fun_cal_ret_val = call i32 @fun_test(i32 %binary_and, i32 %binary_ashr, i32 %binary_and, i32 %binary_ashr, i32 %binary_ashr, i32 %binary_and, i32 %binary_ashr, i32 %binary_and, i32 %binary_ashr, i32 %binary_and)
-	%binary_xor = xor i32 %sum_addr_phi, %fun_cal_ret_val
-	br label %for_upd
-for_end:
-;precursors: for_body 
+;successors: if_then_inline else_then_inline 
+	store i32 100, i32* @init_anger, align 4
+	store i32 10, i32* @work_anger, align 4
+	%malloc = call noalias i8* @malloc(i32 8)
+	%new_class_ptr = bitcast i8* %malloc to %struct.TA*
+	%this.state = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 0
+	%resolved_main.3 = getelementptr inbounds [ 15 x i8 ], [ 15 x i8 ]* @main.3, i32 0, i32 0
+	store i8* %resolved_main.3, i8** %this.state, align 4
+	%this.anger = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 1
+	store i32 0, i32* %this.anger, align 4
+	%malloc = call noalias i8* @malloc(i32 8)
+	%new_class_ptr = bitcast i8* %malloc to %struct.TA*
+	%this.state = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 0
+	%resolved_main.4 = getelementptr inbounds [ 16 x i8 ], [ 16 x i8 ]* @main.4, i32 0, i32 0
+	store i8* %resolved_main.4, i8** %this.state, align 4
+	%this.anger = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 1
+	%pointee_init_anger = load i32, i32* @init_anger, align 4
+	store i32 %pointee_init_anger, i32* %this.anger, align 4
+	%resolved_main.5 = getelementptr inbounds [ 3 x i8 ], [ 3 x i8 ]* @main.5, i32 0, i32 0
+	%this.anger = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 1
+	%pointee_this.anger = load i32, i32* %this.anger, align 4
+	%cmp_sle = icmp sle i32 %pointee_this.anger, 100
+	br i1 %cmp_sle, label %if_then_inline, label %else_then_inline
+if_then_inline:
+;precursors: entry 
+;successors: if_end_inline 
+	%resolved_fun_work.0 = getelementptr inbounds [ 3 x i8 ], [ 3 x i8 ]* @fun_work.0, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %resolved_main.5, i8* %resolved_fun_work.0)
+	%this.state = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 0
+	%pointee_this.state = load i8*, i8** %this.state, align 4
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %pointee_this.state)
+	%resolved_fun_work.1 = getelementptr inbounds [ 22 x i8 ], [ 22 x i8 ]* @fun_work.1, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %resolved_fun_work.1)
+	call void @g_println(i8* %binary_add_string)
+	br label %if_end_inline
+else_then_inline:
+;precursors: entry 
+;successors: if_end_inline 
+	%resolved_fun_work.0 = getelementptr inbounds [ 3 x i8 ], [ 3 x i8 ]* @fun_work.0, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %resolved_main.5, i8* %resolved_fun_work.0)
+	%this.state = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 0
+	%pointee_this.state = load i8*, i8** %this.state, align 4
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %pointee_this.state)
+	%resolved_fun_work.2 = getelementptr inbounds [ 23 x i8 ], [ 23 x i8 ]* @fun_work.2, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %resolved_fun_work.2)
+	call void @g_println(i8* %binary_add_string)
+	br label %if_end_inline
+if_end_inline:
+;precursors: else_then_inline if_then_inline 
+;successors: if_then_inline else_then_inline 
+	%this.anger = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 1
+	%this.anger = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 1
+	%pointee_this.anger = load i32, i32* %this.anger, align 4
+	%pointee_work_anger = load i32, i32* @work_anger, align 4
+	%binary_add = add i32 %pointee_this.anger, %pointee_work_anger
+	store i32 %binary_add, i32* %this.anger, align 4
+	%resolved_main.6 = getelementptr inbounds [ 5 x i8 ], [ 5 x i8 ]* @main.6, i32 0, i32 0
+	%this.anger = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 1
+	%pointee_this.anger = load i32, i32* %this.anger, align 4
+	%cmp_sle = icmp sle i32 %pointee_this.anger, 100
+	br i1 %cmp_sle, label %if_then_inline, label %else_then_inline
+if_then_inline:
+;precursors: if_end_inline 
+;successors: if_end_inline 
+	%resolved_fun_work.0 = getelementptr inbounds [ 3 x i8 ], [ 3 x i8 ]* @fun_work.0, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %resolved_main.6, i8* %resolved_fun_work.0)
+	%this.state = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 0
+	%pointee_this.state = load i8*, i8** %this.state, align 4
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %pointee_this.state)
+	%resolved_fun_work.1 = getelementptr inbounds [ 22 x i8 ], [ 22 x i8 ]* @fun_work.1, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %resolved_fun_work.1)
+	call void @g_println(i8* %binary_add_string)
+	br label %if_end_inline
+else_then_inline:
+;precursors: if_end_inline 
+;successors: if_end_inline 
+	%resolved_fun_work.0 = getelementptr inbounds [ 3 x i8 ], [ 3 x i8 ]* @fun_work.0, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %resolved_main.6, i8* %resolved_fun_work.0)
+	%this.state = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 0
+	%pointee_this.state = load i8*, i8** %this.state, align 4
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %pointee_this.state)
+	%resolved_fun_work.2 = getelementptr inbounds [ 23 x i8 ], [ 23 x i8 ]* @fun_work.2, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %resolved_fun_work.2)
+	call void @g_println(i8* %binary_add_string)
+	br label %if_end_inline
+if_end_inline:
+;precursors: else_then_inline if_then_inline 
+;successors: if_then_inline else_then_inline 
+	%this.anger = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 1
+	%this.anger = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 1
+	%pointee_this.anger = load i32, i32* %this.anger, align 4
+	%pointee_work_anger = load i32, i32* @work_anger, align 4
+	%binary_add = add i32 %pointee_this.anger, %pointee_work_anger
+	store i32 %binary_add, i32* %this.anger, align 4
+	%resolved_main.6 = getelementptr inbounds [ 5 x i8 ], [ 5 x i8 ]* @main.6, i32 0, i32 0
+	%this.anger = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 1
+	%pointee_this.anger = load i32, i32* %this.anger, align 4
+	%cmp_sle = icmp sle i32 %pointee_this.anger, 100
+	br i1 %cmp_sle, label %if_then_inline, label %else_then_inline
+if_then_inline:
+;precursors: if_end_inline 
+;successors: if_end_inline 
+	%resolved_fun_work.0 = getelementptr inbounds [ 3 x i8 ], [ 3 x i8 ]* @fun_work.0, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %resolved_main.6, i8* %resolved_fun_work.0)
+	%this.state = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 0
+	%pointee_this.state = load i8*, i8** %this.state, align 4
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %pointee_this.state)
+	%resolved_fun_work.1 = getelementptr inbounds [ 22 x i8 ], [ 22 x i8 ]* @fun_work.1, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %resolved_fun_work.1)
+	call void @g_println(i8* %binary_add_string)
+	br label %if_end_inline
+else_then_inline:
+;precursors: if_end_inline 
+;successors: if_end_inline 
+	%resolved_fun_work.0 = getelementptr inbounds [ 3 x i8 ], [ 3 x i8 ]* @fun_work.0, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %resolved_main.6, i8* %resolved_fun_work.0)
+	%this.state = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 0
+	%pointee_this.state = load i8*, i8** %this.state, align 4
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %pointee_this.state)
+	%resolved_fun_work.2 = getelementptr inbounds [ 23 x i8 ], [ 23 x i8 ]* @fun_work.2, i32 0, i32 0
+	%binary_add_string = call i8* @g_stringadd(i8* %binary_add_string, i8* %resolved_fun_work.2)
+	call void @g_println(i8* %binary_add_string)
+	br label %if_end_inline
+if_end_inline:
+;precursors: else_then_inline if_then_inline 
 ;successors: 
-	%binary_sub = sub i32 %sum_addr_phi, 19
-	ret i32 %binary_sub
-for_upd:
-;precursors: if_then 
-;successors: for_body 
-	%w_addr_phi = add i32 %fun_cal_ret_val, 0
-	%rng_seed_addr_phi = add i32 %fun_cal_ret_val, 0
-	%y_addr_phi = add i32 %fun_cal_ret_val, 0
-	%zz_addr_phi = add i32 %fun_cal_ret_val, 0
-	%u_addr_phi = add i32 %fun_cal_ret_val, 0
-	%z_addr_phi = add i32 %fun_cal_ret_val, 0
-	%x_addr_phi = add i32 %fun_cal_ret_val, 0
-	%sum_addr_phi = add i32 %binary_xor, 0
-	%v_addr_phi = add i32 %fun_cal_ret_val, 0
-	br label %for_body
+	%this.anger = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 1
+	%this.anger = getelementptr inbounds %struct.TA, %struct.TA* %new_class_ptr, i32 0, i32 1
+	%pointee_this.anger = load i32, i32* %this.anger, align 4
+	%pointee_work_anger = load i32, i32* @work_anger, align 4
+	%binary_add = add i32 %pointee_this.anger, %pointee_work_anger
+	store i32 %binary_add, i32* %this.anger, align 4
+	ret i32 0
 }

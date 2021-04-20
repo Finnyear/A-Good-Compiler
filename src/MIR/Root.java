@@ -221,10 +221,10 @@ public class Root {
             for(int i = 0; i < sz; i++){
                 IRBlock pre = phi.blocks.get(i);
                 entity val = phi.entities.get(i);
-                if(copymap.get(pre) == null){
-                    System.out.println(block.name);
+//                if(copymap.get(pre) == null){
+//                    System.out.println(block.name);
 //                    System.out.println(pre.name);
-                }
+//                }
                 copymap.get(pre).addmove(new Move(val, register, false, pre));// split the phi to register
             }
         })));

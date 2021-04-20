@@ -47,7 +47,10 @@ public class InstSelection {
                 else name = "." + ((stringConst)src).name;
                 GReg reg = new GReg(sz / 8, name);
                 regmap.put(src, reg);
-                if(src instanceof stringConst) lRoot.addString(reg, ((stringConst)src).value);
+                if(src instanceof stringConst) {
+//                    System.out.println(src + " " + ((stringConst) src).value);
+                    lRoot.addString(reg, ((stringConst) src).value);
+                }
                 else lRoot.addglobalreg(reg);
                 return reg;
             } else return regmap.get(src);
@@ -233,9 +236,13 @@ public class InstSelection {
         if(gep.arrayindex instanceof  intConst) {
             int arrindex = ((intConst) gep.arrayindex).value();
             if (arrindex == 0) {
+//                System.out.println("ptr = " + gep.pointer);
+//                if(!regmap.containsKey(gep.pointer)){
+//                    System.out.println("lip");
+//                }
                 Reg origin = regtran(gep.pointer);
                 if (origin instanceof GReg) lBlock.addInst(new La((GReg) origin, destidx, lBlock));
-                else lBlock.addInst(new Mv(regtran(gep.pointer), destidx, lBlock));
+                else lBlock.addInst(new Mv(origin, destidx, lBlock));
             } else genBinaryLIR(gep.pointer, new intConst(arrindex * tpsz, 32), destidx, Binary.Opcode.add, true);
         } else {
             destmul = new VirReg(4, cnt++);

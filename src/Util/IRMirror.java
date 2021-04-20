@@ -3,6 +3,7 @@ package Util;
 import MIR.IRBlock;
 import MIR.IROperand.GlobalVar;
 import MIR.IROperand.entity;
+import MIR.IROperand.stringConst;
 
 import java.util.HashMap;
 
@@ -14,7 +15,7 @@ public class IRMirror{
     public IRMirror(){}
 
     public entity opMir(entity origin) {
-        if (origin instanceof GlobalVar) return origin;
+        if (origin instanceof GlobalVar || origin instanceof stringConst) return origin;
         if (!opMirror.containsKey(origin)) opMirror.put(origin, origin.copy());
         return opMirror.get(origin);
     }
