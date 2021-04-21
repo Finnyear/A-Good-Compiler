@@ -185,6 +185,7 @@ public class Root {
                 block.pre_block.removeIf(tmp -> !function.blocks.contains(tmp));
                 block.suc_block.removeIf(tmp -> !function.blocks.contains(tmp));
             });
+
         });
 
     }
@@ -225,18 +226,16 @@ public class Root {
 //                    System.out.println(block.name);
 //                    System.out.println(pre.name);
 //                }
-                copymap.get(pre).addmove(new Move(val, register, false, pre));// split the phi to register
+                copymap.get(pre).addmove(new Move(val, register, false, pre));// split the phi to Move inst
             }
         })));
         copymap.forEach(((irBlock, parcpy) -> resolvephi_block(irBlock, parcpy)));
 
 //        System.out.println("name = " + function.entryblock.name);
 
-
         HashSet<IRBlock> canMix = new HashSet<>();
         function.blocks.forEach(block -> {
-            if (block.head_inst instanceof Jump || (block.head_inst == null && block.terminate instanceof Jump)) {
-//                System.out.println("...... = " + block.name);
+            if (block.gethead() instanceof Jump) {
                 if(block != function.entryblock)
                     canMix.add(block);
             }
@@ -246,22 +245,30 @@ public class Root {
             do {
                 suc = ((Jump) suc.terminate).destblock;
             } while(canMix.contains(suc));
-            HashSet<IRBlock> precursors = new HashSet<>(block.pre_block);
+            HashSet<IRBlock> precursors = new HashSet<>(block.pre_block);//redundant
             for (IRBlock pre : precursors) {
                 pre.replacesuc(block, suc);
             }
             if (block == function.entryblock) function.entryblock = suc;
         });
         function.blocks.removeAll(canMix);
+
+
+//        function.blocks.forEach(block -> {
+//            if(block.pre_block.size() >= 3){
+//                System.out.println(block.name + " " + block.pre_block.size());
+//                block.pre_block.forEach(pre -> System.out.println(pre.name));
+//            }
+//        });
     }
 
     private void resolvephi_block(IRBlock block, paracopy parcpy){
         boolean bo = true;
         while (bo) {
             boolean hasmore = false;
-            for (Iterator<Move> it = parcpy.copies.iterator(); it.hasNext(); ) {// remove every move inst
+            for (Iterator<Move> it = parcpy.copies.iterator(); it.hasNext(); ) {// add every move inst by topology
                 Move inst = it.next();
-                if (!parcpy.usemap.containsKey(inst.dest)) { // topology
+                if (!parcpy.usemap.containsKey(inst.dest)) { // think a -> b, c -> a;
                     it.remove();
                     if (inst.src instanceof Register) {
                         int num = parcpy.usemap.get(inst.src) - 1;

@@ -46,7 +46,6 @@ public class Finline{
         HashMap<IRBlock, IRBlock> mirrorBlocks = mirror.blockMirror;
         IRFunction callee = inst.callee;
         IRBlock currentBlock = inst.block;
-
         int paramSize = inst.parameters.size();
         for (int i = 0;i < paramSize;++i) {
             entity callParam = inst.parameters.get(i), virtualParam = callee.params.get(i);
@@ -105,6 +104,7 @@ public class Finline{
     }
 
     public boolean run() {
+
         if(!forceinline) {
             newround = change = false;
             cannotInlineFun.add(irRoot.getfun("main"));
@@ -114,6 +114,7 @@ public class Finline{
             irRoot.functions.forEach((name, fn) -> {
                 if (!visited.contains(fn)) DFS(fn);
             });
+
             inline();
             irRoot.functions.forEach((name, fn) -> new Domgen(fn).runforfn());
             return change;

@@ -33,6 +33,7 @@ public class IRPrinter {
     }
 
     public void printblock(IRBlock block){
+//        if(block.pre_block.size() == 3) System.out.println(block.name);
         out.println(block.name + ":");
         out.print(";precursors: ");
         block.pre_block.forEach(pre -> out.print(pre.name + " "));
@@ -40,9 +41,16 @@ public class IRPrinter {
         out.print(";successors: ");
         block.suc_block.forEach(suc -> out.print(suc.name + " "));
         out.print("\n");
+        out.print(";head_inst: ");
+        out.println(block.head_inst);
+        out.print(";tail_inst: ");
+        out.println(block.tail_inst);
+        out.print(";terminate: ");
+        out.println(block.terminate);
         block.Phis.forEach((reg, phi) -> out.println("\t" + phi.toString()));
-        for(Inst inst = block.gethead(); inst != null; inst = block.getnxt(inst))
+        for(Inst inst = block.gethead(); inst != null; inst = block.getnxt(inst)) {
             out.println("\t" + inst.toString());
+        }
     }
 
     public void colletwithrename(IRFunction func){

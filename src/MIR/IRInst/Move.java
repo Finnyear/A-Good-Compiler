@@ -45,8 +45,8 @@ public class Move extends Inst{
     @Override
     public String toString() {
 
-        return dest.toString() + " = add " +
-                src.type.toString() + " " + src.toString() + ", 0";
-//        return "mv " + src.type.toString() + " " + dest.toString() + " " + src.toString();
+//        return dest.toString() + " = add " +
+//                src.type.toString() + " " + src.toString() + ", 0";
+        return "mv " + src.type.toString() + " " + dest.toString() + " " + src.toString();
     }
 }

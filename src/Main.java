@@ -65,12 +65,16 @@ public class Main {
                 new Finline(IRroot, false).run();
                 new Finline(IRroot, true).run();
             }
+//            IRPrinter irPrinter = new IRPrinter(new PrintStream("output.ll"), true);
+//            irPrinter.run(IRroot);
+//            new IRPrinter(new PrintStream("output.ll"), true).run(IRroot);
             IRroot.resolvephi();
-            new IRPrinter(new PrintStream("output.ll"), false).run(IRroot);
+//            irPrinter.run(IRroot);
+//            IRPrinter irPrinter0 = new IRPrinter(new PrintStream("output0.ll"), true);
+//            irPrinter0.run(IRroot);
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();
             new AsmPrinter(lroot, output, true).run();
-
         } catch (Error error){
             System.err.println(error.toString());
             throw new RuntimeException();

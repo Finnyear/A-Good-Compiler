@@ -304,8 +304,11 @@ public class InstSelection {
         }
         else if(inst instanceof Move){
             Move mv = (Move) inst;
-            if(mv.src instanceof intConst)
-                lBlock.addInst(new Li(new Imm(((intConst)mv.src).value()), regtran(mv.dest), lBlock));
+//            System.out.println(inst + " " + inst.block.name);
+            if(mv.src instanceof intConst) {
+                lBlock.addInst(new Li(new Imm(((intConst) mv.src).value()), regtran(mv.dest), lBlock));
+//                System.out.println(lBlock.tail);
+            }
             else if(mv.src instanceof GlobalVar || mv.src instanceof stringConst)
                 lBlock.addInst(new La((GReg)regtran(mv.src), regtran(mv.dest), lBlock));
             else if(mv.src instanceof boolConst){
