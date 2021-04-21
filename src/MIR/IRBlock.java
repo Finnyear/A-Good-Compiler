@@ -147,8 +147,8 @@ public class IRBlock {
         block.Phis.forEach(((register, phi) -> phi.block = this));
         for(Inst inst = block.gethead(); inst != null; inst = block.getnxt(inst))
             inst.block = this;
-        if(gettail() != null) gettail().nxt = block.gethead();
-        if(block.gethead() != null) block.gethead().pre = gettail();
+        if(gettail() != null) gettail().nxt = block.head_inst;
+        if(block.head_inst != null) block.head_inst.pre = gettail();
         if(gethead() == null) head_inst = block.head_inst;
         if(block.tail_inst != null) tail_inst = block.tail_inst;
         terminate = block.terminate;
