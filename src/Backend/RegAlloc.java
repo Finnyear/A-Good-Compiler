@@ -351,11 +351,14 @@ public class RegAlloc {
             init();
             new LivenessAnalysis(fn).runForFn();
             build();
+//            System.out.println(fn.name);
             initial.forEach(node -> {
+//                System.out.println(node);
                 if (node.deg >= K) spillWorkList.add(node);
                 else if (moveRelated(node)) freezeWorkList.add(node);
                 else simplifyWorkList.add(node);
             });
+//            System.out.println(fn.name);
             do{
                 if (!simplifyWorkList.isEmpty()) simplify();
                 else if (!workListMoves.isEmpty()) coalesce();

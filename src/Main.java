@@ -61,17 +61,16 @@ public class Main {
 
             new IRBuilder(global_scope, IRroot).visit(rt);
             new Mem2Reg(IRroot).run();
+//            IRroot.functions.forEach((s, irFunction) -> System.out.println(":::::::::::::::" + irFunction.name));
             {//optimize
+//                System.out.println("????????????????????????????");
                 new Finline(IRroot, false).run();
+//                System.out.println("????????????????????????????");
                 new Finline(IRroot, true).run();
+//                System.out.println("????????????????????????????");
             }
-//            IRPrinter irPrinter = new IRPrinter(new PrintStream("output.ll"), true);
-//            irPrinter.run(IRroot);
-//            new IRPrinter(new PrintStream("output.ll"), true).run(IRroot);
+            new IRPrinter(new PrintStream("output.ll"), true).run(IRroot);
             IRroot.resolvephi();
-//            irPrinter.run(IRroot);
-//            IRPrinter irPrinter0 = new IRPrinter(new PrintStream("output0.ll"), true);
-//            irPrinter0.run(IRroot);
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();
             new AsmPrinter(lroot, output, true).run();

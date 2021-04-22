@@ -24,8 +24,6 @@ public class Finline{
     }
 
     private void DFS(IRFunction it) {
-//        System.out.println("dfs = " + it.name);
-//        it.callfunctions.forEach(irFunction -> System.out.println("print: " + irFunction.name));
         stack.add(it);
         visited.add(it);
         boolean inRing = false;
@@ -40,7 +38,13 @@ public class Finline{
         stack.remove(stack.size() - 1);
     }
 
+
+    private static int cnt = 0;
+
     private void unfold(Call inst, IRFunction fn) {
+        if(cnt >= 128) return ;
+        cnt++;
+//        System.out.println(inst);
         IRMirror mirror = new IRMirror();
         HashMap<entity, entity> mirrorOpr = mirror.opMirror;
         HashMap<IRBlock, IRBlock> mirrorBlocks = mirror.blockMirror;
@@ -77,6 +81,7 @@ public class Finline{
         if (fn.exitblock == currentBlock && mirEntry != exitBlock) fn.exitblock = exitBlock;
     }
     private void checkInline(IRFunction fn) {
+//        System.out.println(fn.name);
         fn.blocks.forEach(block -> {
             for (Inst inst = block.head_inst; inst != null; inst = inst.nxt)
                 if (inst instanceof Call && !cannotInlineFun.contains(((Call)inst).callee)) {
@@ -85,22 +90,22 @@ public class Finline{
                 }
         });
     }
+
     private void inline() {
         do {
             newround = false;
             canUnFold.clear();
             irRoot.functions.forEach((name, func) -> checkInline(func));
-//            cannotInlineFun.forEach(irFunction -> System.out.println("name = " + irFunction.name));
-//            canUnFold.forEach((call, irFunction) -> System.out.println(call));
             canUnFold.forEach(this::unfold);
             change = change || newround;
+            if(cnt >= 128) break;
         } while (newround);
-        for (Iterator<Map.Entry<String, IRFunction>> iter = irRoot.functions.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry<String, IRFunction> entry = iter.next();
-            IRFunction fn = entry.getValue();
-            if (!cannotInlineFun.contains(fn)) iter.remove();
-            else if (caller.get(fn).size() == 1 && caller.get(fn).contains(fn)) iter.remove();
-        }
+//        for (Iterator<Map.Entry<String, IRFunction>> iter = irRoot.functions.entrySet().iterator(); iter.hasNext();) {
+//            Map.Entry<String, IRFunction> entry = iter.next();
+//            IRFunction fn = entry.getValue();
+//            if (!cannotInlineFun.contains(fn)) iter.remove();
+//            else if (caller.get(fn).size() == 1 && caller.get(fn).contains(fn)) iter.remove();
+//        }
     }
 
     public boolean run() {
