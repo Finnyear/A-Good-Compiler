@@ -42,7 +42,7 @@ public class Finline{
     private static int cnt = 0;
 
     private void unfold(Call inst, IRFunction fn) {
-        if(cnt >= 128) return ;
+        if(cnt >= 256) return ;
         cnt++;
 //        System.out.println(inst);
         IRMirror mirror = new IRMirror();
@@ -98,7 +98,7 @@ public class Finline{
             irRoot.functions.forEach((name, func) -> checkInline(func));
             canUnFold.forEach(this::unfold);
             change = change || newround;
-            if(cnt >= 128) break;
+            if(cnt >= 256) break;
         } while (newround);
 //        for (Iterator<Map.Entry<String, IRFunction>> iter = irRoot.functions.entrySet().iterator(); iter.hasNext();) {
 //            Map.Entry<String, IRFunction> entry = iter.next();
