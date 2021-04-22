@@ -84,6 +84,7 @@ public class InstSelection {
     }
     private boolean canbeImm(entity src){return src instanceof intConst && inbounds(((intConst) src).value());}
     private int reduction(int n){
+        if(n == 0) return -1;
         int ans = 0;
         while(n > 1){
             if(n % 2 == 0){n >>= 1; ans++;}

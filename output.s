@@ -4,658 +4,986 @@
 	.type	main,@function
 main:
 .main_b.0: 
-	addi sp, sp, -32
-	sw s0, 16(sp)
-	sw s1, 20(sp)
-	sw s2, 24(sp)
-	sw s3, 28(sp)
-	sw ra, 12(sp)
-	li t1, 48271
-	lui t0, %hi(A)
-	sw t1, %lo(A)(t0)
-	li t1, 2147483647
-	lui t0, %hi(M)
-	sw t1, %lo(M)(t0)
-	li t1, 1
-	lui t0, %hi(seed)
-	sw t1, %lo(seed)(t0)
-	li t1, 3
-	li t0, 7
-	mul t1, t1, t0
-	li t0, 10
-	mul t1, t1, t0
+	addi sp, sp, -64
+	sw s0, 8(sp)
+	sw s1, 12(sp)
+	sw s2, 16(sp)
+	sw s3, 20(sp)
+	sw s4, 24(sp)
+	sw s5, 28(sp)
+	sw s6, 32(sp)
+	sw s7, 36(sp)
+	sw s8, 40(sp)
+	sw s9, 44(sp)
+	sw s10, 48(sp)
+	sw s11, 52(sp)
+	sw ra, 4(sp)
+	li t1, 10000000
+	lui t0, %hi(INF)
+	sw t1, %lo(INF)(t0)
+	call g_getInt
 	lui t0, %hi(n)
-	sw t1, %lo(n)(t0)
-	lui t0, %hi(h)
-	sw zero, %lo(h)(t0)
-	li s0, 100
-	li t0, 4
-	mul t0, s0, t0
+	sw a0, %lo(n)(t0)
+	call g_getInt
+	lui t0, %hi(m)
+	sw a0, %lo(m)(t0)
+	li a0, 16
+	call malloc
+	lui t0, %hi(g)
+	sw a0, %lo(g)(t0)
+	lui t0, %hi(g)
+	lw s0, %lo(g)(t0)
+	lui t0, %hi(n)
+	lw s2, %lo(n)(t0)
+	lui t0, %hi(m)
+	lw s1, %lo(m)(t0)
+	slli t0, s1, 2
 	addi a0, t0, 4
 	call malloc
-	sw s0, 0(a0)
-	addi t1, a0, 4
-	lui t0, %hi(a)
-	sw t1, %lo(a)(t0)
-	lui t0, %hi(M)
-	lw t1, %lo(M)(t0)
-	lui t0, %hi(A)
-	lw t0, %lo(A)(t0)
-	div t1, t1, t0
-	lui t0, %hi(Q)
-	sw t1, %lo(Q)(t0)
-	lui t0, %hi(M)
-	lw t1, %lo(M)(t0)
-	lui t0, %hi(A)
-	lw t0, %lo(A)(t0)
-	rem t1, t1, t0
-	lui t0, %hi(R)
-	sw t1, %lo(R)(t0)
-	lui t0, %hi(n)
-	lw t2, %lo(n)(t0)
-.main_b.1: 
-	lui t0, %hi(h)
-	lw t0, %lo(h)(t0)
-	bge t2, t0, .main_b.2
-.main_b.3: 
-	mv t0, zero
-.main_b.6: 
-	beqz t0, .main_b.8
-.main_b.7: 
-	la a0, .main.3
-	call g_println
-	li t1, 3654898
-	lui t0, %hi(seed)
-	sw t1, %lo(seed)(t0)
-	lui t0, %hi(seed)
-	lw t1, %lo(seed)(t0)
-	lui t0, %hi(Q)
-	lw t0, %lo(Q)(t0)
-	rem t1, t1, t0
-	lui t0, %hi(A)
-	lw t0, %lo(A)(t0)
-	mul t2, t0, t1
-	lui t0, %hi(seed)
-	lw t1, %lo(seed)(t0)
-	lui t0, %hi(Q)
-	lw t0, %lo(Q)(t0)
-	div t1, t1, t0
-	lui t0, %hi(R)
-	lw t0, %lo(R)(t0)
-	mul t0, t0, t1
-	sub t1, t2, t0
-	bge t1, zero, .main_b.9
-.main_b.10: 
-	lui t0, %hi(M)
-	lw t0, %lo(M)(t0)
-	add t1, t1, t0
-	lui t0, %hi(seed)
-	sw t1, %lo(seed)(t0)
-	j .main_b.12
-.main_b.2: 
-	lui t0, %hi(h)
-	lw t0, %lo(h)(t0)
-	addi t1, t0, 1
-	lui t0, %hi(h)
-	lw t0, %lo(h)(t0)
-	mul t1, t0, t1
-	li t0, 2
-	div t0, t1, t0
-	beq t2, t0, .main_b.4
-.main_b.5: 
-	lui t0, %hi(h)
-	lw t0, %lo(h)(t0)
-	addi t1, t0, 1
-	lui t0, %hi(h)
-	sw t1, %lo(h)(t0)
-	j .main_b.1
-.main_b.4: 
-	li t0, 1
-	j .main_b.6
-.main_b.8: 
-	la a0, .main.2
-	call g_println
-	li t0, 0
-	li a0, 1
-	li t0, 0
-	li t0, 0
-.main_b.11: 
-	lw s0, 16(sp)
-	lw s1, 20(sp)
-	lw s2, 24(sp)
-	lw s3, 28(sp)
-	lw ra, 12(sp)
-	addi sp, sp, 32
-	ret
-.main_b.9: 
-	lui t0, %hi(seed)
-	sw t1, %lo(seed)(t0)
-.main_b.12: 
-	lui t0, %hi(seed)
-	lw t1, %lo(seed)(t0)
-	li t0, 10
-	rem t0, t1, t0
-	addi t1, t0, 1
-	lui t0, %hi(now)
-	sw t1, %lo(now)(t0)
-	lui t0, %hi(now)
-	lw a0, %lo(now)(t0)
-	call g_toString
-	call g_println
-	li s3, 0
-	li s1, 0
-.main_b.13: 
-	lui t0, %hi(now)
-	lw t0, %lo(now)(t0)
-	addi t0, t0, -1
-	blt s3, t0, .main_b.14
-.main_b.15: 
-	lui t0, %hi(now)
-	lw t0, %lo(now)(t0)
-	addi t2, t0, -1
-	lui t0, %hi(a)
-	lw t1, %lo(a)(t0)
-	slli t0, t2, 2
-	add t1, t1, t0
-	lui t0, %hi(n)
-	lw t0, %lo(n)(t0)
-	sub t0, t0, s1
-	sw t0, 0(t1)
-	li s0, 0
-.main_b.18: 
-	lui t0, %hi(now)
-	lw t0, %lo(now)(t0)
-	blt s0, t0, .main_b.20
-.main_b.21: 
-	la a0, .fun_show.1
-	call g_println
-	li t0, 0
-	li t1, 65536
-.main_b.24: 
-	lui t2, %hi(now)
-	lw t2, %lo(now)(t2)
-	blt t0, t2, .main_b.27
-.main_b.28: 
-	li t0, 0
-.main_b.34: 
-	lui t1, %hi(now)
-	lw t1, %lo(now)(t1)
-	blt t0, t1, .main_b.37
-.main_b.38: 
-	li s0, 0
-.main_b.42: 
-	li s2, 100
-	li t0, 4
-	mul t0, s2, t0
+	sw s1, 0(a0)
+	addi t0, a0, 4
+	sw t0, 0(s0)
+	addi s3, s0, 4
+	slli t0, s1, 2
+	addi a0, t0, 4
+	call malloc
+	sw s1, 0(a0)
+	addi t0, a0, 4
+	sw t0, 0(s3)
+	addi s3, s0, 8
+	slli t0, s2, 2
 	addi a0, t0, 4
 	call malloc
 	sw s2, 0(a0)
-	addi a0, a0, 4
-	lui t0, %hi(now)
-	lw t1, %lo(now)(t0)
-	lui t0, %hi(h)
-	lw t0, %lo(h)(t0)
-	bne t1, t0, .main_b.45
-.main_b.46: 
-	li t2, 0
-.main_b.48: 
-	lui t0, %hi(now)
-	lw t0, %lo(now)(t0)
-	blt t2, t0, .main_b.51
-.main_b.52: 
-	li t0, 65536
-	li t1, 0
-.main_b.55: 
-	lui a1, %hi(now)
-	lw a1, %lo(now)(a1)
-	addi a1, a1, -1
-	blt t1, a1, .main_b.58
-.main_b.59: 
-	li t1, 0
-.main_b.62: 
-	lui a1, %hi(now)
-	lw a1, %lo(now)(a1)
-	blt t1, a1, .main_b.67
-.main_b.68: 
-	li t0, 1
-	j .main_b.47
-.main_b.14: 
-	lui t0, %hi(a)
-	lw t1, %lo(a)(t0)
-	slli t0, s3, 2
-	add t0, t1, t0
-	lui t1, %hi(seed)
-	lw t2, %lo(seed)(t1)
-	lui t1, %hi(Q)
-	lw t1, %lo(Q)(t1)
-	rem t2, t2, t1
-	lui t1, %hi(A)
-	lw t1, %lo(A)(t1)
-	mul a0, t1, t2
-	lui t1, %hi(seed)
-	lw t2, %lo(seed)(t1)
-	lui t1, %hi(Q)
-	lw t1, %lo(Q)(t1)
-	div t2, t2, t1
-	lui t1, %hi(R)
-	lw t1, %lo(R)(t1)
-	mul t1, t1, t2
-	sub t2, a0, t1
-	bge t2, zero, .main_b.16
-.main_b.17: 
-	lui t1, %hi(M)
-	lw t1, %lo(M)(t1)
-	add t2, t2, t1
-	lui t1, %hi(seed)
-	sw t2, %lo(seed)(t1)
-	j .main_b.19
-.main_b.16: 
-	lui t1, %hi(seed)
-	sw t2, %lo(seed)(t1)
-.main_b.19: 
-	lui t1, %hi(seed)
-	lw t2, %lo(seed)(t1)
-	li t1, 10
-	rem t1, t2, t1
-	addi t1, t1, 1
-	sw t1, 0(t0)
-.main_b.22: 
-	lui t0, %hi(a)
-	lw t1, %lo(a)(t0)
-	slli t0, s3, 2
-	add t0, t1, t0
-	lw t0, 0(t0)
-	add t1, t0, s1
+	addi t0, a0, 4
+	sw t0, 0(s3)
+	li t0, 0
+.main_b.1: 
+	blt t0, s1, .main_b.2
+.main_b.3: 
+	li t0, 0
+.main_b.5: 
+	blt t0, s2, .main_b.6
+.main_b.7: 
+	addi t0, s0, 12
+	sw zero, 0(t0)
+	li s0, 65536
+	li s2, 65536
+	li s1, 65536
+	li s3, 0
+.main_b.9: 
+	lui t0, %hi(m)
+	lw t0, %lo(m)(t0)
+	blt s3, t0, .main_b.10
+.main_b.11: 
+	li s0, 65536
+	li s2, 0
+	mv t0, zero
+.main_b.13: 
 	lui t0, %hi(n)
 	lw t0, %lo(n)(t0)
-	blt t0, t1, .main_b.25
-.main_b.26: 
-	lui t0, %hi(a)
-	lw t1, %lo(a)(t0)
-	slli t0, s3, 2
+	blt s2, t0, .main_b.14
+.main_b.15: 
+	mv a0, zero
+	lw s0, 8(sp)
+	lw s1, 12(sp)
+	lw s2, 16(sp)
+	lw s3, 20(sp)
+	lw s4, 24(sp)
+	lw s5, 28(sp)
+	lw s6, 32(sp)
+	lw s7, 36(sp)
+	lw s8, 40(sp)
+	lw s9, 44(sp)
+	lw s10, 48(sp)
+	lw s11, 52(sp)
+	lw ra, 4(sp)
+	addi sp, sp, 64
+	ret
+.main_b.2: 
+	addi t1, s0, 4
+	lw t2, 0(t1)
+	slli t1, t0, 2
+	add t2, t2, t1
+	addi t1, zero, -1
+	sw t1, 0(t2)
+.main_b.4: 
+	addi t0, t0, 1
+	j .main_b.1
+.main_b.6: 
+	addi t1, s0, 8
+	lw t2, 0(t1)
+	slli t1, t0, 2
+	add t2, t2, t1
+	addi t1, zero, -1
+	sw t1, 0(t2)
+.main_b.8: 
+	addi t0, t0, 1
+	j .main_b.5
+.main_b.10: 
+	call g_getInt
+	mv s0, a0
+	call g_getInt
+	mv s1, a0
+	call g_getInt
+	mv s2, a0
+	lui t0, %hi(g)
+	lw s4, %lo(g)(t0)
+	li a0, 12
+	call malloc
+	sw s0, 0(a0)
+	addi t0, a0, 4
+	sw s1, 0(t0)
+	addi t0, a0, 8
+	sw s2, 0(t0)
+	mv t0, s4
+	addi t2, s4, 12
+	lw t1, 0(t0)
+	lw t0, 0(t2)
+	slli t0, t0, 2
 	add t0, t1, t0
+	sw a0, 0(t0)
+	addi t1, s4, 4
+	addi t0, s4, 12
+	lw t1, 0(t1)
 	lw t0, 0(t0)
-	add t0, s1, t0
-.main_b.31: 
-	addi t1, s3, 1
-	mv s3, t1
-	mv s1, t0
-	j .main_b.13
-.main_b.20: 
-	lui t0, %hi(a)
-	lw t1, %lo(a)(t0)
+	slli t0, t0, 2
+	add t2, t1, t0
+	addi t0, s4, 8
+	lw t1, 0(t0)
 	slli t0, s0, 2
 	add t0, t1, t0
-	lw a0, 0(t0)
-	call g_toString
-	la a1, .fun_show.0
-	call g_stringadd
-	call g_print
-.main_b.23: 
-	addi t0, s0, 1
-	mv s0, t0
-	j .main_b.18
-.main_b.25: 
-	lui t0, %hi(a)
-	lw t1, %lo(a)(t0)
-	slli t0, s3, 2
-	add t0, t1, t0
-	lui t1, %hi(seed)
-	lw t2, %lo(seed)(t1)
-	lui t1, %hi(Q)
-	lw t1, %lo(Q)(t1)
-	rem t2, t2, t1
-	lui t1, %hi(A)
-	lw t1, %lo(A)(t1)
-	mul a0, t1, t2
-	lui t1, %hi(seed)
-	lw t2, %lo(seed)(t1)
-	lui t1, %hi(Q)
-	lw t1, %lo(Q)(t1)
-	div t2, t2, t1
-	lui t1, %hi(R)
-	lw t1, %lo(R)(t1)
-	mul t1, t1, t2
-	sub t2, a0, t1
-	bge t2, zero, .main_b.29
-.main_b.30: 
-	lui t1, %hi(M)
-	lw t1, %lo(M)(t1)
-	add t2, t2, t1
-	lui t1, %hi(seed)
-	sw t2, %lo(seed)(t1)
-	j .main_b.35
-.main_b.27: 
-	lui t2, %hi(a)
-	lw a0, %lo(a)(t2)
-	slli t2, t0, 2
-	add t2, a0, t2
-	lw t2, 0(t2)
-	beq t2, zero, .main_b.32
-.main_b.33: 
+	lw t0, 0(t0)
+	sw t0, 0(t2)
+	addi t0, s4, 8
+	lw t1, 0(t0)
+	slli t0, s0, 2
+	add t1, t1, t0
+	addi t0, s4, 12
+	lw t0, 0(t0)
+	sw t0, 0(t1)
+	addi t1, s4, 12
+	lw t0, 0(t1)
 	addi t0, t0, 1
-	j .main_b.24
-.main_b.29: 
-	lui t1, %hi(seed)
-	sw t2, %lo(seed)(t1)
-.main_b.35: 
-	lui t1, %hi(seed)
-	lw t2, %lo(seed)(t1)
-	li t1, 10
-	rem t1, t2, t1
-	addi t1, t1, 1
-	sw t1, 0(t0)
-	j .main_b.22
-.main_b.32: 
-	addi t1, t0, 1
-.main_b.36: 
-	lui t2, %hi(now)
-	lw t2, %lo(now)(t2)
-	blt t1, t2, .main_b.39
-	j .main_b.33
-.main_b.37: 
-	lui t1, %hi(a)
-	lw t2, %lo(a)(t1)
-	slli t1, t0, 2
-	add t1, t2, t1
-	lw t1, 0(t1)
-	beq t1, zero, .main_b.40
-.main_b.41: 
-	addi t0, t0, 1
-	j .main_b.34
-.main_b.39: 
-	lui t2, %hi(a)
-	lw a0, %lo(a)(t2)
-	slli t2, t1, 2
-	add t2, a0, t2
-	lw t2, 0(t2)
-	bne t2, zero, .main_b.43
-.main_b.44: 
-	addi t1, t1, 1
-	j .main_b.36
-.main_b.40: 
-	lui t1, %hi(now)
-	sw t0, %lo(now)(t1)
-	j .main_b.38
-.main_b.43: 
-	lui t2, %hi(a)
-	lw a0, %lo(a)(t2)
-	slli t2, t0, 2
-	add t2, a0, t2
-	lw a2, 0(t2)
-	lui t2, %hi(a)
-	lw a0, %lo(a)(t2)
-	slli t2, t0, 2
-	add a1, a0, t2
-	lui t2, %hi(a)
-	lw a0, %lo(a)(t2)
-	slli t2, t1, 2
-	add t2, a0, t2
-	lw t2, 0(t2)
-	sw t2, 0(a1)
-	lui t2, %hi(a)
-	lw a0, %lo(a)(t2)
-	slli t2, t1, 2
-	add t2, a0, t2
-	sw a2, 0(t2)
-	j .main_b.33
-.main_b.45: 
-	li t0, 65536
-	mv t0, zero
-	li t1, 65536
-	li t2, 65536
-.main_b.47: 
-	beqz t0, .main_b.50
-.main_b.49: 
-	la s2, .main.6
-	mv a0, s0
-	call g_toString
-	mv a1, a0
-	mv a0, s2
-	call g_stringadd
-	la a1, .main.7
-	call g_stringadd
-	call g_println
-	mv t0, s0
-	li a0, 0
-	mv t0, s3
-	mv t0, s1
-	j .main_b.11
-.main_b.50: 
-	la s2, .main.4
-	addi s0, s0, 1
-	mv a0, s0
-	call g_toString
-	mv a1, a0
-	mv a0, s2
-	call g_stringadd
-	la a1, .main.5
-	call g_stringadd
-	call g_println
+	sw t0, 0(t1)
+.main_b.12: 
+	addi s3, s3, 1
+	j .main_b.9
+.main_b.14: 
+	lui t0, %hi(n)
+	lw s0, %lo(n)(t0)
+	slli t0, s0, 2
+	addi a0, t0, 4
+	call malloc
+	sw s0, 0(a0)
+	addi s7, a0, 4
+	lui t0, %hi(n)
+	lw s0, %lo(n)(t0)
+	slli t0, s0, 2
+	addi a0, t0, 4
+	call malloc
+	sw s0, 0(a0)
+	addi t0, a0, 4
+	mv s4, t0
 	li t0, 0
-.main_b.53: 
-	lui t1, %hi(now)
-	lw t1, %lo(now)(t1)
-	blt t0, t1, .main_b.56
-.main_b.57: 
-	lui t0, %hi(a)
-	lw t1, %lo(a)(t0)
-	lui t0, %hi(now)
-	lw t0, %lo(now)(t0)
+.main_b.16: 
+	lui t1, %hi(n)
+	lw t1, %lo(n)(t1)
+	blt t0, t1, .main_b.17
+.main_b.18: 
+	slli t0, s2, 2
+	add t0, s4, t0
+	sw zero, 0(t0)
+	li s1, 4
+	mv a0, s1
+	call malloc
+	mv s5, a0
+	mv s0, s5
+	li s3, 8
+	mv a0, s3
+	call malloc
+	mv s6, a0
+	addi t0, s6, 4
+	sw zero, 0(t0)
+	slli t0, s1, 4
+	addi a0, t0, 4
+	call malloc
+	li t0, 16
+	sw t0, 0(a0)
+	addi t0, a0, 4
+	sw t0, 0(s6)
+	sw s6, 0(s0)
+	mv a0, s3
+	call malloc
+	mv s1, a0
+	addi t0, s1, 4
+	sw zero, 0(t0)
+	sw s2, 0(s1)
+	mv t0, s5
+	lw s0, 0(t0)
+	addi t0, s0, 4
+	lw t1, 0(t0)
+	lw t0, 0(s0)
+	addi t0, t0, -4
+	lw t0, 0(t0)
+	beq t1, t0, .main_b.20
+.main_b.21: 
+	mv t0, s0
+	addi t2, s0, 4
+	lw t1, 0(t0)
+	lw t0, 0(t2)
+	slli t0, t0, 2
+	add t0, t1, t0
+	sw s1, 0(t0)
+	addi t1, s0, 4
+	lw t0, 0(t1)
+	addi t0, t0, 1
+	sw t0, 0(t1)
+	mv t0, s5
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	addi t2, t0, -1
+	li t1, 65536
+.main_b.23: 
+	blt zero, t2, .main_b.25
+.main_b.26: 
+	li s3, 65536
+	li s6, 65536
+	li t1, 65536
+	li t1, 65536
+	li s0, 65536
+	mv s8, zero
+.main_b.29: 
+	mv t0, s5
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	bne t0, zero, .main_b.30
+.main_b.31: 
+	li s0, 0
+.main_b.34: 
+	lui t0, %hi(n)
+	lw t0, %lo(n)(t0)
+	blt s0, t0, .main_b.37
+.main_b.38: 
+	la a0, .main.2
+	call g_println
+.main_b.43: 
+	addi t0, s2, 1
+	mv s2, t0
+	mv t0, s4
+	j .main_b.13
+.main_b.17: 
+	slli t1, t0, 2
+	add t2, s4, t1
+	lui t1, %hi(INF)
+	lw t1, %lo(INF)(t1)
+	sw t1, 0(t2)
+	slli t1, t0, 2
+	add t1, s7, t1
+	sw zero, 0(t1)
+.main_b.19: 
+	addi t0, t0, 1
+	j .main_b.16
+.main_b.20: 
+	lw s6, 0(s0)
+	addi t0, s0, 4
+	lw s3, 0(t0)
+	addi t0, s6, -4
+	lw t0, 0(t0)
+	slli s8, t0, 1
+	slli t0, s8, 2
+	addi a0, t0, 4
+	call malloc
+	sw s8, 0(a0)
+	addi t0, a0, 4
+	sw t0, 0(s0)
+	addi t0, s0, 4
+	sw zero, 0(t0)
+.main_b.22: 
+	addi t0, s0, 4
+	lw t0, 0(t0)
+	bne t0, s3, .main_b.24
+	j .main_b.21
+.main_b.24: 
+	mv t0, s0
+	addi t2, s0, 4
+	lw t1, 0(t0)
+	lw t0, 0(t2)
 	slli t0, t0, 2
 	add t1, t1, t0
-	lui t0, %hi(now)
-	lw t0, %lo(now)(t0)
-	sw t0, 0(t1)
-	lui t0, %hi(now)
-	lw t0, %lo(now)(t0)
-	addi t1, t0, 1
-	lui t0, %hi(now)
-	sw t1, %lo(now)(t0)
-	li t0, 65536
-	li t1, 0
-.main_b.60: 
-	lui t2, %hi(now)
-	lw t2, %lo(now)(t2)
-	blt t1, t2, .main_b.63
-.main_b.64: 
-	li t0, 0
-.main_b.71: 
-	lui t1, %hi(now)
-	lw t1, %lo(now)(t1)
-	blt t0, t1, .main_b.77
-.main_b.78: 
-	li s2, 0
-.main_b.82: 
-	lui t0, %hi(now)
-	lw t0, %lo(now)(t0)
-	blt s2, t0, .main_b.85
-.main_b.86: 
-	la a0, .fun_show.1
-	call g_println
-	j .main_b.42
-.main_b.51: 
-	slli t0, t2, 2
-	add a1, a0, t0
-	lui t0, %hi(a)
-	lw t1, %lo(a)(t0)
-	slli t0, t2, 2
-	add t0, t1, t0
+	addi t0, s0, 4
 	lw t0, 0(t0)
-	sw t0, 0(a1)
-.main_b.54: 
-	addi t2, t2, 1
-	j .main_b.48
-.main_b.56: 
-	lui t1, %hi(a)
-	lw t2, %lo(a)(t1)
-	slli t1, t0, 2
-	add t2, t2, t1
-	lw t1, 0(t2)
-	addi t1, t1, -1
-	sw t1, 0(t2)
+	slli t0, t0, 2
+	add t0, s6, t0
+	lw t0, 0(t0)
+	sw t0, 0(t1)
+.main_b.27: 
+	addi t1, s0, 4
+	lw t0, 0(t1)
 	addi t0, t0, 1
-	j .main_b.53
-.main_b.58: 
-	addi t2, t1, 1
-.main_b.61: 
-	lui a1, %hi(now)
-	lw a1, %lo(now)(a1)
-	blt t2, a1, .main_b.65
-.main_b.66: 
-	addi t1, t1, 1
-	j .main_b.55
-.main_b.63: 
-	lui t2, %hi(a)
-	lw a0, %lo(a)(t2)
-	slli t2, t1, 2
-	add t2, a0, t2
-	lw t2, 0(t2)
-	beq t2, zero, .main_b.69
-.main_b.70: 
-	addi t1, t1, 1
-	j .main_b.60
-.main_b.65: 
-	slli a1, t1, 2
-	add a2, a0, a1
-	slli a1, t2, 2
-	add a1, a0, a1
-	lw a2, 0(a2)
-	lw a1, 0(a1)
-	blt a1, a2, .main_b.72
-.main_b.73: 
-	addi t2, t2, 1
-	j .main_b.61
-.main_b.67: 
-	slli a1, t1, 2
-	add a1, a0, a1
-	addi a2, t1, 1
-	lw a1, 0(a1)
-	bne a1, a2, .main_b.74
-.main_b.75: 
-	addi t1, t1, 1
-	j .main_b.62
-.main_b.69: 
-	addi t0, t1, 1
-.main_b.76: 
-	lui t2, %hi(now)
-	lw t2, %lo(now)(t2)
-	blt t0, t2, .main_b.79
-	j .main_b.70
-.main_b.72: 
+	sw t0, 0(t1)
+	j .main_b.22
+.main_b.25: 
+	addi t1, t2, -1
+	li t0, 2
+	div t1, t1, t0
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a0, 0(t0)
 	slli t0, t1, 2
 	add t0, a0, t0
 	lw t0, 0(t0)
-	slli a1, t1, 2
-	add a2, a0, a1
-	slli a1, t2, 2
-	add a1, a0, a1
-	lw a1, 0(a1)
-	sw a1, 0(a2)
-	slli a1, t2, 2
-	add a1, a0, a1
-	sw t0, 0(a1)
-	j .main_b.73
-.main_b.74: 
-	mv t0, zero
-	j .main_b.47
-.main_b.77: 
-	lui t1, %hi(a)
-	lw t2, %lo(a)(t1)
-	slli t1, t0, 2
-	add t1, t2, t1
-	lw t1, 0(t1)
-	beq t1, zero, .main_b.80
-.main_b.81: 
-	addi t0, t0, 1
-	j .main_b.71
-.main_b.79: 
-	lui t2, %hi(a)
-	lw a0, %lo(a)(t2)
-	slli t2, t0, 2
-	add t2, a0, t2
-	lw t2, 0(t2)
-	bne t2, zero, .main_b.83
-.main_b.84: 
-	addi t0, t0, 1
-	j .main_b.76
-.main_b.80: 
-	lui t1, %hi(now)
-	sw t0, %lo(now)(t1)
-	j .main_b.78
-.main_b.83: 
-	lui t2, %hi(a)
-	lw a0, %lo(a)(t2)
-	slli t2, t1, 2
-	add t2, a0, t2
-	lw t2, 0(t2)
-	lui a0, %hi(a)
-	lw a1, %lo(a)(a0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub a1, zero, t0
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a0, 0(t0)
+	slli t0, t2, 2
+	add t0, a0, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub t0, zero, t0
+	bge a1, t0, .main_b.26
+.main_b.28: 
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a1, 0(t0)
+	slli a0, t1, 2
+	add a0, a1, a0
+	lw a3, 0(a0)
+	lw a1, 0(t0)
 	slli a0, t1, 2
 	add a2, a1, a0
-	lui a0, %hi(a)
-	lw a1, %lo(a)(a0)
-	slli a0, t0, 2
+	lw a1, 0(t0)
+	slli a0, t2, 2
 	add a0, a1, a0
 	lw a0, 0(a0)
 	sw a0, 0(a2)
-	lui a0, %hi(a)
-	lw a1, %lo(a)(a0)
-	slli a0, t0, 2
-	add a0, a1, a0
-	sw t2, 0(a0)
-	j .main_b.70
-.main_b.85: 
-	lui t0, %hi(a)
-	lw t1, %lo(a)(t0)
-	slli t0, s2, 2
+	lw a0, 0(t0)
+	slli t0, t2, 2
+	add t0, a0, t0
+	sw a3, 0(t0)
+	mv t2, t1
+	j .main_b.23
+.main_b.30: 
+	mv t0, s5
+	lw t0, 0(t0)
+	lw t0, 0(t0)
+	lw s8, 0(t0)
+	mv t0, s5
+	lw t1, 0(t0)
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	addi a2, t0, -1
+	lw t0, 0(t1)
+	lw a1, 0(t0)
+	lw t0, 0(t1)
+	lw a0, 0(t1)
+	slli t2, a2, 2
+	add t2, a0, t2
+	lw t2, 0(t2)
+	sw t2, 0(t0)
+	lw t1, 0(t1)
+	slli t0, a2, 2
 	add t0, t1, t0
+	sw a1, 0(t0)
+	mv t0, s5
+	lw t0, 0(t0)
+	addi t2, t0, 4
+	lw t1, 0(t2)
+	addi t1, t1, -1
+	sw t1, 0(t2)
+	mv t1, t0
+	addi t0, t0, 4
+	lw t1, 0(t1)
+	lw t0, 0(t0)
+	slli t0, t0, 2
+	add t0, t1, t0
+	lw t0, 0(t0)
+	li t1, 2
+	mul t0, zero, t1
+	addi t2, t0, 1
+	mul t0, zero, t1
+	addi t1, t0, 2
+	mv t0, s5
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	blt t2, t0, .main_b.32
+.main_b.33: 
+	li t2, 0
+.main_b.36: 
+	mv t0, s5
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	blt t1, t0, .main_b.39
+.main_b.40: 
+	mv t1, t2
+.main_b.45: 
+	beq t1, zero, .main_b.47
+.main_b.48: 
+	mv t0, s5
+	lw t0, 0(t0)
+	lw t2, 0(t0)
+	lw a2, 0(t2)
+	lw t2, 0(t0)
+	lw a1, 0(t0)
+	slli a0, t1, 2
+	add a0, a1, a0
+	lw a0, 0(a0)
+	sw a0, 0(t2)
+	lw t2, 0(t0)
+	slli t0, t1, 2
+	add t0, t2, t0
+	sw a2, 0(t0)
+	slli t0, t1, 1
+	addi a1, t0, 1
+	slli t0, t1, 1
+	addi t2, t0, 2
+	mv t0, s5
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	blt a1, t0, .main_b.52
+.main_b.53: 
+	mv a1, t1
+.main_b.56: 
+	mv t0, s5
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	blt t2, t0, .main_b.59
+.main_b.60: 
+	beq a1, t1, .main_b.47
+.main_b.64: 
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a0, 0(t0)
+	slli t2, t1, 2
+	add t2, a0, t2
+	lw a2, 0(t2)
+	lw t2, 0(t0)
+	slli t1, t1, 2
+	add a0, t2, t1
+	lw t2, 0(t0)
+	slli t1, a1, 2
+	add t1, t2, t1
+	lw t1, 0(t1)
+	sw t1, 0(a0)
+	lw t1, 0(t0)
+	slli t0, a1, 2
+	add t0, t1, t0
+	sw a2, 0(t0)
+	mv a0, s5
+	call cls_Heap_Node_maxHeapify
+.main_b.47: 
+	lw s1, 0(s8)
+	slli t0, s1, 2
+	add t0, s7, t0
+	lw t1, 0(t0)
+	li t0, 1
+	beq t1, t0, .main_b.50
+.main_b.51: 
+	slli t0, s1, 2
+	add t1, s7, t0
+	li t0, 1
+	sw t0, 0(t1)
+	lui t0, %hi(g)
+	lw t0, %lo(g)(t0)
+	addi t0, t0, 8
+	lw t1, 0(t0)
+	slli t0, s1, 2
+	add t0, t1, t0
+	lw t1, 0(t0)
+	mv t0, s0
+	mv s0, t1
+	mv t1, s6
+.main_b.54: 
+	addi t2, zero, -1
+	bne s0, t2, .main_b.57
+.main_b.58: 
+	mv s6, t1
+	mv t1, s1
+	mv t1, s0
+	mv s0, t0
+	j .main_b.29
+.main_b.32: 
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a0, 0(t0)
+	slli t0, t2, 2
+	add t0, a0, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub a0, zero, t0
+	mv t0, s5
+	lw t0, 0(t0)
+	lw t0, 0(t0)
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub t0, zero, t0
+	blt t0, a0, .main_b.36
+.main_b.35: 
+	li t2, 0
+	j .main_b.36
+.main_b.37: 
+	slli t0, s0, 2
+	add t0, s4, t0
+	lw t1, 0(t0)
+	lui t0, %hi(INF)
+	lw t0, %lo(INF)(t0)
+	beq t1, t0, .main_b.41
+.main_b.42: 
+	slli t0, s0, 2
+	add t0, s4, t0
 	lw a0, 0(t0)
 	call g_toString
-	la a1, .fun_show.0
-	call g_stringadd
 	call g_print
-.main_b.87: 
-	addi t0, s2, 1
-	mv s2, t0
-	j .main_b.82
+	j .main_b.46
+.main_b.39: 
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a0, 0(t0)
+	slli t0, t1, 2
+	add t0, a0, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub a1, zero, t0
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a0, 0(t0)
+	slli t0, t2, 2
+	add t0, a0, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub t0, zero, t0
+	blt t0, a1, .main_b.45
+.main_b.44: 
+	mv t1, t2
+	j .main_b.45
+.main_b.41: 
+	la a0, .main.0
+	call g_print
+.main_b.46: 
+	la a0, .main.1
+	call g_print
+.main_b.49: 
+	addi s0, s0, 1
+	j .main_b.34
+.main_b.50: 
+	mv t1, s1
+	j .main_b.29
+.main_b.52: 
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a0, 0(t0)
+	slli t0, a1, 2
+	add t0, a0, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub a2, zero, t0
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a0, 0(t0)
+	slli t0, t1, 2
+	add t0, a0, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub t0, zero, t0
+	blt t0, a2, .main_b.56
+.main_b.55: 
+	mv a1, t1
+	j .main_b.56
+.main_b.57: 
+	lui t0, %hi(g)
+	lw t0, %lo(g)(t0)
+	lw t1, 0(t0)
+	slli t0, s0, 2
+	add t0, t1, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw s6, 0(t0)
+	lui t0, %hi(g)
+	lw t0, %lo(g)(t0)
+	lw t1, 0(t0)
+	slli t0, s0, 2
+	add t0, t1, t0
+	lw t0, 0(t0)
+	addi t0, t0, 8
+	lw t0, 0(t0)
+	sw t0, 60(sp)
+	slli t0, s1, 2
+	add t0, s4, t0
+	lw t1, 0(t0)
+	lw t0, 60(sp)
+	add s3, t1, t0
+	slli t0, s6, 2
+	add t0, s4, t0
+	lw t0, 0(t0)
+	bge s3, t0, .main_b.62
+.main_b.61: 
+	slli t0, s6, 2
+	add t0, s4, t0
+	sw s3, 0(t0)
+	li a0, 8
+	call malloc
+	mv s9, a0
+	mv t0, s9
+	sw s6, 0(t0)
+	mv t0, s9
+	addi t1, t0, 4
+	slli t0, s6, 2
+	add t0, s4, t0
+	lw t0, 0(t0)
+	sw t0, 0(t1)
+	mv t0, s5
+	lw s8, 0(t0)
+	mv t0, s8
+	addi t0, t0, 4
+	lw t1, 0(t0)
+	mv t0, s8
+	lw t0, 0(t0)
+	addi t0, t0, -4
+	lw t0, 0(t0)
+	beq t1, t0, .main_b.65
+.main_b.66: 
+	mv t1, s8
+	mv t0, s8
+	addi t0, t0, 4
+	lw t1, 0(t1)
+	lw t0, 0(t0)
+	slli t0, t0, 2
+	add t0, t1, t0
+	sw s9, 0(t0)
+	mv t0, s8
+	addi t1, t0, 4
+	lw t0, 0(t1)
+	addi t0, t0, 1
+	sw t0, 0(t1)
+	mv t0, s5
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	addi t2, t0, -1
+	li t1, 65536
+.main_b.68: 
+	blt zero, t2, .main_b.70
+.main_b.71: 
+	mv s8, s9
+.main_b.62: 
+	lui t0, %hi(g)
+	lw t0, %lo(g)(t0)
+	addi t0, t0, 4
+	lw t1, 0(t0)
+	slli t0, s0, 2
+	add t0, t1, t0
+	lw t1, 0(t0)
+	lw t0, 60(sp)
+	mv s0, t1
+	mv t1, s3
+	mv s3, s6
+	j .main_b.54
+.main_b.59: 
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a0, 0(t0)
+	slli t0, t2, 2
+	add t0, a0, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub a2, zero, t0
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a0, 0(t0)
+	slli t0, a1, 2
+	add t0, a0, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub t0, zero, t0
+	blt t0, a2, .main_b.63
+	j .main_b.60
+.main_b.63: 
+	mv a1, t2
+	j .main_b.60
+.main_b.65: 
+	mv t0, s8
+	lw s11, 0(t0)
+	mv t0, s8
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sw t0, 56(sp)
+	mv t0, s11
+	addi t0, t0, -4
+	lw t0, 0(t0)
+	slli s10, t0, 1
+	slli t0, s10, 2
+	addi a0, t0, 4
+	call malloc
+	sw s10, 0(a0)
+	addi t0, a0, 4
+	sw t0, 0(s8)
+	mv t0, s8
+	addi t0, t0, 4
+	sw zero, 0(t0)
+.main_b.67: 
+	mv t0, s8
+	addi t0, t0, 4
+	lw t1, 0(t0)
+	lw t0, 56(sp)
+	bne t1, t0, .main_b.69
+	j .main_b.66
+.main_b.69: 
+	mv t0, s8
+	mv t1, s8
+	addi t2, t1, 4
+	lw t1, 0(t0)
+	lw t0, 0(t2)
+	slli t0, t0, 2
+	add t1, t1, t0
+	mv t0, s8
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	slli t0, t0, 2
+	add t0, s11, t0
+	lw t0, 0(t0)
+	sw t0, 0(t1)
+.main_b.72: 
+	mv t0, s8
+	addi t1, t0, 4
+	lw t0, 0(t1)
+	addi t0, t0, 1
+	sw t0, 0(t1)
+	j .main_b.67
+.main_b.70: 
+	addi t1, t2, -1
+	li t0, 2
+	div t1, t1, t0
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a0, 0(t0)
+	slli t0, t1, 2
+	add t0, a0, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub a1, zero, t0
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a0, 0(t0)
+	slli t0, t2, 2
+	add t0, a0, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub t0, zero, t0
+	bge a1, t0, .main_b.71
+.main_b.73: 
+	mv t0, s5
+	lw t0, 0(t0)
+	lw a1, 0(t0)
+	slli a0, t1, 2
+	add a0, a1, a0
+	lw a3, 0(a0)
+	lw a1, 0(t0)
+	slli a0, t1, 2
+	add a2, a1, a0
+	lw a1, 0(t0)
+	slli a0, t2, 2
+	add a0, a1, a0
+	lw a0, 0(a0)
+	sw a0, 0(a2)
+	lw a0, 0(t0)
+	slli t0, t2, 2
+	add t0, a0, t0
+	sw a3, 0(t0)
+	mv t2, t1
+	j .main_b.68
 	.size	main, .-main
 
-	.type	M,@object
-	.section	.bss
-	.globl	M
-	.p2align	2
-M:
-.LM$local:
-	.word	0
-	.size	M, 4
-
-	.type	seed,@object
-	.section	.bss
-	.globl	seed
-	.p2align	2
-seed:
-.Lseed$local:
-	.word	0
-	.size	seed, 4
-
-	.type	A,@object
-	.section	.bss
-	.globl	A
-	.p2align	2
-A:
-.LA$local:
-	.word	0
-	.size	A, 4
-
-	.type	h,@object
-	.section	.bss
-	.globl	h
-	.p2align	2
-h:
-.Lh$local:
-	.word	0
-	.size	h, 4
+	.globl	cls_Heap_Node_maxHeapify
+	.p2align	1
+	.type	cls_Heap_Node_maxHeapify,@function
+cls_Heap_Node_maxHeapify:
+.cls_Heap_Node_maxHeapify_b.0: 
+	addi sp, sp, -16
+	sw ra, 12(sp)
+	slli t0, a1, 1
+	addi t1, t0, 1
+	slli t0, a1, 1
+	addi t2, t0, 2
+	lw t0, 0(a0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	blt t1, t0, .cls_Heap_Node_maxHeapify_b.1
+.cls_Heap_Node_maxHeapify_b.2: 
+	mv t1, a1
+.cls_Heap_Node_maxHeapify_b.4: 
+	lw t0, 0(a0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	blt t2, t0, .cls_Heap_Node_maxHeapify_b.5
+.cls_Heap_Node_maxHeapify_b.6: 
+	beq t1, a1, .cls_Heap_Node_maxHeapify_b.8
+.cls_Heap_Node_maxHeapify_b.9: 
+	lw t0, 0(a0)
+	lw a2, 0(t0)
+	slli t2, a1, 2
+	add t2, a2, t2
+	lw t2, 0(t2)
+	lw a2, 0(t0)
+	slli a1, a1, 2
+	add a3, a2, a1
+	lw a2, 0(t0)
+	slli a1, t1, 2
+	add a1, a2, a1
+	lw a1, 0(a1)
+	sw a1, 0(a3)
+	lw a1, 0(t0)
+	slli t0, t1, 2
+	add t0, a1, t0
+	sw t2, 0(t0)
+	slli t0, t1, 1
+	addi t2, t0, 1
+	slli t0, t1, 1
+	addi a1, t0, 2
+	lw t0, 0(a0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	blt t2, t0, .cls_Heap_Node_maxHeapify_b.10
+.cls_Heap_Node_maxHeapify_b.11: 
+	mv t2, t1
+.cls_Heap_Node_maxHeapify_b.13: 
+	lw t0, 0(a0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	blt a1, t0, .cls_Heap_Node_maxHeapify_b.14
+.cls_Heap_Node_maxHeapify_b.15: 
+	mv a1, t2
+.cls_Heap_Node_maxHeapify_b.17: 
+	beq a1, t1, .cls_Heap_Node_maxHeapify_b.8
+.cls_Heap_Node_maxHeapify_b.18: 
+	lw t0, 0(a0)
+	lw a2, 0(t0)
+	slli t2, t1, 2
+	add t2, a2, t2
+	lw t2, 0(t2)
+	lw a2, 0(t0)
+	slli t1, t1, 2
+	add a3, a2, t1
+	lw a2, 0(t0)
+	slli t1, a1, 2
+	add t1, a2, t1
+	lw t1, 0(t1)
+	sw t1, 0(a3)
+	lw t1, 0(t0)
+	slli t0, a1, 2
+	add t0, t1, t0
+	sw t2, 0(t0)
+	call cls_Heap_Node_maxHeapify
+.cls_Heap_Node_maxHeapify_b.8: 
+	lw ra, 12(sp)
+	addi sp, sp, 16
+	ret
+.cls_Heap_Node_maxHeapify_b.1: 
+	lw t0, 0(a0)
+	lw a2, 0(t0)
+	slli t0, t1, 2
+	add t0, a2, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub a2, zero, t0
+	lw t0, 0(a0)
+	lw a3, 0(t0)
+	slli t0, a1, 2
+	add t0, a3, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub t0, zero, t0
+	blt t0, a2, .cls_Heap_Node_maxHeapify_b.4
+.cls_Heap_Node_maxHeapify_b.3: 
+	mv t1, a1
+	j .cls_Heap_Node_maxHeapify_b.4
+.cls_Heap_Node_maxHeapify_b.5: 
+	lw t0, 0(a0)
+	lw a2, 0(t0)
+	slli t0, t2, 2
+	add t0, a2, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub a2, zero, t0
+	lw t0, 0(a0)
+	lw a3, 0(t0)
+	slli t0, t1, 2
+	add t0, a3, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub t0, zero, t0
+	blt t0, a2, .cls_Heap_Node_maxHeapify_b.7
+	j .cls_Heap_Node_maxHeapify_b.6
+.cls_Heap_Node_maxHeapify_b.7: 
+	mv t1, t2
+	j .cls_Heap_Node_maxHeapify_b.6
+.cls_Heap_Node_maxHeapify_b.10: 
+	lw t0, 0(a0)
+	lw a2, 0(t0)
+	slli t0, t2, 2
+	add t0, a2, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub a2, zero, t0
+	lw t0, 0(a0)
+	lw a3, 0(t0)
+	slli t0, t1, 2
+	add t0, a3, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub t0, zero, t0
+	blt t0, a2, .cls_Heap_Node_maxHeapify_b.13
+.cls_Heap_Node_maxHeapify_b.12: 
+	mv t2, t1
+	j .cls_Heap_Node_maxHeapify_b.13
+.cls_Heap_Node_maxHeapify_b.14: 
+	lw t0, 0(a0)
+	lw a2, 0(t0)
+	slli t0, a1, 2
+	add t0, a2, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub a2, zero, t0
+	lw t0, 0(a0)
+	lw a3, 0(t0)
+	slli t0, t2, 2
+	add t0, a3, t0
+	lw t0, 0(t0)
+	addi t0, t0, 4
+	lw t0, 0(t0)
+	sub t0, zero, t0
+	blt t0, a2, .cls_Heap_Node_maxHeapify_b.17
+.cls_Heap_Node_maxHeapify_b.16: 
+	mv a1, t2
+	j .cls_Heap_Node_maxHeapify_b.17
+	.size	cls_Heap_Node_maxHeapify, .-cls_Heap_Node_maxHeapify
 
 	.type	n,@object
 	.section	.bss
@@ -666,87 +994,48 @@ n:
 	.word	0
 	.size	n, 4
 
-	.type	a,@object
+	.type	INF,@object
 	.section	.bss
-	.globl	a
+	.globl	INF
 	.p2align	2
-a:
-.La$local:
+INF:
+.LINF$local:
 	.word	0
-	.size	a, 4
+	.size	INF, 4
 
-	.type	Q,@object
+	.type	m,@object
 	.section	.bss
-	.globl	Q
+	.globl	m
 	.p2align	2
-Q:
-.LQ$local:
+m:
+.Lm$local:
 	.word	0
-	.size	Q, 4
+	.size	m, 4
 
-	.type	R,@object
+	.type	g,@object
 	.section	.bss
-	.globl	R
+	.globl	g
 	.p2align	2
-R:
-.LR$local:
+g:
+.Lg$local:
 	.word	0
-	.size	R, 4
+	.size	g, 4
 
-	.type	now,@object
-	.section	.bss
-	.globl	now
-	.p2align	2
-now:
-.Lnow$local:
-	.word	0
-	.size	now, 4
-
-	.type	.fun_show.0,@object
+	.type	.main.0,@object
 	.section	.rodata
-.fun_show.0:
-	.asciz	" "
-	.size	.fun_show.0, 2
-
-	.type	.main.4,@object
-	.section	.rodata
-.main.4:
-	.asciz	"step "
-	.size	.main.4, 6
-
-	.type	.main.7,@object
-	.section	.rodata
-.main.7:
-	.asciz	" step(s)"
-	.size	.main.7, 9
-
-	.type	.main.6,@object
-	.section	.rodata
-.main.6:
-	.asciz	"Total: "
-	.size	.main.6, 8
-
-	.type	.main.5,@object
-	.section	.rodata
-.main.5:
-	.asciz	":"
-	.size	.main.5, 2
+.main.0:
+	.asciz	"-1"
+	.size	.main.0, 3
 
 	.type	.main.2,@object
 	.section	.rodata
 .main.2:
-	.asciz	"Sorry, the number n must be a number s.t. there exists i satisfying n=1+2+...+i"
-	.size	.main.2, 80
-
-	.type	.fun_show.1,@object
-	.section	.rodata
-.fun_show.1:
 	.asciz	""
-	.size	.fun_show.1, 1
+	.size	.main.2, 1
 
-	.type	.main.3,@object
+	.type	.main.1,@object
 	.section	.rodata
-.main.3:
-	.asciz	"Let's start!"
-	.size	.main.3, 13
+.main.1:
+	.asciz	" "
+	.size	.main.1, 2
 

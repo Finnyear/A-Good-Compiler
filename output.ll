@@ -17,1057 +17,1484 @@ declare i1 @g_stringgt(i8* %0, i8* %1)
 declare i1 @g_stringeq(i8* %0, i8* %1)
 declare i8* @g_getString()
 declare i1 @g_stringlt(i8* %0, i8* %1)
+%struct.Array_Node = type {%struct.Node**, i32}
+%struct.Heap_Node = type {%struct.Array_Node*}
+%struct.Node = type {i32, i32}
+%struct.Edge = type {i32, i32, i32}
+%struct.EdgeList = type {%struct.Edge**, i32*, i32*, i32}
 @n = global i32 zeroinitializer, align 4
-@h = global i32 zeroinitializer, align 4
-@now = global i32 zeroinitializer, align 4
-@a = global i32* zeroinitializer, align 4
-@A = global i32 zeroinitializer, align 4
-@M = global i32 zeroinitializer, align 4
-@Q = global i32 zeroinitializer, align 4
-@R = global i32 zeroinitializer, align 4
-@seed = global i32 zeroinitializer, align 4
-@main.2 = private unnamed_addr constant [80 x i8] c"Sorry, the number n must be a number s.t. there exists i satisfying n=1+2+...+i\00", align 1
-@fun_show.1 = private unnamed_addr constant [1 x i8] c"\00", align 1
-@main.3 = private unnamed_addr constant [13 x i8] c"Let's start!\00", align 1
-@main.4 = private unnamed_addr constant [6 x i8] c"step \00", align 1
-@main.5 = private unnamed_addr constant [2 x i8] c":\00", align 1
-@fun_show.0 = private unnamed_addr constant [2 x i8] c" \00", align 1
-@main.6 = private unnamed_addr constant [8 x i8] c"Total: \00", align 1
-@main.7 = private unnamed_addr constant [9 x i8] c" step(s)\00", align 1
+@m = global i32 zeroinitializer, align 4
+@g = global %struct.EdgeList* zeroinitializer, align 4
+@INF = global i32 zeroinitializer, align 4
+@main.0 = private unnamed_addr constant [3 x i8] c"-1\00", align 1
+@main.1 = private unnamed_addr constant [2 x i8] c" \00", align 1
+@main.2 = private unnamed_addr constant [1 x i8] c"\00", align 1
 define i32 @main(){
 b.0:
 ;precursors: 
 ;successors: b.1 
-;head_inst: store i32 48271, i32* @A, align 4
-;tail_inst: %13 = load i32, i32* @n, align 4
+;head_inst: store i32 10000000, i32* @INF, align 4
+;tail_inst: store i32* %25, i32** %20, align 4
 ;terminate: br label %b.1
-	store i32 48271, i32* @A, align 4
-	store i32 2147483647, i32* @M, align 4
-	store i32 1, i32* @seed, align 4
-	%0 = mul i32 3, 7
-	%1 = mul i32 %0, 10
-	store i32 %1, i32* @n, align 4
-	store i32 0, i32* @h, align 4
-	%2 = mul i32 100, 4
-	%3 = add i32 %2, 4
-	%4 = call noalias i8* @malloc(i32 %3)
-	%5 = bitcast i8* %4 to i32*
-	store i32 100, i32* %5, align 4
-	%6 = getelementptr inbounds i32, i32* %5, i32 1
-	store i32* %6, i32** @a, align 4
-	%7 = load i32, i32* @M, align 4
-	%8 = load i32, i32* @A, align 4
-	%9 = sdiv i32 %7, %8
-	store i32 %9, i32* @Q, align 4
-	%10 = load i32, i32* @M, align 4
-	%11 = load i32, i32* @A, align 4
-	%12 = srem i32 %10, %11
-	store i32 %12, i32* @R, align 4
-	%13 = load i32, i32* @n, align 4
+	store i32 10000000, i32* @INF, align 4
+	%0 = call i32 @g_getInt()
+	store i32 %0, i32* @n, align 4
+	%1 = call i32 @g_getInt()
+	store i32 %1, i32* @m, align 4
+	%2 = call noalias i8* @malloc(i32 16)
+	%3 = bitcast i8* %2 to %struct.EdgeList*
+	store %struct.EdgeList* %3, %struct.EdgeList** @g, align 4
+	%4 = load %struct.EdgeList*, %struct.EdgeList** @g, align 4
+	%5 = load i32, i32* @n, align 4
+	%6 = load i32, i32* @m, align 4
+	%7 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %4, i32 0, i32 0
+	%8 = mul i32 %6, 4
+	%9 = add i32 %8, 4
+	%10 = call noalias i8* @malloc(i32 %9)
+	%11 = bitcast i8* %10 to i32*
+	store i32 %6, i32* %11, align 4
+	%12 = getelementptr inbounds i32, i32* %11, i32 1
+	%13 = bitcast i32* %12 to %struct.Edge**
+	store %struct.Edge** %13, %struct.Edge*** %7, align 4
+	%14 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %4, i32 0, i32 1
+	%15 = mul i32 %6, 4
+	%16 = add i32 %15, 4
+	%17 = call noalias i8* @malloc(i32 %16)
+	%18 = bitcast i8* %17 to i32*
+	store i32 %6, i32* %18, align 4
+	%19 = getelementptr inbounds i32, i32* %18, i32 1
+	store i32* %19, i32** %14, align 4
+	%20 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %4, i32 0, i32 2
+	%21 = mul i32 %5, 4
+	%22 = add i32 %21, 4
+	%23 = call noalias i8* @malloc(i32 %22)
+	%24 = bitcast i8* %23 to i32*
+	store i32 %5, i32* %24, align 4
+	%25 = getelementptr inbounds i32, i32* %24, i32 1
+	store i32* %25, i32** %20, align 4
 	br label %b.1
 b.1:
-;precursors: b.7 b.0 
+;precursors: b.4 b.0 
 ;successors: b.2 b.3 
-;head_inst: %14 = load i32, i32* @h, align 4
-;tail_inst: %15 = icmp sle i32 %14, %13
-;terminate: br i1 %15, label %b.2, label %b.3
-	%14 = load i32, i32* @h, align 4
-	%15 = icmp sle i32 %14, %13
-	br i1 %15, label %b.2, label %b.3
+;head_inst: %27 = icmp slt i32 %26, %6
+;tail_inst: %27 = icmp slt i32 %26, %6
+;terminate: br i1 %27, label %b.2, label %b.3
+	%26 = phi i32 [ 0, %b.0 ], [ %32, %b.4 ]
+	%27 = icmp slt i32 %26, %6
+	br i1 %27, label %b.2, label %b.3
 b.2:
 ;precursors: b.1 
-;successors: b.4 b.5 
-;head_inst: %16 = load i32, i32* @h, align 4
-;tail_inst: %21 = icmp eq i32 %13, %20
-;terminate: br i1 %21, label %b.4, label %b.5
-	%16 = load i32, i32* @h, align 4
-	%17 = add i32 %16, 1
-	%18 = load i32, i32* @h, align 4
-	%19 = mul i32 %18, %17
-	%20 = sdiv i32 %19, 2
-	%21 = icmp eq i32 %13, %20
-	br i1 %21, label %b.4, label %b.5
+;successors: b.4 
+;head_inst: %28 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %4, i32 0, i32 1
+;tail_inst: store i32 %31, i32* %30, align 4
+;terminate: br label %b.4
+	%28 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %4, i32 0, i32 1
+	%29 = load i32*, i32** %28, align 4
+	%30 = getelementptr inbounds i32, i32* %29, i32 %26
+	%31 = sub i32 0, 1
+	store i32 %31, i32* %30, align 4
+	br label %b.4
 b.3:
 ;precursors: b.1 
-;successors: b.6 
+;successors: b.5 
 ;head_inst: null
 ;tail_inst: null
-;terminate: br label %b.6
-	br label %b.6
+;terminate: br label %b.5
+	br label %b.5
 b.4:
 ;precursors: b.2 
-;successors: b.6 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.6
-	br label %b.6
+;successors: b.1 
+;head_inst: %32 = add i32 %26, 1
+;tail_inst: %32 = add i32 %26, 1
+;terminate: br label %b.1
+	%32 = add i32 %26, 1
+	br label %b.1
 b.5:
-;precursors: b.2 
-;successors: b.7 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.7
-	br label %b.7
+;precursors: b.3 b.8 
+;successors: b.6 b.7 
+;head_inst: %34 = icmp slt i32 %33, %5
+;tail_inst: %34 = icmp slt i32 %33, %5
+;terminate: br i1 %34, label %b.6, label %b.7
+	%33 = phi i32 [ 0, %b.3 ], [ %40, %b.8 ]
+	%34 = icmp slt i32 %33, %5
+	br i1 %34, label %b.6, label %b.7
 b.6:
-;precursors: b.4 b.3 
-;successors: b.8 b.9 
-;head_inst: null
-;tail_inst: null
-;terminate: br i1 %22, label %b.8, label %b.9
-	%22 = phi i1 [ 1, %b.4 ], [ 0, %b.3 ]
-	br i1 %22, label %b.8, label %b.9
+;precursors: b.5 
+;successors: b.8 
+;head_inst: %35 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %4, i32 0, i32 2
+;tail_inst: store i32 %38, i32* %37, align 4
+;terminate: br label %b.8
+	%35 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %4, i32 0, i32 2
+	%36 = load i32*, i32** %35, align 4
+	%37 = getelementptr inbounds i32, i32* %36, i32 %33
+	%38 = sub i32 0, 1
+	store i32 %38, i32* %37, align 4
+	br label %b.8
 b.7:
 ;precursors: b.5 
-;successors: b.1 
-;head_inst: %23 = load i32, i32* @h, align 4
-;tail_inst: store i32 %24, i32* @h, align 4
-;terminate: br label %b.1
-	%23 = load i32, i32* @h, align 4
-	%24 = add i32 %23, 1
-	store i32 %24, i32* @h, align 4
-	br label %b.1
+;successors: b.9 
+;head_inst: %39 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %4, i32 0, i32 3
+;tail_inst: store i32 0, i32* %39, align 4
+;terminate: br label %b.9
+	%39 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %4, i32 0, i32 3
+	store i32 0, i32* %39, align 4
+	br label %b.9
 b.8:
 ;precursors: b.6 
-;successors: b.10 b.11 
-;head_inst: %25 = getelementptr inbounds [ 13 x i8 ], [ 13 x i8 ]* @main.3, i32 0, i32 0
-;tail_inst: %37 = icmp sge i32 %36, 0
-;terminate: br i1 %37, label %b.10, label %b.11
-	%25 = getelementptr inbounds [ 13 x i8 ], [ 13 x i8 ]* @main.3, i32 0, i32 0
-	call void @g_println(i8* %25)
-	store i32 3654898, i32* @seed, align 4
-	%26 = load i32, i32* @seed, align 4
-	%27 = load i32, i32* @Q, align 4
-	%28 = srem i32 %26, %27
-	%29 = load i32, i32* @A, align 4
-	%30 = mul i32 %29, %28
-	%31 = load i32, i32* @seed, align 4
-	%32 = load i32, i32* @Q, align 4
-	%33 = sdiv i32 %31, %32
-	%34 = load i32, i32* @R, align 4
-	%35 = mul i32 %34, %33
-	%36 = sub i32 %30, %35
-	%37 = icmp sge i32 %36, 0
-	br i1 %37, label %b.10, label %b.11
+;successors: b.5 
+;head_inst: %40 = add i32 %33, 1
+;tail_inst: %40 = add i32 %33, 1
+;terminate: br label %b.5
+	%40 = add i32 %33, 1
+	br label %b.5
 b.9:
-;precursors: b.6 
-;successors: b.12 
-;head_inst: %38 = getelementptr inbounds [ 80 x i8 ], [ 80 x i8 ]* @main.2, i32 0, i32 0
-;tail_inst: call void @g_println(i8* %38)
-;terminate: br label %b.12
-	%38 = getelementptr inbounds [ 80 x i8 ], [ 80 x i8 ]* @main.2, i32 0, i32 0
-	call void @g_println(i8* %38)
-	br label %b.12
+;precursors: b.12 b.7 
+;successors: b.10 b.11 
+;head_inst: %45 = load i32, i32* @m, align 4
+;tail_inst: %46 = icmp slt i32 %44, %45
+;terminate: br i1 %46, label %b.10, label %b.11
+	%41 = phi i32 [ 65536, %b.7 ], [ %47, %b.12 ]
+	%42 = phi i32 [ 65536, %b.7 ], [ %49, %b.12 ]
+	%43 = phi i32 [ 65536, %b.7 ], [ %48, %b.12 ]
+	%44 = phi i32 [ 0, %b.7 ], [ %78, %b.12 ]
+	%45 = load i32, i32* @m, align 4
+	%46 = icmp slt i32 %44, %45
+	br i1 %46, label %b.10, label %b.11
 b.10:
-;precursors: b.8 
-;successors: b.13 
-;head_inst: store i32 %36, i32* @seed, align 4
-;tail_inst: store i32 %36, i32* @seed, align 4
-;terminate: br label %b.13
-	store i32 %36, i32* @seed, align 4
-	br label %b.13
+;precursors: b.9 
+;successors: b.12 
+;head_inst: %47 = call i32 @g_getInt()
+;tail_inst: store i32 %77, i32* %75, align 4
+;terminate: br label %b.12
+	%47 = call i32 @g_getInt()
+	%48 = call i32 @g_getInt()
+	%49 = call i32 @g_getInt()
+	%50 = load %struct.EdgeList*, %struct.EdgeList** @g, align 4
+	%51 = call noalias i8* @malloc(i32 12)
+	%52 = bitcast i8* %51 to %struct.Edge*
+	%53 = getelementptr inbounds %struct.Edge, %struct.Edge* %52, i32 0, i32 0
+	store i32 %47, i32* %53, align 4
+	%54 = getelementptr inbounds %struct.Edge, %struct.Edge* %52, i32 0, i32 1
+	store i32 %48, i32* %54, align 4
+	%55 = getelementptr inbounds %struct.Edge, %struct.Edge* %52, i32 0, i32 2
+	store i32 %49, i32* %55, align 4
+	%56 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %50, i32 0, i32 0
+	%57 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %50, i32 0, i32 3
+	%58 = load %struct.Edge**, %struct.Edge*** %56, align 4
+	%59 = load i32, i32* %57, align 4
+	%60 = getelementptr inbounds %struct.Edge*, %struct.Edge** %58, i32 %59
+	store %struct.Edge* %52, %struct.Edge** %60, align 4
+	%61 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %50, i32 0, i32 1
+	%62 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %50, i32 0, i32 3
+	%63 = load i32*, i32** %61, align 4
+	%64 = load i32, i32* %62, align 4
+	%65 = getelementptr inbounds i32, i32* %63, i32 %64
+	%66 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %50, i32 0, i32 2
+	%67 = load i32*, i32** %66, align 4
+	%68 = getelementptr inbounds i32, i32* %67, i32 %47
+	%69 = load i32, i32* %68, align 4
+	store i32 %69, i32* %65, align 4
+	%70 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %50, i32 0, i32 2
+	%71 = load i32*, i32** %70, align 4
+	%72 = getelementptr inbounds i32, i32* %71, i32 %47
+	%73 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %50, i32 0, i32 3
+	%74 = load i32, i32* %73, align 4
+	store i32 %74, i32* %72, align 4
+	%75 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %50, i32 0, i32 3
+	%76 = load i32, i32* %75, align 4
+	%77 = add i32 %76, 1
+	store i32 %77, i32* %75, align 4
+	br label %b.12
 b.11:
-;precursors: b.8 
+;precursors: b.9 
 ;successors: b.13 
-;head_inst: %39 = load i32, i32* @M, align 4
-;tail_inst: store i32 %40, i32* @seed, align 4
+;head_inst: null
+;tail_inst: null
 ;terminate: br label %b.13
-	%39 = load i32, i32* @M, align 4
-	%40 = add i32 %36, %39
-	store i32 %40, i32* @seed, align 4
 	br label %b.13
 b.12:
-;precursors: b.9 b.54 
+;precursors: b.10 
+;successors: b.9 
+;head_inst: %78 = add i32 %44, 1
+;tail_inst: %78 = add i32 %44, 1
+;terminate: br label %b.9
+	%78 = add i32 %44, 1
+	br label %b.9
+b.13:
+;precursors: b.47 b.11 
+;successors: b.14 b.15 
+;head_inst: %82 = load i32, i32* @n, align 4
+;tail_inst: %83 = icmp slt i32 %80, %82
+;terminate: br i1 %83, label %b.14, label %b.15
+	%79 = phi i32 [ 65536, %b.11 ], [ %298, %b.47 ]
+	%80 = phi i32 [ 0, %b.11 ], [ %356, %b.47 ]
+	%81 = phi i32* [ null, %b.11 ], [ %95, %b.47 ]
+	%82 = load i32, i32* @n, align 4
+	%83 = icmp slt i32 %80, %82
+	br i1 %83, label %b.14, label %b.15
+b.14:
+;precursors: b.13 
+;successors: b.16 
+;head_inst: %84 = load i32, i32* @n, align 4
+;tail_inst: %95 = getelementptr inbounds i32, i32* %94, i32 1
+;terminate: br label %b.16
+	%84 = load i32, i32* @n, align 4
+	%85 = mul i32 %84, 4
+	%86 = add i32 %85, 4
+	%87 = call noalias i8* @malloc(i32 %86)
+	%88 = bitcast i8* %87 to i32*
+	store i32 %84, i32* %88, align 4
+	%89 = getelementptr inbounds i32, i32* %88, i32 1
+	%90 = load i32, i32* @n, align 4
+	%91 = mul i32 %90, 4
+	%92 = add i32 %91, 4
+	%93 = call noalias i8* @malloc(i32 %92)
+	%94 = bitcast i8* %93 to i32*
+	store i32 %90, i32* %94, align 4
+	%95 = getelementptr inbounds i32, i32* %94, i32 1
+	br label %b.16
+b.15:
+;precursors: b.13 
 ;successors: 
 ;head_inst: null
 ;tail_inst: null
-;terminate: ret i32 %42
-	%41 = phi i32 [ 0, %b.9 ], [ %146, %b.54 ]
-	%42 = phi i32 [ 1, %b.9 ], [ 0, %b.54 ]
-	%43 = phi i32 [ 0, %b.9 ], [ %50, %b.54 ]
-	%44 = phi i32 [ 0, %b.9 ], [ %51, %b.54 ]
-	ret i32 %42
-b.13:
-;precursors: b.11 b.10 
-;successors: b.14 
-;head_inst: %45 = load i32, i32* @seed, align 4
-;tail_inst: call void @g_println(i8* %49)
-;terminate: br label %b.14
-	%45 = load i32, i32* @seed, align 4
-	%46 = srem i32 %45, 10
-	%47 = add i32 %46, 1
-	store i32 %47, i32* @now, align 4
-	%48 = load i32, i32* @now, align 4
-	%49 = call i8* @g_toString(i32 %48)
-	call void @g_println(i8* %49)
-	br label %b.14
-b.14:
-;precursors: b.32 b.13 
-;successors: b.15 b.16 
-;head_inst: %52 = load i32, i32* @now, align 4
-;tail_inst: %54 = icmp slt i32 %50, %53
-;terminate: br i1 %54, label %b.15, label %b.16
-	%50 = phi i32 [ 0, %b.13 ], [ %125, %b.32 ]
-	%51 = phi i32 [ 0, %b.13 ], [ %118, %b.32 ]
-	%52 = load i32, i32* @now, align 4
-	%53 = sub i32 %52, 1
-	%54 = icmp slt i32 %50, %53
-	br i1 %54, label %b.15, label %b.16
-b.15:
-;precursors: b.14 
-;successors: b.17 b.18 
-;head_inst: %55 = load i32*, i32** @a, align 4
-;tail_inst: %68 = icmp sge i32 %67, 0
-;terminate: br i1 %68, label %b.17, label %b.18
-	%55 = load i32*, i32** @a, align 4
-	%56 = getelementptr inbounds i32, i32* %55, i32 %50
-	%57 = load i32, i32* @seed, align 4
-	%58 = load i32, i32* @Q, align 4
-	%59 = srem i32 %57, %58
-	%60 = load i32, i32* @A, align 4
-	%61 = mul i32 %60, %59
-	%62 = load i32, i32* @seed, align 4
-	%63 = load i32, i32* @Q, align 4
-	%64 = sdiv i32 %62, %63
-	%65 = load i32, i32* @R, align 4
-	%66 = mul i32 %65, %64
-	%67 = sub i32 %61, %66
-	%68 = icmp sge i32 %67, 0
-	br i1 %68, label %b.17, label %b.18
+;terminate: ret i32 0
+	ret i32 0
 b.16:
-;precursors: b.14 
-;successors: b.19 
-;head_inst: %69 = load i32, i32* @now, align 4
-;tail_inst: store i32 %74, i32* %72, align 4
-;terminate: br label %b.19
-	%69 = load i32, i32* @now, align 4
-	%70 = sub i32 %69, 1
-	%71 = load i32*, i32** @a, align 4
-	%72 = getelementptr inbounds i32, i32* %71, i32 %70
-	%73 = load i32, i32* @n, align 4
-	%74 = sub i32 %73, %51
-	store i32 %74, i32* %72, align 4
-	br label %b.19
+;precursors: b.19 b.14 
+;successors: b.17 b.18 
+;head_inst: %97 = load i32, i32* @n, align 4
+;tail_inst: %98 = icmp slt i32 %96, %97
+;terminate: br i1 %98, label %b.17, label %b.18
+	%96 = phi i32 [ 0, %b.14 ], [ %130, %b.19 ]
+	%97 = load i32, i32* @n, align 4
+	%98 = icmp slt i32 %96, %97
+	br i1 %98, label %b.17, label %b.18
 b.17:
-;precursors: b.15 
-;successors: b.20 
-;head_inst: store i32 %67, i32* @seed, align 4
-;tail_inst: store i32 %67, i32* @seed, align 4
-;terminate: br label %b.20
-	store i32 %67, i32* @seed, align 4
-	br label %b.20
-b.18:
-;precursors: b.15 
-;successors: b.20 
-;head_inst: %75 = load i32, i32* @M, align 4
-;tail_inst: store i32 %76, i32* @seed, align 4
-;terminate: br label %b.20
-	%75 = load i32, i32* @M, align 4
-	%76 = add i32 %67, %75
-	store i32 %76, i32* @seed, align 4
-	br label %b.20
-b.19:
-;precursors: b.24 b.16 
-;successors: b.21 b.22 
-;head_inst: %78 = load i32, i32* @now, align 4
-;tail_inst: %79 = icmp slt i32 %77, %78
-;terminate: br i1 %79, label %b.21, label %b.22
-	%77 = phi i32 [ 0, %b.16 ], [ %96, %b.24 ]
-	%78 = load i32, i32* @now, align 4
-	%79 = icmp slt i32 %77, %78
-	br i1 %79, label %b.21, label %b.22
-b.20:
-;precursors: b.18 b.17 
-;successors: b.23 
-;head_inst: %80 = load i32, i32* @seed, align 4
-;tail_inst: store i32 %82, i32* %56, align 4
-;terminate: br label %b.23
-	%80 = load i32, i32* @seed, align 4
-	%81 = srem i32 %80, 10
-	%82 = add i32 %81, 1
-	store i32 %82, i32* %56, align 4
-	br label %b.23
-b.21:
-;precursors: b.19 
-;successors: b.24 
-;head_inst: %83 = load i32*, i32** @a, align 4
-;tail_inst: call void @g_print(i8* %88)
-;terminate: br label %b.24
-	%83 = load i32*, i32** @a, align 4
-	%84 = getelementptr inbounds i32, i32* %83, i32 %77
-	%85 = load i32, i32* %84, align 4
-	%86 = call i8* @g_toString(i32 %85)
-	%87 = getelementptr inbounds [ 2 x i8 ], [ 2 x i8 ]* @fun_show.0, i32 0, i32 0
-	%88 = call i8* @g_stringadd(i8* %86, i8* %87)
-	call void @g_print(i8* %88)
-	br label %b.24
-b.22:
-;precursors: b.19 
-;successors: b.25 
-;head_inst: %89 = getelementptr inbounds [ 1 x i8 ], [ 1 x i8 ]* @fun_show.1, i32 0, i32 0
-;tail_inst: call void @g_println(i8* %89)
-;terminate: br label %b.25
-	%89 = getelementptr inbounds [ 1 x i8 ], [ 1 x i8 ]* @fun_show.1, i32 0, i32 0
-	call void @g_println(i8* %89)
-	br label %b.25
-b.23:
-;precursors: b.36 b.20 
-;successors: b.26 b.27 
-;head_inst: %90 = load i32*, i32** @a, align 4
-;tail_inst: %95 = icmp sgt i32 %93, %94
-;terminate: br i1 %95, label %b.26, label %b.27
-	%90 = load i32*, i32** @a, align 4
-	%91 = getelementptr inbounds i32, i32* %90, i32 %50
-	%92 = load i32, i32* %91, align 4
-	%93 = add i32 %92, %51
-	%94 = load i32, i32* @n, align 4
-	%95 = icmp sgt i32 %93, %94
-	br i1 %95, label %b.26, label %b.27
-b.24:
-;precursors: b.21 
+;precursors: b.16 
 ;successors: b.19 
-;head_inst: %96 = add i32 %77, 1
-;tail_inst: %96 = add i32 %77, 1
+;head_inst: %99 = getelementptr inbounds i32, i32* %95, i32 %96
+;tail_inst: store i32 0, i32* %101, align 4
 ;terminate: br label %b.19
-	%96 = add i32 %77, 1
+	%99 = getelementptr inbounds i32, i32* %95, i32 %96
+	%100 = load i32, i32* @INF, align 4
+	store i32 %100, i32* %99, align 4
+	%101 = getelementptr inbounds i32, i32* %89, i32 %96
+	store i32 0, i32* %101, align 4
 	br label %b.19
+b.18:
+;precursors: b.16 
+;successors: b.20 b.21 
+;head_inst: %102 = getelementptr inbounds i32, i32* %95, i32 %80
+;tail_inst: %129 = icmp eq i32 %123, %128
+;terminate: br i1 %129, label %b.20, label %b.21
+	%102 = getelementptr inbounds i32, i32* %95, i32 %80
+	store i32 0, i32* %102, align 4
+	%103 = call noalias i8* @malloc(i32 4)
+	%104 = bitcast i8* %103 to %struct.Heap_Node*
+	%105 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%106 = call noalias i8* @malloc(i32 8)
+	%107 = bitcast i8* %106 to %struct.Array_Node*
+	%108 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %107, i32 0, i32 1
+	store i32 0, i32* %108, align 4
+	%109 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %107, i32 0, i32 0
+	%110 = mul i32 16, 4
+	%111 = add i32 %110, 4
+	%112 = call noalias i8* @malloc(i32 %111)
+	%113 = bitcast i8* %112 to i32*
+	store i32 16, i32* %113, align 4
+	%114 = getelementptr inbounds i32, i32* %113, i32 1
+	%115 = bitcast i32* %114 to %struct.Node**
+	store %struct.Node** %115, %struct.Node*** %109, align 4
+	store %struct.Array_Node* %107, %struct.Array_Node** %105, align 4
+	%116 = call noalias i8* @malloc(i32 8)
+	%117 = bitcast i8* %116 to %struct.Node*
+	%118 = getelementptr inbounds %struct.Node, %struct.Node* %117, i32 0, i32 1
+	store i32 0, i32* %118, align 4
+	%119 = getelementptr inbounds %struct.Node, %struct.Node* %117, i32 0, i32 0
+	store i32 %80, i32* %119, align 4
+	%120 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%121 = load %struct.Array_Node*, %struct.Array_Node** %120, align 4
+	%122 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 1
+	%123 = load i32, i32* %122, align 4
+	%124 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 0
+	%125 = load %struct.Node**, %struct.Node*** %124, align 4
+	%126 = bitcast %struct.Node** %125 to i32*
+	%127 = getelementptr inbounds i32, i32* %126, i32 -1
+	%128 = load i32, i32* %127, align 4
+	%129 = icmp eq i32 %123, %128
+	br i1 %129, label %b.20, label %b.21
+b.19:
+;precursors: b.17 
+;successors: b.16 
+;head_inst: %130 = add i32 %96, 1
+;tail_inst: %130 = add i32 %96, 1
+;terminate: br label %b.16
+	%130 = add i32 %96, 1
+	br label %b.16
+b.20:
+;precursors: b.18 
+;successors: b.22 
+;head_inst: %131 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 0
+;tail_inst: store i32 0, i32* %146, align 4
+;terminate: br label %b.22
+	%131 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 0
+	%132 = load %struct.Node**, %struct.Node*** %131, align 4
+	%133 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 1
+	%134 = load i32, i32* %133, align 4
+	%135 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 0
+	%136 = bitcast %struct.Node** %132 to i32*
+	%137 = getelementptr inbounds i32, i32* %136, i32 -1
+	%138 = load i32, i32* %137, align 4
+	%139 = mul i32 %138, 2
+	%140 = mul i32 %139, 4
+	%141 = add i32 %140, 4
+	%142 = call noalias i8* @malloc(i32 %141)
+	%143 = bitcast i8* %142 to i32*
+	store i32 %139, i32* %143, align 4
+	%144 = getelementptr inbounds i32, i32* %143, i32 1
+	%145 = bitcast i32* %144 to %struct.Node**
+	store %struct.Node** %145, %struct.Node*** %135, align 4
+	%146 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 1
+	store i32 0, i32* %146, align 4
+	br label %b.22
+b.21:
+;precursors: b.18 b.25 
+;successors: b.23 
+;head_inst: %147 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 0
+;tail_inst: %159 = sub i32 %158, 1
+;terminate: br label %b.23
+	%147 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 0
+	%148 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 1
+	%149 = load %struct.Node**, %struct.Node*** %147, align 4
+	%150 = load i32, i32* %148, align 4
+	%151 = getelementptr inbounds %struct.Node*, %struct.Node** %149, i32 %150
+	store %struct.Node* %117, %struct.Node** %151, align 4
+	%152 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 1
+	%153 = load i32, i32* %152, align 4
+	%154 = add i32 %153, 1
+	store i32 %154, i32* %152, align 4
+	%155 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%156 = load %struct.Array_Node*, %struct.Array_Node** %155, align 4
+	%157 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %156, i32 0, i32 1
+	%158 = load i32, i32* %157, align 4
+	%159 = sub i32 %158, 1
+	br label %b.23
+b.22:
+;precursors: b.28 b.20 
+;successors: b.24 b.25 
+;head_inst: %160 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 1
+;tail_inst: %162 = icmp ne i32 %161, %134
+;terminate: br i1 %162, label %b.24, label %b.25
+	%160 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 1
+	%161 = load i32, i32* %160, align 4
+	%162 = icmp ne i32 %161, %134
+	br i1 %162, label %b.24, label %b.25
+b.23:
+;precursors: b.30 b.21 
+;successors: b.26 b.27 
+;head_inst: %165 = icmp sgt i32 %163, 0
+;tail_inst: %165 = icmp sgt i32 %163, 0
+;terminate: br i1 %165, label %b.26, label %b.27
+	%163 = phi i32 [ %159, %b.21 ], [ %176, %b.30 ]
+	%164 = phi i32 [ 65536, %b.21 ], [ %176, %b.30 ]
+	%165 = icmp sgt i32 %163, 0
+	br i1 %165, label %b.26, label %b.27
+b.24:
+;precursors: b.22 
+;successors: b.28 
+;head_inst: %166 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 0
+;tail_inst: store %struct.Node* %174, %struct.Node** %170, align 4
+;terminate: br label %b.28
+	%166 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 0
+	%167 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 1
+	%168 = load %struct.Node**, %struct.Node*** %166, align 4
+	%169 = load i32, i32* %167, align 4
+	%170 = getelementptr inbounds %struct.Node*, %struct.Node** %168, i32 %169
+	%171 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 1
+	%172 = load i32, i32* %171, align 4
+	%173 = getelementptr inbounds %struct.Node*, %struct.Node** %132, i32 %172
+	%174 = load %struct.Node*, %struct.Node** %173, align 4
+	store %struct.Node* %174, %struct.Node** %170, align 4
+	br label %b.28
 b.25:
-;precursors: b.38 b.22 
-;successors: b.28 b.29 
-;head_inst: %99 = load i32, i32* @now, align 4
-;tail_inst: %100 = icmp slt i32 %97, %99
-;terminate: br i1 %100, label %b.28, label %b.29
-	%97 = phi i32 [ 0, %b.22 ], [ %137, %b.38 ]
-	%98 = phi i32 [ 65536, %b.22 ], [ %127, %b.38 ]
-	%99 = load i32, i32* @now, align 4
-	%100 = icmp slt i32 %97, %99
-	br i1 %100, label %b.28, label %b.29
+;precursors: b.22 
+;successors: b.21 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.21
+	br label %b.21
 b.26:
 ;precursors: b.23 
-;successors: b.30 b.31 
-;head_inst: %101 = load i32*, i32** @a, align 4
-;tail_inst: %114 = icmp sge i32 %113, 0
-;terminate: br i1 %114, label %b.30, label %b.31
-	%101 = load i32*, i32** @a, align 4
-	%102 = getelementptr inbounds i32, i32* %101, i32 %50
-	%103 = load i32, i32* @seed, align 4
-	%104 = load i32, i32* @Q, align 4
-	%105 = srem i32 %103, %104
-	%106 = load i32, i32* @A, align 4
-	%107 = mul i32 %106, %105
-	%108 = load i32, i32* @seed, align 4
-	%109 = load i32, i32* @Q, align 4
-	%110 = sdiv i32 %108, %109
-	%111 = load i32, i32* @R, align 4
-	%112 = mul i32 %111, %110
-	%113 = sub i32 %107, %112
-	%114 = icmp sge i32 %113, 0
-	br i1 %114, label %b.30, label %b.31
+;successors: b.29 b.30 
+;head_inst: %175 = sub i32 %163, 1
+;tail_inst: %195 = icmp sge i32 %185, %194
+;terminate: br i1 %195, label %b.29, label %b.30
+	%175 = sub i32 %163, 1
+	%176 = sdiv i32 %175, 2
+	%177 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%178 = load %struct.Array_Node*, %struct.Array_Node** %177, align 4
+	%179 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %178, i32 0, i32 0
+	%180 = load %struct.Node**, %struct.Node*** %179, align 4
+	%181 = getelementptr inbounds %struct.Node*, %struct.Node** %180, i32 %176
+	%182 = load %struct.Node*, %struct.Node** %181, align 4
+	%183 = getelementptr inbounds %struct.Node, %struct.Node* %182, i32 0, i32 1
+	%184 = load i32, i32* %183, align 4
+	%185 = sub i32 0, %184
+	%186 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%187 = load %struct.Array_Node*, %struct.Array_Node** %186, align 4
+	%188 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %187, i32 0, i32 0
+	%189 = load %struct.Node**, %struct.Node*** %188, align 4
+	%190 = getelementptr inbounds %struct.Node*, %struct.Node** %189, i32 %163
+	%191 = load %struct.Node*, %struct.Node** %190, align 4
+	%192 = getelementptr inbounds %struct.Node, %struct.Node* %191, i32 0, i32 1
+	%193 = load i32, i32* %192, align 4
+	%194 = sub i32 0, %193
+	%195 = icmp sge i32 %185, %194
+	br i1 %195, label %b.29, label %b.30
 b.27:
-;precursors: b.23 
-;successors: b.32 
-;head_inst: %115 = load i32*, i32** @a, align 4
-;tail_inst: %118 = add i32 %51, %117
-;terminate: br label %b.32
-	%115 = load i32*, i32** @a, align 4
-	%116 = getelementptr inbounds i32, i32* %115, i32 %50
-	%117 = load i32, i32* %116, align 4
-	%118 = add i32 %51, %117
-	br label %b.32
+;precursors: b.29 b.23 
+;successors: b.31 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.31
+	%196 = phi i32 [ %164, %b.23 ], [ %176, %b.29 ]
+	br label %b.31
 b.28:
-;precursors: b.25 
-;successors: b.33 b.34 
-;head_inst: %119 = load i32*, i32** @a, align 4
-;tail_inst: %122 = icmp eq i32 %121, 0
-;terminate: br i1 %122, label %b.33, label %b.34
-	%119 = load i32*, i32** @a, align 4
-	%120 = getelementptr inbounds i32, i32* %119, i32 %97
-	%121 = load i32, i32* %120, align 4
-	%122 = icmp eq i32 %121, 0
-	br i1 %122, label %b.33, label %b.34
+;precursors: b.24 
+;successors: b.22 
+;head_inst: %197 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 1
+;tail_inst: store i32 %199, i32* %197, align 4
+;terminate: br label %b.22
+	%197 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %121, i32 0, i32 1
+	%198 = load i32, i32* %197, align 4
+	%199 = add i32 %198, 1
+	store i32 %199, i32* %197, align 4
+	br label %b.22
 b.29:
-;precursors: b.25 
+;precursors: b.26 
+;successors: b.27 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.27
+	br label %b.27
+b.30:
+;precursors: b.26 
+;successors: b.23 
+;head_inst: %200 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+;tail_inst: store %struct.Node* %205, %struct.Node** %215, align 4
+;terminate: br label %b.23
+	%200 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%201 = load %struct.Array_Node*, %struct.Array_Node** %200, align 4
+	%202 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %201, i32 0, i32 0
+	%203 = load %struct.Node**, %struct.Node*** %202, align 4
+	%204 = getelementptr inbounds %struct.Node*, %struct.Node** %203, i32 %176
+	%205 = load %struct.Node*, %struct.Node** %204, align 4
+	%206 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %201, i32 0, i32 0
+	%207 = load %struct.Node**, %struct.Node*** %206, align 4
+	%208 = getelementptr inbounds %struct.Node*, %struct.Node** %207, i32 %176
+	%209 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %201, i32 0, i32 0
+	%210 = load %struct.Node**, %struct.Node*** %209, align 4
+	%211 = getelementptr inbounds %struct.Node*, %struct.Node** %210, i32 %163
+	%212 = load %struct.Node*, %struct.Node** %211, align 4
+	store %struct.Node* %212, %struct.Node** %208, align 4
+	%213 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %201, i32 0, i32 0
+	%214 = load %struct.Node**, %struct.Node*** %213, align 4
+	%215 = getelementptr inbounds %struct.Node*, %struct.Node** %214, i32 %163
+	store %struct.Node* %205, %struct.Node** %215, align 4
+	br label %b.23
+b.31:
+;precursors: b.52 b.63 b.27 
+;successors: b.32 b.33 
+;head_inst: %222 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+;tail_inst: %226 = icmp ne i32 %225, 0
+;terminate: br i1 %226, label %b.32, label %b.33
+	%216 = phi i32 [ 65536, %b.27 ], [ %216, %b.52 ], [ %419, %b.63 ]
+	%217 = phi i32 [ 65536, %b.27 ], [ %217, %b.52 ], [ %418, %b.63 ]
+	%218 = phi i32 [ 65536, %b.27 ], [ %358, %b.52 ], [ %358, %b.63 ]
+	%219 = phi i32 [ 65536, %b.27 ], [ %219, %b.52 ], [ %417, %b.63 ]
+	%220 = phi i32 [ 65536, %b.27 ], [ %220, %b.52 ], [ %416, %b.63 ]
+	%221 = phi %struct.Node* [ null, %b.27 ], [ %232, %b.52 ], [ %420, %b.63 ]
+	%222 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%223 = load %struct.Array_Node*, %struct.Array_Node** %222, align 4
+	%224 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %223, i32 0, i32 1
+	%225 = load i32, i32* %224, align 4
+	%226 = icmp ne i32 %225, 0
+	br i1 %226, label %b.32, label %b.33
+b.32:
+;precursors: b.31 
+;successors: b.34 b.35 
+;head_inst: %227 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+;tail_inst: %272 = icmp slt i32 %265, %271
+;terminate: br i1 %272, label %b.34, label %b.35
+	%227 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%228 = load %struct.Array_Node*, %struct.Array_Node** %227, align 4
+	%229 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %228, i32 0, i32 0
+	%230 = load %struct.Node**, %struct.Node*** %229, align 4
+	%231 = getelementptr inbounds %struct.Node*, %struct.Node** %230, i32 0
+	%232 = load %struct.Node*, %struct.Node** %231, align 4
+	%233 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%234 = load %struct.Array_Node*, %struct.Array_Node** %233, align 4
+	%235 = load %struct.Array_Node*, %struct.Array_Node** %233, align 4
+	%236 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %235, i32 0, i32 1
+	%237 = load i32, i32* %236, align 4
+	%238 = sub i32 %237, 1
+	%239 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %234, i32 0, i32 0
+	%240 = load %struct.Node**, %struct.Node*** %239, align 4
+	%241 = getelementptr inbounds %struct.Node*, %struct.Node** %240, i32 0
+	%242 = load %struct.Node*, %struct.Node** %241, align 4
+	%243 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %234, i32 0, i32 0
+	%244 = load %struct.Node**, %struct.Node*** %243, align 4
+	%245 = getelementptr inbounds %struct.Node*, %struct.Node** %244, i32 0
+	%246 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %234, i32 0, i32 0
+	%247 = load %struct.Node**, %struct.Node*** %246, align 4
+	%248 = getelementptr inbounds %struct.Node*, %struct.Node** %247, i32 %238
+	%249 = load %struct.Node*, %struct.Node** %248, align 4
+	store %struct.Node* %249, %struct.Node** %245, align 4
+	%250 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %234, i32 0, i32 0
+	%251 = load %struct.Node**, %struct.Node*** %250, align 4
+	%252 = getelementptr inbounds %struct.Node*, %struct.Node** %251, i32 %238
+	store %struct.Node* %242, %struct.Node** %252, align 4
+	%253 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%254 = load %struct.Array_Node*, %struct.Array_Node** %253, align 4
+	%255 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %254, i32 0, i32 1
+	%256 = load i32, i32* %255, align 4
+	%257 = sub i32 %256, 1
+	store i32 %257, i32* %255, align 4
+	%258 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %254, i32 0, i32 0
+	%259 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %254, i32 0, i32 1
+	%260 = load %struct.Node**, %struct.Node*** %258, align 4
+	%261 = load i32, i32* %259, align 4
+	%262 = getelementptr inbounds %struct.Node*, %struct.Node** %260, i32 %261
+	%263 = load %struct.Node*, %struct.Node** %262, align 4
+	%264 = mul i32 0, 2
+	%265 = add i32 %264, 1
+	%266 = mul i32 0, 2
+	%267 = add i32 %266, 2
+	%268 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%269 = load %struct.Array_Node*, %struct.Array_Node** %268, align 4
+	%270 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %269, i32 0, i32 1
+	%271 = load i32, i32* %270, align 4
+	%272 = icmp slt i32 %265, %271
+	br i1 %272, label %b.34, label %b.35
+b.33:
+;precursors: b.31 
+;successors: b.36 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.36
+	br label %b.36
+b.34:
+;precursors: b.32 
+;successors: b.37 b.35 
+;head_inst: %273 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+;tail_inst: %291 = icmp sgt i32 %281, %290
+;terminate: br i1 %291, label %b.37, label %b.35
+	%273 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%274 = load %struct.Array_Node*, %struct.Array_Node** %273, align 4
+	%275 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %274, i32 0, i32 0
+	%276 = load %struct.Node**, %struct.Node*** %275, align 4
+	%277 = getelementptr inbounds %struct.Node*, %struct.Node** %276, i32 %265
+	%278 = load %struct.Node*, %struct.Node** %277, align 4
+	%279 = getelementptr inbounds %struct.Node, %struct.Node* %278, i32 0, i32 1
+	%280 = load i32, i32* %279, align 4
+	%281 = sub i32 0, %280
+	%282 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%283 = load %struct.Array_Node*, %struct.Array_Node** %282, align 4
+	%284 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %283, i32 0, i32 0
+	%285 = load %struct.Node**, %struct.Node*** %284, align 4
+	%286 = getelementptr inbounds %struct.Node*, %struct.Node** %285, i32 0
+	%287 = load %struct.Node*, %struct.Node** %286, align 4
+	%288 = getelementptr inbounds %struct.Node, %struct.Node* %287, i32 0, i32 1
+	%289 = load i32, i32* %288, align 4
+	%290 = sub i32 0, %289
+	%291 = icmp sgt i32 %281, %290
+	br i1 %291, label %b.37, label %b.35
+b.35:
+;precursors: b.37 b.34 b.32 
+;successors: b.38 b.39 
+;head_inst: %293 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+;tail_inst: %297 = icmp slt i32 %267, %296
+;terminate: br i1 %297, label %b.38, label %b.39
+	%292 = phi i32 [ 0, %b.32 ], [ 0, %b.34 ], [ %265, %b.37 ]
+	%293 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%294 = load %struct.Array_Node*, %struct.Array_Node** %293, align 4
+	%295 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %294, i32 0, i32 1
+	%296 = load i32, i32* %295, align 4
+	%297 = icmp slt i32 %267, %296
+	br i1 %297, label %b.38, label %b.39
+b.36:
+;precursors: b.57 b.33 
+;successors: b.40 b.41 
+;head_inst: %299 = load i32, i32* @n, align 4
+;tail_inst: %300 = icmp slt i32 %298, %299
+;terminate: br i1 %300, label %b.40, label %b.41
+	%298 = phi i32 [ 0, %b.33 ], [ %415, %b.57 ]
+	%299 = load i32, i32* @n, align 4
+	%300 = icmp slt i32 %298, %299
+	br i1 %300, label %b.40, label %b.41
+b.37:
+;precursors: b.34 
 ;successors: b.35 
 ;head_inst: null
 ;tail_inst: null
 ;terminate: br label %b.35
 	br label %b.35
-b.30:
-;precursors: b.26 
-;successors: b.36 
-;head_inst: store i32 %113, i32* @seed, align 4
-;tail_inst: store i32 %113, i32* @seed, align 4
-;terminate: br label %b.36
-	store i32 %113, i32* @seed, align 4
-	br label %b.36
-b.31:
-;precursors: b.26 
-;successors: b.36 
-;head_inst: %123 = load i32, i32* @M, align 4
-;tail_inst: store i32 %124, i32* @seed, align 4
-;terminate: br label %b.36
-	%123 = load i32, i32* @M, align 4
-	%124 = add i32 %113, %123
-	store i32 %124, i32* @seed, align 4
-	br label %b.36
-b.32:
-;precursors: b.27 
-;successors: b.14 
-;head_inst: %125 = add i32 %50, 1
-;tail_inst: %125 = add i32 %50, 1
-;terminate: br label %b.14
-	%125 = add i32 %50, 1
-	br label %b.14
-b.33:
-;precursors: b.28 
-;successors: b.37 
-;head_inst: %126 = add i32 %97, 1
-;tail_inst: %126 = add i32 %97, 1
-;terminate: br label %b.37
-	%126 = add i32 %97, 1
-	br label %b.37
-b.34:
-;precursors: b.28 b.42 
-;successors: b.38 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.38
-	%127 = phi i32 [ %98, %b.28 ], [ %134, %b.42 ]
-	br label %b.38
-b.35:
-;precursors: b.29 b.48 
-;successors: b.39 b.40 
-;head_inst: %129 = load i32, i32* @now, align 4
-;tail_inst: %130 = icmp slt i32 %128, %129
-;terminate: br i1 %130, label %b.39, label %b.40
-	%128 = phi i32 [ 0, %b.29 ], [ %165, %b.48 ]
-	%129 = load i32, i32* @now, align 4
-	%130 = icmp slt i32 %128, %129
-	br i1 %130, label %b.39, label %b.40
-b.36:
-;precursors: b.31 b.30 
-;successors: b.23 
-;head_inst: %131 = load i32, i32* @seed, align 4
-;tail_inst: store i32 %133, i32* %102, align 4
-;terminate: br label %b.23
-	%131 = load i32, i32* @seed, align 4
-	%132 = srem i32 %131, 10
-	%133 = add i32 %132, 1
-	store i32 %133, i32* %102, align 4
-	br label %b.23
-b.37:
-;precursors: b.33 b.51 
-;successors: b.41 b.42 
-;head_inst: %135 = load i32, i32* @now, align 4
-;tail_inst: %136 = icmp slt i32 %134, %135
-;terminate: br i1 %136, label %b.41, label %b.42
-	%134 = phi i32 [ %126, %b.33 ], [ %166, %b.51 ]
-	%135 = load i32, i32* @now, align 4
-	%136 = icmp slt i32 %134, %135
-	br i1 %136, label %b.41, label %b.42
 b.38:
-;precursors: b.34 
-;successors: b.25 
-;head_inst: %137 = add i32 %97, 1
-;tail_inst: %137 = add i32 %97, 1
-;terminate: br label %b.25
-	%137 = add i32 %97, 1
-	br label %b.25
-b.39:
 ;precursors: b.35 
+;successors: b.42 b.39 
+;head_inst: %301 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+;tail_inst: %319 = icmp sgt i32 %309, %318
+;terminate: br i1 %319, label %b.42, label %b.39
+	%301 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%302 = load %struct.Array_Node*, %struct.Array_Node** %301, align 4
+	%303 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %302, i32 0, i32 0
+	%304 = load %struct.Node**, %struct.Node*** %303, align 4
+	%305 = getelementptr inbounds %struct.Node*, %struct.Node** %304, i32 %267
+	%306 = load %struct.Node*, %struct.Node** %305, align 4
+	%307 = getelementptr inbounds %struct.Node, %struct.Node* %306, i32 0, i32 1
+	%308 = load i32, i32* %307, align 4
+	%309 = sub i32 0, %308
+	%310 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%311 = load %struct.Array_Node*, %struct.Array_Node** %310, align 4
+	%312 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %311, i32 0, i32 0
+	%313 = load %struct.Node**, %struct.Node*** %312, align 4
+	%314 = getelementptr inbounds %struct.Node*, %struct.Node** %313, i32 %292
+	%315 = load %struct.Node*, %struct.Node** %314, align 4
+	%316 = getelementptr inbounds %struct.Node, %struct.Node* %315, i32 0, i32 1
+	%317 = load i32, i32* %316, align 4
+	%318 = sub i32 0, %317
+	%319 = icmp sgt i32 %309, %318
+	br i1 %319, label %b.42, label %b.39
+b.39:
+;precursors: b.35 b.42 b.38 
 ;successors: b.43 b.44 
-;head_inst: %138 = load i32*, i32** @a, align 4
-;tail_inst: %141 = icmp eq i32 %140, 0
-;terminate: br i1 %141, label %b.43, label %b.44
-	%138 = load i32*, i32** @a, align 4
-	%139 = getelementptr inbounds i32, i32* %138, i32 %128
-	%140 = load i32, i32* %139, align 4
-	%141 = icmp eq i32 %140, 0
-	br i1 %141, label %b.43, label %b.44
+;head_inst: %321 = icmp eq i32 %320, 0
+;tail_inst: %321 = icmp eq i32 %320, 0
+;terminate: br i1 %321, label %b.43, label %b.44
+	%320 = phi i32 [ %292, %b.35 ], [ %292, %b.38 ], [ %267, %b.42 ]
+	%321 = icmp eq i32 %320, 0
+	br i1 %321, label %b.43, label %b.44
 b.40:
-;precursors: b.43 b.35 
-;successors: b.45 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.45
-	br label %b.45
+;precursors: b.36 
+;successors: b.45 b.46 
+;head_inst: %322 = getelementptr inbounds i32, i32* %95, i32 %298
+;tail_inst: %325 = icmp eq i32 %323, %324
+;terminate: br i1 %325, label %b.45, label %b.46
+	%322 = getelementptr inbounds i32, i32* %95, i32 %298
+	%323 = load i32, i32* %322, align 4
+	%324 = load i32, i32* @INF, align 4
+	%325 = icmp eq i32 %323, %324
+	br i1 %325, label %b.45, label %b.46
 b.41:
-;precursors: b.37 
-;successors: b.46 b.47 
-;head_inst: %142 = load i32*, i32** @a, align 4
-;tail_inst: %145 = icmp ne i32 %144, 0
-;terminate: br i1 %145, label %b.46, label %b.47
-	%142 = load i32*, i32** @a, align 4
-	%143 = getelementptr inbounds i32, i32* %142, i32 %134
-	%144 = load i32, i32* %143, align 4
-	%145 = icmp ne i32 %144, 0
-	br i1 %145, label %b.46, label %b.47
+;precursors: b.36 
+;successors: b.47 
+;head_inst: %326 = getelementptr inbounds [ 1 x i8 ], [ 1 x i8 ]* @main.2, i32 0, i32 0
+;tail_inst: call void @g_println(i8* %326)
+;terminate: br label %b.47
+	%326 = getelementptr inbounds [ 1 x i8 ], [ 1 x i8 ]* @main.2, i32 0, i32 0
+	call void @g_println(i8* %326)
+	br label %b.47
 b.42:
-;precursors: b.37 b.46 
-;successors: b.34 
+;precursors: b.38 
+;successors: b.39 
 ;head_inst: null
 ;tail_inst: null
-;terminate: br label %b.34
-	br label %b.34
+;terminate: br label %b.39
+	br label %b.39
 b.43:
-;precursors: b.39 
-;successors: b.40 
-;head_inst: store i32 %128, i32* @now, align 4
-;tail_inst: store i32 %128, i32* @now, align 4
-;terminate: br label %b.40
-	store i32 %128, i32* @now, align 4
-	br label %b.40
-b.44:
 ;precursors: b.39 
 ;successors: b.48 
 ;head_inst: null
 ;tail_inst: null
 ;terminate: br label %b.48
 	br label %b.48
-b.45:
-;precursors: b.40 b.98 
+b.44:
+;precursors: b.39 
 ;successors: b.49 b.50 
-;head_inst: %147 = mul i32 100, 4
-;tail_inst: %154 = icmp ne i32 %152, %153
-;terminate: br i1 %154, label %b.49, label %b.50
-	%146 = phi i32 [ 0, %b.40 ], [ %180, %b.98 ]
-	%147 = mul i32 100, 4
-	%148 = add i32 %147, 4
-	%149 = call noalias i8* @malloc(i32 %148)
-	%150 = bitcast i8* %149 to i32*
-	store i32 100, i32* %150, align 4
-	%151 = getelementptr inbounds i32, i32* %150, i32 1
-	%152 = load i32, i32* @now, align 4
-	%153 = load i32, i32* @h, align 4
-	%154 = icmp ne i32 %152, %153
-	br i1 %154, label %b.49, label %b.50
+;head_inst: %327 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+;tail_inst: %351 = icmp slt i32 %344, %350
+;terminate: br i1 %351, label %b.49, label %b.50
+	%327 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%328 = load %struct.Array_Node*, %struct.Array_Node** %327, align 4
+	%329 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %328, i32 0, i32 0
+	%330 = load %struct.Node**, %struct.Node*** %329, align 4
+	%331 = getelementptr inbounds %struct.Node*, %struct.Node** %330, i32 0
+	%332 = load %struct.Node*, %struct.Node** %331, align 4
+	%333 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %328, i32 0, i32 0
+	%334 = load %struct.Node**, %struct.Node*** %333, align 4
+	%335 = getelementptr inbounds %struct.Node*, %struct.Node** %334, i32 0
+	%336 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %328, i32 0, i32 0
+	%337 = load %struct.Node**, %struct.Node*** %336, align 4
+	%338 = getelementptr inbounds %struct.Node*, %struct.Node** %337, i32 %320
+	%339 = load %struct.Node*, %struct.Node** %338, align 4
+	store %struct.Node* %339, %struct.Node** %335, align 4
+	%340 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %328, i32 0, i32 0
+	%341 = load %struct.Node**, %struct.Node*** %340, align 4
+	%342 = getelementptr inbounds %struct.Node*, %struct.Node** %341, i32 %320
+	store %struct.Node* %332, %struct.Node** %342, align 4
+	%343 = mul i32 %320, 2
+	%344 = add i32 %343, 1
+	%345 = mul i32 %320, 2
+	%346 = add i32 %345, 2
+	%347 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%348 = load %struct.Array_Node*, %struct.Array_Node** %347, align 4
+	%349 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %348, i32 0, i32 1
+	%350 = load i32, i32* %349, align 4
+	%351 = icmp slt i32 %344, %350
+	br i1 %351, label %b.49, label %b.50
+b.45:
+;precursors: b.40 
+;successors: b.51 
+;head_inst: %352 = getelementptr inbounds [ 3 x i8 ], [ 3 x i8 ]* @main.0, i32 0, i32 0
+;tail_inst: call void @g_print(i8* %352)
+;terminate: br label %b.51
+	%352 = getelementptr inbounds [ 3 x i8 ], [ 3 x i8 ]* @main.0, i32 0, i32 0
+	call void @g_print(i8* %352)
+	br label %b.51
 b.46:
-;precursors: b.41 
-;successors: b.42 
-;head_inst: %155 = load i32*, i32** @a, align 4
-;tail_inst: store i32 %157, i32* %164, align 4
-;terminate: br label %b.42
-	%155 = load i32*, i32** @a, align 4
-	%156 = getelementptr inbounds i32, i32* %155, i32 %97
-	%157 = load i32, i32* %156, align 4
-	%158 = load i32*, i32** @a, align 4
-	%159 = getelementptr inbounds i32, i32* %158, i32 %97
-	%160 = load i32*, i32** @a, align 4
-	%161 = getelementptr inbounds i32, i32* %160, i32 %134
-	%162 = load i32, i32* %161, align 4
-	store i32 %162, i32* %159, align 4
-	%163 = load i32*, i32** @a, align 4
-	%164 = getelementptr inbounds i32, i32* %163, i32 %134
-	store i32 %157, i32* %164, align 4
-	br label %b.42
+;precursors: b.40 
+;successors: b.51 
+;head_inst: %353 = getelementptr inbounds i32, i32* %95, i32 %298
+;tail_inst: call void @g_print(i8* %355)
+;terminate: br label %b.51
+	%353 = getelementptr inbounds i32, i32* %95, i32 %298
+	%354 = load i32, i32* %353, align 4
+	%355 = call i8* @g_toString(i32 %354)
+	call void @g_print(i8* %355)
+	br label %b.51
 b.47:
 ;precursors: b.41 
-;successors: b.51 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.51
-	br label %b.51
+;successors: b.13 
+;head_inst: %356 = add i32 %80, 1
+;tail_inst: %356 = add i32 %80, 1
+;terminate: br label %b.13
+	%356 = add i32 %80, 1
+	br label %b.13
 b.48:
-;precursors: b.44 
-;successors: b.35 
-;head_inst: %165 = add i32 %128, 1
-;tail_inst: %165 = add i32 %128, 1
-;terminate: br label %b.35
-	%165 = add i32 %128, 1
-	br label %b.35
+;precursors: b.43 b.64 
+;successors: b.52 b.53 
+;head_inst: %357 = getelementptr inbounds %struct.Node, %struct.Node* %232, i32 0, i32 0
+;tail_inst: %361 = icmp eq i32 %360, 1
+;terminate: br i1 %361, label %b.52, label %b.53
+	%357 = getelementptr inbounds %struct.Node, %struct.Node* %232, i32 0, i32 0
+	%358 = load i32, i32* %357, align 4
+	%359 = getelementptr inbounds i32, i32* %89, i32 %358
+	%360 = load i32, i32* %359, align 4
+	%361 = icmp eq i32 %360, 1
+	br i1 %361, label %b.52, label %b.53
 b.49:
-;precursors: b.45 
-;successors: b.52 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.52
-	br label %b.52
+;precursors: b.44 
+;successors: b.54 b.50 
+;head_inst: %362 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+;tail_inst: %380 = icmp sgt i32 %370, %379
+;terminate: br i1 %380, label %b.54, label %b.50
+	%362 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%363 = load %struct.Array_Node*, %struct.Array_Node** %362, align 4
+	%364 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %363, i32 0, i32 0
+	%365 = load %struct.Node**, %struct.Node*** %364, align 4
+	%366 = getelementptr inbounds %struct.Node*, %struct.Node** %365, i32 %344
+	%367 = load %struct.Node*, %struct.Node** %366, align 4
+	%368 = getelementptr inbounds %struct.Node, %struct.Node* %367, i32 0, i32 1
+	%369 = load i32, i32* %368, align 4
+	%370 = sub i32 0, %369
+	%371 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%372 = load %struct.Array_Node*, %struct.Array_Node** %371, align 4
+	%373 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %372, i32 0, i32 0
+	%374 = load %struct.Node**, %struct.Node*** %373, align 4
+	%375 = getelementptr inbounds %struct.Node*, %struct.Node** %374, i32 %320
+	%376 = load %struct.Node*, %struct.Node** %375, align 4
+	%377 = getelementptr inbounds %struct.Node, %struct.Node* %376, i32 0, i32 1
+	%378 = load i32, i32* %377, align 4
+	%379 = sub i32 0, %378
+	%380 = icmp sgt i32 %370, %379
+	br i1 %380, label %b.54, label %b.50
 b.50:
-;precursors: b.45 
-;successors: b.53 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.53
-	br label %b.53
+;precursors: b.54 b.49 b.44 
+;successors: b.55 b.56 
+;head_inst: %382 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+;tail_inst: %386 = icmp slt i32 %346, %385
+;terminate: br i1 %386, label %b.55, label %b.56
+	%381 = phi i32 [ %320, %b.44 ], [ %320, %b.49 ], [ %344, %b.54 ]
+	%382 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%383 = load %struct.Array_Node*, %struct.Array_Node** %382, align 4
+	%384 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %383, i32 0, i32 1
+	%385 = load i32, i32* %384, align 4
+	%386 = icmp slt i32 %346, %385
+	br i1 %386, label %b.55, label %b.56
 b.51:
-;precursors: b.47 
-;successors: b.37 
-;head_inst: %166 = add i32 %134, 1
-;tail_inst: %166 = add i32 %134, 1
-;terminate: br label %b.37
-	%166 = add i32 %134, 1
-	br label %b.37
+;precursors: b.45 b.46 
+;successors: b.57 
+;head_inst: %387 = getelementptr inbounds [ 2 x i8 ], [ 2 x i8 ]* @main.1, i32 0, i32 0
+;tail_inst: call void @g_print(i8* %387)
+;terminate: br label %b.57
+	%387 = getelementptr inbounds [ 2 x i8 ], [ 2 x i8 ]* @main.1, i32 0, i32 0
+	call void @g_print(i8* %387)
+	br label %b.57
 b.52:
-;precursors: b.81 b.49 b.74 
-;successors: b.54 b.55 
+;precursors: b.48 
+;successors: b.31 
 ;head_inst: null
 ;tail_inst: null
-;terminate: br i1 %168, label %b.54, label %b.55
-	%167 = phi i32 [ 65536, %b.49 ], [ %193, %b.81 ], [ %193, %b.74 ]
-	%168 = phi i1 [ 0, %b.49 ], [ 0, %b.81 ], [ 1, %b.74 ]
-	%169 = phi i32 [ 65536, %b.49 ], [ %219, %b.81 ], [ %219, %b.74 ]
-	%170 = phi i32 [ 65536, %b.49 ], [ %195, %b.81 ], [ %195, %b.74 ]
-	br i1 %168, label %b.54, label %b.55
+;terminate: br label %b.31
+	br label %b.31
 b.53:
-;precursors: b.59 b.50 
-;successors: b.56 b.57 
-;head_inst: %172 = load i32, i32* @now, align 4
-;tail_inst: %173 = icmp slt i32 %171, %172
-;terminate: br i1 %173, label %b.56, label %b.57
-	%171 = phi i32 [ 0, %b.50 ], [ %192, %b.59 ]
-	%172 = load i32, i32* @now, align 4
-	%173 = icmp slt i32 %171, %172
-	br i1 %173, label %b.56, label %b.57
-b.54:
-;precursors: b.52 
-;successors: b.12 
-;head_inst: %174 = getelementptr inbounds [ 8 x i8 ], [ 8 x i8 ]* @main.6, i32 0, i32 0
-;tail_inst: call void @g_println(i8* %178)
-;terminate: br label %b.12
-	%174 = getelementptr inbounds [ 8 x i8 ], [ 8 x i8 ]* @main.6, i32 0, i32 0
-	%175 = call i8* @g_toString(i32 %146)
-	%176 = call i8* @g_stringadd(i8* %174, i8* %175)
-	%177 = getelementptr inbounds [ 9 x i8 ], [ 9 x i8 ]* @main.7, i32 0, i32 0
-	%178 = call i8* @g_stringadd(i8* %176, i8* %177)
-	call void @g_println(i8* %178)
-	br label %b.12
-b.55:
-;precursors: b.52 
+;precursors: b.48 
 ;successors: b.58 
-;head_inst: %179 = getelementptr inbounds [ 6 x i8 ], [ 6 x i8 ]* @main.4, i32 0, i32 0
-;tail_inst: call void @g_println(i8* %184)
+;head_inst: %388 = getelementptr inbounds i32, i32* %89, i32 %358
+;tail_inst: %393 = load i32, i32* %392, align 4
 ;terminate: br label %b.58
-	%179 = getelementptr inbounds [ 6 x i8 ], [ 6 x i8 ]* @main.4, i32 0, i32 0
-	%180 = add i32 %146, 1
-	%181 = call i8* @g_toString(i32 %180)
-	%182 = call i8* @g_stringadd(i8* %179, i8* %181)
-	%183 = getelementptr inbounds [ 2 x i8 ], [ 2 x i8 ]* @main.5, i32 0, i32 0
-	%184 = call i8* @g_stringadd(i8* %182, i8* %183)
-	call void @g_println(i8* %184)
+	%388 = getelementptr inbounds i32, i32* %89, i32 %358
+	store i32 1, i32* %388, align 4
+	%389 = load %struct.EdgeList*, %struct.EdgeList** @g, align 4
+	%390 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %389, i32 0, i32 2
+	%391 = load i32*, i32** %390, align 4
+	%392 = getelementptr inbounds i32, i32* %391, i32 %358
+	%393 = load i32, i32* %392, align 4
 	br label %b.58
-b.56:
-;precursors: b.53 
-;successors: b.59 
-;head_inst: %185 = getelementptr inbounds i32, i32* %151, i32 %171
-;tail_inst: store i32 %188, i32* %185, align 4
-;terminate: br label %b.59
-	%185 = getelementptr inbounds i32, i32* %151, i32 %171
-	%186 = load i32*, i32** @a, align 4
-	%187 = getelementptr inbounds i32, i32* %186, i32 %171
-	%188 = load i32, i32* %187, align 4
-	store i32 %188, i32* %185, align 4
-	br label %b.59
-b.57:
-;precursors: b.53 
-;successors: b.60 
+b.54:
+;precursors: b.49 
+;successors: b.50 
 ;head_inst: null
 ;tail_inst: null
-;terminate: br label %b.60
-	br label %b.60
+;terminate: br label %b.50
+	br label %b.50
+b.55:
+;precursors: b.50 
+;successors: b.59 b.56 
+;head_inst: %394 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+;tail_inst: %412 = icmp sgt i32 %402, %411
+;terminate: br i1 %412, label %b.59, label %b.56
+	%394 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%395 = load %struct.Array_Node*, %struct.Array_Node** %394, align 4
+	%396 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %395, i32 0, i32 0
+	%397 = load %struct.Node**, %struct.Node*** %396, align 4
+	%398 = getelementptr inbounds %struct.Node*, %struct.Node** %397, i32 %346
+	%399 = load %struct.Node*, %struct.Node** %398, align 4
+	%400 = getelementptr inbounds %struct.Node, %struct.Node* %399, i32 0, i32 1
+	%401 = load i32, i32* %400, align 4
+	%402 = sub i32 0, %401
+	%403 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%404 = load %struct.Array_Node*, %struct.Array_Node** %403, align 4
+	%405 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %404, i32 0, i32 0
+	%406 = load %struct.Node**, %struct.Node*** %405, align 4
+	%407 = getelementptr inbounds %struct.Node*, %struct.Node** %406, i32 %381
+	%408 = load %struct.Node*, %struct.Node** %407, align 4
+	%409 = getelementptr inbounds %struct.Node, %struct.Node* %408, i32 0, i32 1
+	%410 = load i32, i32* %409, align 4
+	%411 = sub i32 0, %410
+	%412 = icmp sgt i32 %402, %411
+	br i1 %412, label %b.59, label %b.56
+b.56:
+;precursors: b.59 b.50 b.55 
+;successors: b.60 b.61 
+;head_inst: %414 = icmp eq i32 %413, %320
+;tail_inst: %414 = icmp eq i32 %413, %320
+;terminate: br i1 %414, label %b.60, label %b.61
+	%413 = phi i32 [ %381, %b.50 ], [ %381, %b.55 ], [ %346, %b.59 ]
+	%414 = icmp eq i32 %413, %320
+	br i1 %414, label %b.60, label %b.61
+b.57:
+;precursors: b.51 
+;successors: b.36 
+;head_inst: %415 = add i32 %298, 1
+;tail_inst: %415 = add i32 %298, 1
+;terminate: br label %b.36
+	%415 = add i32 %298, 1
+	br label %b.36
 b.58:
-;precursors: b.65 b.55 
-;successors: b.61 b.62 
-;head_inst: %190 = load i32, i32* @now, align 4
-;tail_inst: %191 = icmp slt i32 %189, %190
-;terminate: br i1 %191, label %b.61, label %b.62
-	%189 = phi i32 [ 0, %b.55 ], [ %203, %b.65 ]
-	%190 = load i32, i32* @now, align 4
-	%191 = icmp slt i32 %189, %190
-	br i1 %191, label %b.61, label %b.62
+;precursors: b.67 b.53 
+;successors: b.62 b.63 
+;head_inst: %421 = sub i32 0, 1
+;tail_inst: %422 = icmp ne i32 %417, %421
+;terminate: br i1 %422, label %b.62, label %b.63
+	%416 = phi i32 [ %220, %b.53 ], [ %452, %b.67 ]
+	%417 = phi i32 [ %393, %b.53 ], [ %481, %b.67 ]
+	%418 = phi i32 [ %217, %b.53 ], [ %455, %b.67 ]
+	%419 = phi i32 [ %216, %b.53 ], [ %445, %b.67 ]
+	%420 = phi %struct.Node* [ %232, %b.53 ], [ %476, %b.67 ]
+	%421 = sub i32 0, 1
+	%422 = icmp ne i32 %417, %421
+	br i1 %422, label %b.62, label %b.63
 b.59:
-;precursors: b.56 
-;successors: b.53 
-;head_inst: %192 = add i32 %171, 1
-;tail_inst: %192 = add i32 %171, 1
-;terminate: br label %b.53
-	%192 = add i32 %171, 1
-	br label %b.53
+;precursors: b.55 
+;successors: b.56 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.56
+	br label %b.56
 b.60:
-;precursors: b.57 b.80 
-;successors: b.63 b.64 
-;head_inst: %196 = load i32, i32* @now, align 4
-;tail_inst: %198 = icmp slt i32 %194, %197
-;terminate: br i1 %198, label %b.63, label %b.64
-	%193 = phi i32 [ 65536, %b.57 ], [ %215, %b.80 ]
-	%194 = phi i32 [ 0, %b.57 ], [ %247, %b.80 ]
-	%195 = phi i32 [ %171, %b.57 ], [ %216, %b.80 ]
-	%196 = load i32, i32* @now, align 4
-	%197 = sub i32 %196, 1
-	%198 = icmp slt i32 %194, %197
-	br i1 %198, label %b.63, label %b.64
+;precursors: b.56 
+;successors: b.64 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.64
+	br label %b.64
 b.61:
-;precursors: b.58 
-;successors: b.65 
-;head_inst: %199 = load i32*, i32** @a, align 4
-;tail_inst: %203 = add i32 %189, 1
-;terminate: br label %b.65
-	%199 = load i32*, i32** @a, align 4
-	%200 = getelementptr inbounds i32, i32* %199, i32 %189
-	%201 = load i32, i32* %200, align 4
-	%202 = sub i32 %201, 1
-	store i32 %202, i32* %200, align 4
-	%203 = add i32 %189, 1
-	br label %b.65
+;precursors: b.56 
+;successors: b.64 
+;head_inst: %423 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+;tail_inst: call void @cls_Heap_Node_maxHeapify(%struct.Heap_Node* %104, i32 %413)
+;terminate: br label %b.64
+	%423 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%424 = load %struct.Array_Node*, %struct.Array_Node** %423, align 4
+	%425 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %424, i32 0, i32 0
+	%426 = load %struct.Node**, %struct.Node*** %425, align 4
+	%427 = getelementptr inbounds %struct.Node*, %struct.Node** %426, i32 %320
+	%428 = load %struct.Node*, %struct.Node** %427, align 4
+	%429 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %424, i32 0, i32 0
+	%430 = load %struct.Node**, %struct.Node*** %429, align 4
+	%431 = getelementptr inbounds %struct.Node*, %struct.Node** %430, i32 %320
+	%432 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %424, i32 0, i32 0
+	%433 = load %struct.Node**, %struct.Node*** %432, align 4
+	%434 = getelementptr inbounds %struct.Node*, %struct.Node** %433, i32 %413
+	%435 = load %struct.Node*, %struct.Node** %434, align 4
+	store %struct.Node* %435, %struct.Node** %431, align 4
+	%436 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %424, i32 0, i32 0
+	%437 = load %struct.Node**, %struct.Node*** %436, align 4
+	%438 = getelementptr inbounds %struct.Node*, %struct.Node** %437, i32 %413
+	store %struct.Node* %428, %struct.Node** %438, align 4
+	call void @cls_Heap_Node_maxHeapify(%struct.Heap_Node* %104, i32 %413)
+	br label %b.64
 b.62:
 ;precursors: b.58 
-;successors: b.66 
-;head_inst: %204 = load i32*, i32** @a, align 4
-;tail_inst: store i32 %209, i32* @now, align 4
-;terminate: br label %b.66
-	%204 = load i32*, i32** @a, align 4
-	%205 = load i32, i32* @now, align 4
-	%206 = getelementptr inbounds i32, i32* %204, i32 %205
-	%207 = load i32, i32* @now, align 4
-	store i32 %207, i32* %206, align 4
-	%208 = load i32, i32* @now, align 4
-	%209 = add i32 %208, 1
-	store i32 %209, i32* @now, align 4
-	br label %b.66
+;successors: b.65 b.66 
+;head_inst: %439 = load %struct.EdgeList*, %struct.EdgeList** @g, align 4
+;tail_inst: %458 = icmp sge i32 %455, %457
+;terminate: br i1 %458, label %b.65, label %b.66
+	%439 = load %struct.EdgeList*, %struct.EdgeList** @g, align 4
+	%440 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %439, i32 0, i32 0
+	%441 = load %struct.Edge**, %struct.Edge*** %440, align 4
+	%442 = getelementptr inbounds %struct.Edge*, %struct.Edge** %441, i32 %417
+	%443 = load %struct.Edge*, %struct.Edge** %442, align 4
+	%444 = getelementptr inbounds %struct.Edge, %struct.Edge* %443, i32 0, i32 1
+	%445 = load i32, i32* %444, align 4
+	%446 = load %struct.EdgeList*, %struct.EdgeList** @g, align 4
+	%447 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %446, i32 0, i32 0
+	%448 = load %struct.Edge**, %struct.Edge*** %447, align 4
+	%449 = getelementptr inbounds %struct.Edge*, %struct.Edge** %448, i32 %417
+	%450 = load %struct.Edge*, %struct.Edge** %449, align 4
+	%451 = getelementptr inbounds %struct.Edge, %struct.Edge* %450, i32 0, i32 2
+	%452 = load i32, i32* %451, align 4
+	%453 = getelementptr inbounds i32, i32* %95, i32 %358
+	%454 = load i32, i32* %453, align 4
+	%455 = add i32 %454, %452
+	%456 = getelementptr inbounds i32, i32* %95, i32 %445
+	%457 = load i32, i32* %456, align 4
+	%458 = icmp sge i32 %455, %457
+	br i1 %458, label %b.65, label %b.66
 b.63:
-;precursors: b.60 
-;successors: b.67 
-;head_inst: %210 = add i32 %194, 1
-;tail_inst: %210 = add i32 %194, 1
-;terminate: br label %b.67
-	%210 = add i32 %194, 1
-	br label %b.67
+;precursors: b.58 
+;successors: b.31 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.31
+	br label %b.31
 b.64:
-;precursors: b.60 
-;successors: b.68 
+;precursors: b.60 b.61 
+;successors: b.48 
 ;head_inst: null
 ;tail_inst: null
-;terminate: br label %b.68
-	br label %b.68
+;terminate: br label %b.48
+	br label %b.48
 b.65:
-;precursors: b.61 
-;successors: b.58 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.58
-	br label %b.58
-b.66:
-;precursors: b.84 b.62 
-;successors: b.69 b.70 
-;head_inst: %213 = load i32, i32* @now, align 4
-;tail_inst: %214 = icmp slt i32 %212, %213
-;terminate: br i1 %214, label %b.69, label %b.70
-	%211 = phi i32 [ 65536, %b.62 ], [ %236, %b.84 ]
-	%212 = phi i32 [ 0, %b.62 ], [ %251, %b.84 ]
-	%213 = load i32, i32* @now, align 4
-	%214 = icmp slt i32 %212, %213
-	br i1 %214, label %b.69, label %b.70
-b.67:
-;precursors: b.63 b.87 
-;successors: b.71 b.72 
-;head_inst: %217 = load i32, i32* @now, align 4
-;tail_inst: %218 = icmp slt i32 %216, %217
-;terminate: br i1 %218, label %b.71, label %b.72
-	%215 = phi i32 [ %193, %b.63 ], [ %246, %b.87 ]
-	%216 = phi i32 [ %210, %b.63 ], [ %256, %b.87 ]
-	%217 = load i32, i32* @now, align 4
-	%218 = icmp slt i32 %216, %217
-	br i1 %218, label %b.71, label %b.72
-b.68:
-;precursors: b.88 b.64 
-;successors: b.73 b.74 
-;head_inst: %220 = load i32, i32* @now, align 4
-;tail_inst: %221 = icmp slt i32 %219, %220
-;terminate: br i1 %221, label %b.73, label %b.74
-	%219 = phi i32 [ 0, %b.64 ], [ %257, %b.88 ]
-	%220 = load i32, i32* @now, align 4
-	%221 = icmp slt i32 %219, %220
-	br i1 %221, label %b.73, label %b.74
-b.69:
-;precursors: b.66 
-;successors: b.75 b.76 
-;head_inst: %222 = load i32*, i32** @a, align 4
-;tail_inst: %225 = icmp eq i32 %224, 0
-;terminate: br i1 %225, label %b.75, label %b.76
-	%222 = load i32*, i32** @a, align 4
-	%223 = getelementptr inbounds i32, i32* %222, i32 %212
-	%224 = load i32, i32* %223, align 4
-	%225 = icmp eq i32 %224, 0
-	br i1 %225, label %b.75, label %b.76
-b.70:
-;precursors: b.66 
-;successors: b.77 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.77
-	br label %b.77
-b.71:
-;precursors: b.67 
-;successors: b.78 b.79 
-;head_inst: %226 = getelementptr inbounds i32, i32* %151, i32 %194
-;tail_inst: %230 = icmp sgt i32 %228, %229
-;terminate: br i1 %230, label %b.78, label %b.79
-	%226 = getelementptr inbounds i32, i32* %151, i32 %194
-	%227 = getelementptr inbounds i32, i32* %151, i32 %216
-	%228 = load i32, i32* %226, align 4
-	%229 = load i32, i32* %227, align 4
-	%230 = icmp sgt i32 %228, %229
-	br i1 %230, label %b.78, label %b.79
-b.72:
-;precursors: b.67 
-;successors: b.80 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.80
-	br label %b.80
-b.73:
-;precursors: b.68 
-;successors: b.81 b.82 
-;head_inst: %231 = getelementptr inbounds i32, i32* %151, i32 %219
-;tail_inst: %234 = icmp ne i32 %233, %232
-;terminate: br i1 %234, label %b.81, label %b.82
-	%231 = getelementptr inbounds i32, i32* %151, i32 %219
-	%232 = add i32 %219, 1
-	%233 = load i32, i32* %231, align 4
-	%234 = icmp ne i32 %233, %232
-	br i1 %234, label %b.81, label %b.82
-b.74:
-;precursors: b.68 
-;successors: b.52 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.52
-	br label %b.52
-b.75:
-;precursors: b.69 
-;successors: b.83 
-;head_inst: %235 = add i32 %212, 1
-;tail_inst: %235 = add i32 %212, 1
-;terminate: br label %b.83
-	%235 = add i32 %212, 1
-	br label %b.83
-b.76:
-;precursors: b.69 b.90 
-;successors: b.84 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.84
-	%236 = phi i32 [ %211, %b.69 ], [ %248, %b.90 ]
-	br label %b.84
-b.77:
-;precursors: b.70 b.96 
-;successors: b.85 b.86 
-;head_inst: %238 = load i32, i32* @now, align 4
-;tail_inst: %239 = icmp slt i32 %237, %238
-;terminate: br i1 %239, label %b.85, label %b.86
-	%237 = phi i32 [ 0, %b.70 ], [ %275, %b.96 ]
-	%238 = load i32, i32* @now, align 4
-	%239 = icmp slt i32 %237, %238
-	br i1 %239, label %b.85, label %b.86
-b.78:
-;precursors: b.71 
-;successors: b.79 
-;head_inst: %240 = getelementptr inbounds i32, i32* %151, i32 %194
-;tail_inst: store i32 %241, i32* %245, align 4
-;terminate: br label %b.79
-	%240 = getelementptr inbounds i32, i32* %151, i32 %194
-	%241 = load i32, i32* %240, align 4
-	%242 = getelementptr inbounds i32, i32* %151, i32 %194
-	%243 = getelementptr inbounds i32, i32* %151, i32 %216
-	%244 = load i32, i32* %243, align 4
-	store i32 %244, i32* %242, align 4
-	%245 = getelementptr inbounds i32, i32* %151, i32 %216
-	store i32 %241, i32* %245, align 4
-	br label %b.79
-b.79:
-;precursors: b.78 b.71 
-;successors: b.87 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.87
-	%246 = phi i32 [ %215, %b.71 ], [ %241, %b.78 ]
-	br label %b.87
-b.80:
-;precursors: b.72 
-;successors: b.60 
-;head_inst: %247 = add i32 %194, 1
-;tail_inst: %247 = add i32 %194, 1
-;terminate: br label %b.60
-	%247 = add i32 %194, 1
-	br label %b.60
-b.81:
-;precursors: b.73 
-;successors: b.52 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.52
-	br label %b.52
-b.82:
-;precursors: b.73 
-;successors: b.88 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.88
-	br label %b.88
-b.83:
-;precursors: b.75 b.99 
-;successors: b.89 b.90 
-;head_inst: %249 = load i32, i32* @now, align 4
-;tail_inst: %250 = icmp slt i32 %248, %249
-;terminate: br i1 %250, label %b.89, label %b.90
-	%248 = phi i32 [ %235, %b.75 ], [ %283, %b.99 ]
-	%249 = load i32, i32* @now, align 4
-	%250 = icmp slt i32 %248, %249
-	br i1 %250, label %b.89, label %b.90
-b.84:
-;precursors: b.76 
-;successors: b.66 
-;head_inst: %251 = add i32 %212, 1
-;tail_inst: %251 = add i32 %212, 1
-;terminate: br label %b.66
-	%251 = add i32 %212, 1
-	br label %b.66
-b.85:
-;precursors: b.77 
-;successors: b.91 b.92 
-;head_inst: %252 = load i32*, i32** @a, align 4
-;tail_inst: %255 = icmp eq i32 %254, 0
-;terminate: br i1 %255, label %b.91, label %b.92
-	%252 = load i32*, i32** @a, align 4
-	%253 = getelementptr inbounds i32, i32* %252, i32 %237
-	%254 = load i32, i32* %253, align 4
-	%255 = icmp eq i32 %254, 0
-	br i1 %255, label %b.91, label %b.92
-b.86:
-;precursors: b.91 b.77 
-;successors: b.93 
-;head_inst: null
-;tail_inst: null
-;terminate: br label %b.93
-	br label %b.93
-b.87:
-;precursors: b.79 
+;precursors: b.62 
 ;successors: b.67 
-;head_inst: %256 = add i32 %216, 1
-;tail_inst: %256 = add i32 %216, 1
+;head_inst: null
+;tail_inst: null
 ;terminate: br label %b.67
-	%256 = add i32 %216, 1
 	br label %b.67
-b.88:
-;precursors: b.82 
-;successors: b.68 
-;head_inst: %257 = add i32 %219, 1
-;tail_inst: %257 = add i32 %219, 1
-;terminate: br label %b.68
-	%257 = add i32 %219, 1
-	br label %b.68
-b.89:
-;precursors: b.83 
-;successors: b.94 b.95 
-;head_inst: %258 = load i32*, i32** @a, align 4
-;tail_inst: %261 = icmp ne i32 %260, 0
-;terminate: br i1 %261, label %b.94, label %b.95
-	%258 = load i32*, i32** @a, align 4
-	%259 = getelementptr inbounds i32, i32* %258, i32 %248
-	%260 = load i32, i32* %259, align 4
-	%261 = icmp ne i32 %260, 0
-	br i1 %261, label %b.94, label %b.95
-b.90:
-;precursors: b.83 b.94 
+b.66:
+;precursors: b.62 
+;successors: b.68 b.69 
+;head_inst: %459 = getelementptr inbounds i32, i32* %95, i32 %445
+;tail_inst: %475 = icmp eq i32 %469, %474
+;terminate: br i1 %475, label %b.68, label %b.69
+	%459 = getelementptr inbounds i32, i32* %95, i32 %445
+	store i32 %455, i32* %459, align 4
+	%460 = call noalias i8* @malloc(i32 8)
+	%461 = bitcast i8* %460 to %struct.Node*
+	%462 = getelementptr inbounds %struct.Node, %struct.Node* %461, i32 0, i32 0
+	store i32 %445, i32* %462, align 4
+	%463 = getelementptr inbounds %struct.Node, %struct.Node* %461, i32 0, i32 1
+	%464 = getelementptr inbounds i32, i32* %95, i32 %445
+	%465 = load i32, i32* %464, align 4
+	store i32 %465, i32* %463, align 4
+	%466 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%467 = load %struct.Array_Node*, %struct.Array_Node** %466, align 4
+	%468 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 1
+	%469 = load i32, i32* %468, align 4
+	%470 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 0
+	%471 = load %struct.Node**, %struct.Node*** %470, align 4
+	%472 = bitcast %struct.Node** %471 to i32*
+	%473 = getelementptr inbounds i32, i32* %472, i32 -1
+	%474 = load i32, i32* %473, align 4
+	%475 = icmp eq i32 %469, %474
+	br i1 %475, label %b.68, label %b.69
+b.67:
+;precursors: b.65 b.75 
+;successors: b.58 
+;head_inst: %477 = load %struct.EdgeList*, %struct.EdgeList** @g, align 4
+;tail_inst: %481 = load i32, i32* %480, align 4
+;terminate: br label %b.58
+	%476 = phi %struct.Node* [ %420, %b.65 ], [ %461, %b.75 ]
+	%477 = load %struct.EdgeList*, %struct.EdgeList** @g, align 4
+	%478 = getelementptr inbounds %struct.EdgeList, %struct.EdgeList* %477, i32 0, i32 1
+	%479 = load i32*, i32** %478, align 4
+	%480 = getelementptr inbounds i32, i32* %479, i32 %417
+	%481 = load i32, i32* %480, align 4
+	br label %b.58
+b.68:
+;precursors: b.66 
+;successors: b.70 
+;head_inst: %482 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 0
+;tail_inst: store i32 0, i32* %497, align 4
+;terminate: br label %b.70
+	%482 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 0
+	%483 = load %struct.Node**, %struct.Node*** %482, align 4
+	%484 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 1
+	%485 = load i32, i32* %484, align 4
+	%486 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 0
+	%487 = bitcast %struct.Node** %483 to i32*
+	%488 = getelementptr inbounds i32, i32* %487, i32 -1
+	%489 = load i32, i32* %488, align 4
+	%490 = mul i32 %489, 2
+	%491 = mul i32 %490, 4
+	%492 = add i32 %491, 4
+	%493 = call noalias i8* @malloc(i32 %492)
+	%494 = bitcast i8* %493 to i32*
+	store i32 %490, i32* %494, align 4
+	%495 = getelementptr inbounds i32, i32* %494, i32 1
+	%496 = bitcast i32* %495 to %struct.Node**
+	store %struct.Node** %496, %struct.Node*** %486, align 4
+	%497 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 1
+	store i32 0, i32* %497, align 4
+	br label %b.70
+b.69:
+;precursors: b.66 b.73 
+;successors: b.71 
+;head_inst: %498 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 0
+;tail_inst: %510 = sub i32 %509, 1
+;terminate: br label %b.71
+	%498 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 0
+	%499 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 1
+	%500 = load %struct.Node**, %struct.Node*** %498, align 4
+	%501 = load i32, i32* %499, align 4
+	%502 = getelementptr inbounds %struct.Node*, %struct.Node** %500, i32 %501
+	store %struct.Node* %461, %struct.Node** %502, align 4
+	%503 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 1
+	%504 = load i32, i32* %503, align 4
+	%505 = add i32 %504, 1
+	store i32 %505, i32* %503, align 4
+	%506 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%507 = load %struct.Array_Node*, %struct.Array_Node** %506, align 4
+	%508 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %507, i32 0, i32 1
+	%509 = load i32, i32* %508, align 4
+	%510 = sub i32 %509, 1
+	br label %b.71
+b.70:
+;precursors: b.76 b.68 
+;successors: b.72 b.73 
+;head_inst: %511 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 1
+;tail_inst: %513 = icmp ne i32 %512, %485
+;terminate: br i1 %513, label %b.72, label %b.73
+	%511 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 1
+	%512 = load i32, i32* %511, align 4
+	%513 = icmp ne i32 %512, %485
+	br i1 %513, label %b.72, label %b.73
+b.71:
+;precursors: b.78 b.69 
+;successors: b.74 b.75 
+;head_inst: %516 = icmp sgt i32 %514, 0
+;tail_inst: %516 = icmp sgt i32 %514, 0
+;terminate: br i1 %516, label %b.74, label %b.75
+	%514 = phi i32 [ %510, %b.69 ], [ %527, %b.78 ]
+	%515 = phi i32 [ 65536, %b.69 ], [ %527, %b.78 ]
+	%516 = icmp sgt i32 %514, 0
+	br i1 %516, label %b.74, label %b.75
+b.72:
+;precursors: b.70 
 ;successors: b.76 
-;head_inst: null
-;tail_inst: null
+;head_inst: %517 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 0
+;tail_inst: store %struct.Node* %525, %struct.Node** %521, align 4
 ;terminate: br label %b.76
+	%517 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 0
+	%518 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 1
+	%519 = load %struct.Node**, %struct.Node*** %517, align 4
+	%520 = load i32, i32* %518, align 4
+	%521 = getelementptr inbounds %struct.Node*, %struct.Node** %519, i32 %520
+	%522 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 1
+	%523 = load i32, i32* %522, align 4
+	%524 = getelementptr inbounds %struct.Node*, %struct.Node** %483, i32 %523
+	%525 = load %struct.Node*, %struct.Node** %524, align 4
+	store %struct.Node* %525, %struct.Node** %521, align 4
 	br label %b.76
-b.91:
-;precursors: b.85 
-;successors: b.86 
-;head_inst: store i32 %237, i32* @now, align 4
-;tail_inst: store i32 %237, i32* @now, align 4
-;terminate: br label %b.86
-	store i32 %237, i32* @now, align 4
-	br label %b.86
-b.92:
-;precursors: b.85 
-;successors: b.96 
+b.73:
+;precursors: b.70 
+;successors: b.69 
 ;head_inst: null
 ;tail_inst: null
-;terminate: br label %b.96
-	br label %b.96
-b.93:
-;precursors: b.100 b.86 
-;successors: b.97 b.98 
-;head_inst: %263 = load i32, i32* @now, align 4
-;tail_inst: %264 = icmp slt i32 %262, %263
-;terminate: br i1 %264, label %b.97, label %b.98
-	%262 = phi i32 [ 0, %b.86 ], [ %284, %b.100 ]
-	%263 = load i32, i32* @now, align 4
-	%264 = icmp slt i32 %262, %263
-	br i1 %264, label %b.97, label %b.98
-b.94:
-;precursors: b.89 
-;successors: b.90 
-;head_inst: %265 = load i32*, i32** @a, align 4
-;tail_inst: store i32 %267, i32* %274, align 4
-;terminate: br label %b.90
-	%265 = load i32*, i32** @a, align 4
-	%266 = getelementptr inbounds i32, i32* %265, i32 %212
-	%267 = load i32, i32* %266, align 4
-	%268 = load i32*, i32** @a, align 4
-	%269 = getelementptr inbounds i32, i32* %268, i32 %212
-	%270 = load i32*, i32** @a, align 4
-	%271 = getelementptr inbounds i32, i32* %270, i32 %248
-	%272 = load i32, i32* %271, align 4
-	store i32 %272, i32* %269, align 4
-	%273 = load i32*, i32** @a, align 4
-	%274 = getelementptr inbounds i32, i32* %273, i32 %248
-	store i32 %267, i32* %274, align 4
-	br label %b.90
-b.95:
-;precursors: b.89 
-;successors: b.99 
+;terminate: br label %b.69
+	br label %b.69
+b.74:
+;precursors: b.71 
+;successors: b.77 b.78 
+;head_inst: %526 = sub i32 %514, 1
+;tail_inst: %546 = icmp sge i32 %536, %545
+;terminate: br i1 %546, label %b.77, label %b.78
+	%526 = sub i32 %514, 1
+	%527 = sdiv i32 %526, 2
+	%528 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%529 = load %struct.Array_Node*, %struct.Array_Node** %528, align 4
+	%530 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %529, i32 0, i32 0
+	%531 = load %struct.Node**, %struct.Node*** %530, align 4
+	%532 = getelementptr inbounds %struct.Node*, %struct.Node** %531, i32 %527
+	%533 = load %struct.Node*, %struct.Node** %532, align 4
+	%534 = getelementptr inbounds %struct.Node, %struct.Node* %533, i32 0, i32 1
+	%535 = load i32, i32* %534, align 4
+	%536 = sub i32 0, %535
+	%537 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%538 = load %struct.Array_Node*, %struct.Array_Node** %537, align 4
+	%539 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %538, i32 0, i32 0
+	%540 = load %struct.Node**, %struct.Node*** %539, align 4
+	%541 = getelementptr inbounds %struct.Node*, %struct.Node** %540, i32 %514
+	%542 = load %struct.Node*, %struct.Node** %541, align 4
+	%543 = getelementptr inbounds %struct.Node, %struct.Node* %542, i32 0, i32 1
+	%544 = load i32, i32* %543, align 4
+	%545 = sub i32 0, %544
+	%546 = icmp sge i32 %536, %545
+	br i1 %546, label %b.77, label %b.78
+b.75:
+;precursors: b.77 b.71 
+;successors: b.67 
 ;head_inst: null
 ;tail_inst: null
-;terminate: br label %b.99
-	br label %b.99
-b.96:
-;precursors: b.92 
-;successors: b.77 
-;head_inst: %275 = add i32 %237, 1
-;tail_inst: %275 = add i32 %237, 1
-;terminate: br label %b.77
-	%275 = add i32 %237, 1
-	br label %b.77
-b.97:
-;precursors: b.93 
-;successors: b.100 
-;head_inst: %276 = load i32*, i32** @a, align 4
-;tail_inst: call void @g_print(i8* %281)
-;terminate: br label %b.100
-	%276 = load i32*, i32** @a, align 4
-	%277 = getelementptr inbounds i32, i32* %276, i32 %262
-	%278 = load i32, i32* %277, align 4
-	%279 = call i8* @g_toString(i32 %278)
-	%280 = getelementptr inbounds [ 2 x i8 ], [ 2 x i8 ]* @fun_show.0, i32 0, i32 0
-	%281 = call i8* @g_stringadd(i8* %279, i8* %280)
-	call void @g_print(i8* %281)
-	br label %b.100
-b.98:
-;precursors: b.93 
-;successors: b.45 
-;head_inst: %282 = getelementptr inbounds [ 1 x i8 ], [ 1 x i8 ]* @fun_show.1, i32 0, i32 0
-;tail_inst: call void @g_println(i8* %282)
-;terminate: br label %b.45
-	%282 = getelementptr inbounds [ 1 x i8 ], [ 1 x i8 ]* @fun_show.1, i32 0, i32 0
-	call void @g_println(i8* %282)
-	br label %b.45
-b.99:
-;precursors: b.95 
-;successors: b.83 
-;head_inst: %283 = add i32 %248, 1
-;tail_inst: %283 = add i32 %248, 1
-;terminate: br label %b.83
-	%283 = add i32 %248, 1
-	br label %b.83
-b.100:
-;precursors: b.97 
-;successors: b.93 
-;head_inst: %284 = add i32 %262, 1
-;tail_inst: %284 = add i32 %262, 1
-;terminate: br label %b.93
-	%284 = add i32 %262, 1
-	br label %b.93
+;terminate: br label %b.67
+	%547 = phi i32 [ %515, %b.71 ], [ %527, %b.77 ]
+	br label %b.67
+b.76:
+;precursors: b.72 
+;successors: b.70 
+;head_inst: %548 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 1
+;tail_inst: store i32 %550, i32* %548, align 4
+;terminate: br label %b.70
+	%548 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %467, i32 0, i32 1
+	%549 = load i32, i32* %548, align 4
+	%550 = add i32 %549, 1
+	store i32 %550, i32* %548, align 4
+	br label %b.70
+b.77:
+;precursors: b.74 
+;successors: b.75 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.75
+	br label %b.75
+b.78:
+;precursors: b.74 
+;successors: b.71 
+;head_inst: %551 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+;tail_inst: store %struct.Node* %556, %struct.Node** %566, align 4
+;terminate: br label %b.71
+	%551 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %104, i32 0, i32 0
+	%552 = load %struct.Array_Node*, %struct.Array_Node** %551, align 4
+	%553 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %552, i32 0, i32 0
+	%554 = load %struct.Node**, %struct.Node*** %553, align 4
+	%555 = getelementptr inbounds %struct.Node*, %struct.Node** %554, i32 %527
+	%556 = load %struct.Node*, %struct.Node** %555, align 4
+	%557 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %552, i32 0, i32 0
+	%558 = load %struct.Node**, %struct.Node*** %557, align 4
+	%559 = getelementptr inbounds %struct.Node*, %struct.Node** %558, i32 %527
+	%560 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %552, i32 0, i32 0
+	%561 = load %struct.Node**, %struct.Node*** %560, align 4
+	%562 = getelementptr inbounds %struct.Node*, %struct.Node** %561, i32 %514
+	%563 = load %struct.Node*, %struct.Node** %562, align 4
+	store %struct.Node* %563, %struct.Node** %559, align 4
+	%564 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %552, i32 0, i32 0
+	%565 = load %struct.Node**, %struct.Node*** %564, align 4
+	%566 = getelementptr inbounds %struct.Node*, %struct.Node** %565, i32 %514
+	store %struct.Node* %556, %struct.Node** %566, align 4
+	br label %b.71
+}
+define void @cls_Heap_Node_maxHeapify(%struct.Heap_Node* %0, i32 %1){
+b.0:
+;precursors: 
+;successors: b.1 b.2 
+;head_inst: %2 = mul i32 %1, 2
+;tail_inst: %10 = icmp slt i32 %3, %9
+;terminate: br i1 %10, label %b.1, label %b.2
+	%2 = mul i32 %1, 2
+	%3 = add i32 %2, 1
+	%4 = mul i32 %1, 2
+	%5 = add i32 %4, 2
+	%6 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%7 = load %struct.Array_Node*, %struct.Array_Node** %6, align 4
+	%8 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %7, i32 0, i32 1
+	%9 = load i32, i32* %8, align 4
+	%10 = icmp slt i32 %3, %9
+	br i1 %10, label %b.1, label %b.2
+b.1:
+;precursors: b.0 
+;successors: b.3 b.2 
+;head_inst: %11 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+;tail_inst: %29 = icmp sgt i32 %19, %28
+;terminate: br i1 %29, label %b.3, label %b.2
+	%11 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%12 = load %struct.Array_Node*, %struct.Array_Node** %11, align 4
+	%13 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %12, i32 0, i32 0
+	%14 = load %struct.Node**, %struct.Node*** %13, align 4
+	%15 = getelementptr inbounds %struct.Node*, %struct.Node** %14, i32 %3
+	%16 = load %struct.Node*, %struct.Node** %15, align 4
+	%17 = getelementptr inbounds %struct.Node, %struct.Node* %16, i32 0, i32 1
+	%18 = load i32, i32* %17, align 4
+	%19 = sub i32 0, %18
+	%20 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%21 = load %struct.Array_Node*, %struct.Array_Node** %20, align 4
+	%22 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %21, i32 0, i32 0
+	%23 = load %struct.Node**, %struct.Node*** %22, align 4
+	%24 = getelementptr inbounds %struct.Node*, %struct.Node** %23, i32 %1
+	%25 = load %struct.Node*, %struct.Node** %24, align 4
+	%26 = getelementptr inbounds %struct.Node, %struct.Node* %25, i32 0, i32 1
+	%27 = load i32, i32* %26, align 4
+	%28 = sub i32 0, %27
+	%29 = icmp sgt i32 %19, %28
+	br i1 %29, label %b.3, label %b.2
+b.2:
+;precursors: b.3 b.1 b.0 
+;successors: b.4 b.5 
+;head_inst: %31 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+;tail_inst: %35 = icmp slt i32 %5, %34
+;terminate: br i1 %35, label %b.4, label %b.5
+	%30 = phi i32 [ %1, %b.0 ], [ %1, %b.1 ], [ %3, %b.3 ]
+	%31 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%32 = load %struct.Array_Node*, %struct.Array_Node** %31, align 4
+	%33 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %32, i32 0, i32 1
+	%34 = load i32, i32* %33, align 4
+	%35 = icmp slt i32 %5, %34
+	br i1 %35, label %b.4, label %b.5
+b.3:
+;precursors: b.1 
+;successors: b.2 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.2
+	br label %b.2
+b.4:
+;precursors: b.2 
+;successors: b.6 b.5 
+;head_inst: %36 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+;tail_inst: %54 = icmp sgt i32 %44, %53
+;terminate: br i1 %54, label %b.6, label %b.5
+	%36 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%37 = load %struct.Array_Node*, %struct.Array_Node** %36, align 4
+	%38 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %37, i32 0, i32 0
+	%39 = load %struct.Node**, %struct.Node*** %38, align 4
+	%40 = getelementptr inbounds %struct.Node*, %struct.Node** %39, i32 %5
+	%41 = load %struct.Node*, %struct.Node** %40, align 4
+	%42 = getelementptr inbounds %struct.Node, %struct.Node* %41, i32 0, i32 1
+	%43 = load i32, i32* %42, align 4
+	%44 = sub i32 0, %43
+	%45 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%46 = load %struct.Array_Node*, %struct.Array_Node** %45, align 4
+	%47 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %46, i32 0, i32 0
+	%48 = load %struct.Node**, %struct.Node*** %47, align 4
+	%49 = getelementptr inbounds %struct.Node*, %struct.Node** %48, i32 %30
+	%50 = load %struct.Node*, %struct.Node** %49, align 4
+	%51 = getelementptr inbounds %struct.Node, %struct.Node* %50, i32 0, i32 1
+	%52 = load i32, i32* %51, align 4
+	%53 = sub i32 0, %52
+	%54 = icmp sgt i32 %44, %53
+	br i1 %54, label %b.6, label %b.5
+b.5:
+;precursors: b.6 b.4 b.2 
+;successors: b.7 b.8 
+;head_inst: %56 = icmp eq i32 %55, %1
+;tail_inst: %56 = icmp eq i32 %55, %1
+;terminate: br i1 %56, label %b.7, label %b.8
+	%55 = phi i32 [ %30, %b.2 ], [ %30, %b.4 ], [ %5, %b.6 ]
+	%56 = icmp eq i32 %55, %1
+	br i1 %56, label %b.7, label %b.8
+b.6:
+;precursors: b.4 
+;successors: b.5 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.5
+	br label %b.5
+b.7:
+;precursors: b.5 
+;successors: b.9 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.9
+	br label %b.9
+b.8:
+;precursors: b.5 
+;successors: b.10 b.11 
+;head_inst: %57 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+;tail_inst: %81 = icmp slt i32 %74, %80
+;terminate: br i1 %81, label %b.10, label %b.11
+	%57 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%58 = load %struct.Array_Node*, %struct.Array_Node** %57, align 4
+	%59 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %58, i32 0, i32 0
+	%60 = load %struct.Node**, %struct.Node*** %59, align 4
+	%61 = getelementptr inbounds %struct.Node*, %struct.Node** %60, i32 %1
+	%62 = load %struct.Node*, %struct.Node** %61, align 4
+	%63 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %58, i32 0, i32 0
+	%64 = load %struct.Node**, %struct.Node*** %63, align 4
+	%65 = getelementptr inbounds %struct.Node*, %struct.Node** %64, i32 %1
+	%66 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %58, i32 0, i32 0
+	%67 = load %struct.Node**, %struct.Node*** %66, align 4
+	%68 = getelementptr inbounds %struct.Node*, %struct.Node** %67, i32 %55
+	%69 = load %struct.Node*, %struct.Node** %68, align 4
+	store %struct.Node* %69, %struct.Node** %65, align 4
+	%70 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %58, i32 0, i32 0
+	%71 = load %struct.Node**, %struct.Node*** %70, align 4
+	%72 = getelementptr inbounds %struct.Node*, %struct.Node** %71, i32 %55
+	store %struct.Node* %62, %struct.Node** %72, align 4
+	%73 = mul i32 %55, 2
+	%74 = add i32 %73, 1
+	%75 = mul i32 %55, 2
+	%76 = add i32 %75, 2
+	%77 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%78 = load %struct.Array_Node*, %struct.Array_Node** %77, align 4
+	%79 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %78, i32 0, i32 1
+	%80 = load i32, i32* %79, align 4
+	%81 = icmp slt i32 %74, %80
+	br i1 %81, label %b.10, label %b.11
+b.9:
+;precursors: b.7 b.18 
+;successors: 
+;head_inst: null
+;tail_inst: null
+;terminate: ret void
+	ret void
+b.10:
+;precursors: b.8 
+;successors: b.12 b.11 
+;head_inst: %82 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+;tail_inst: %100 = icmp sgt i32 %90, %99
+;terminate: br i1 %100, label %b.12, label %b.11
+	%82 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%83 = load %struct.Array_Node*, %struct.Array_Node** %82, align 4
+	%84 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %83, i32 0, i32 0
+	%85 = load %struct.Node**, %struct.Node*** %84, align 4
+	%86 = getelementptr inbounds %struct.Node*, %struct.Node** %85, i32 %74
+	%87 = load %struct.Node*, %struct.Node** %86, align 4
+	%88 = getelementptr inbounds %struct.Node, %struct.Node* %87, i32 0, i32 1
+	%89 = load i32, i32* %88, align 4
+	%90 = sub i32 0, %89
+	%91 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%92 = load %struct.Array_Node*, %struct.Array_Node** %91, align 4
+	%93 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %92, i32 0, i32 0
+	%94 = load %struct.Node**, %struct.Node*** %93, align 4
+	%95 = getelementptr inbounds %struct.Node*, %struct.Node** %94, i32 %55
+	%96 = load %struct.Node*, %struct.Node** %95, align 4
+	%97 = getelementptr inbounds %struct.Node, %struct.Node* %96, i32 0, i32 1
+	%98 = load i32, i32* %97, align 4
+	%99 = sub i32 0, %98
+	%100 = icmp sgt i32 %90, %99
+	br i1 %100, label %b.12, label %b.11
+b.11:
+;precursors: b.12 b.10 b.8 
+;successors: b.13 b.14 
+;head_inst: %102 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+;tail_inst: %106 = icmp slt i32 %76, %105
+;terminate: br i1 %106, label %b.13, label %b.14
+	%101 = phi i32 [ %55, %b.8 ], [ %55, %b.10 ], [ %74, %b.12 ]
+	%102 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%103 = load %struct.Array_Node*, %struct.Array_Node** %102, align 4
+	%104 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %103, i32 0, i32 1
+	%105 = load i32, i32* %104, align 4
+	%106 = icmp slt i32 %76, %105
+	br i1 %106, label %b.13, label %b.14
+b.12:
+;precursors: b.10 
+;successors: b.11 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.11
+	br label %b.11
+b.13:
+;precursors: b.11 
+;successors: b.15 b.14 
+;head_inst: %107 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+;tail_inst: %125 = icmp sgt i32 %115, %124
+;terminate: br i1 %125, label %b.15, label %b.14
+	%107 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%108 = load %struct.Array_Node*, %struct.Array_Node** %107, align 4
+	%109 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %108, i32 0, i32 0
+	%110 = load %struct.Node**, %struct.Node*** %109, align 4
+	%111 = getelementptr inbounds %struct.Node*, %struct.Node** %110, i32 %76
+	%112 = load %struct.Node*, %struct.Node** %111, align 4
+	%113 = getelementptr inbounds %struct.Node, %struct.Node* %112, i32 0, i32 1
+	%114 = load i32, i32* %113, align 4
+	%115 = sub i32 0, %114
+	%116 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%117 = load %struct.Array_Node*, %struct.Array_Node** %116, align 4
+	%118 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %117, i32 0, i32 0
+	%119 = load %struct.Node**, %struct.Node*** %118, align 4
+	%120 = getelementptr inbounds %struct.Node*, %struct.Node** %119, i32 %101
+	%121 = load %struct.Node*, %struct.Node** %120, align 4
+	%122 = getelementptr inbounds %struct.Node, %struct.Node* %121, i32 0, i32 1
+	%123 = load i32, i32* %122, align 4
+	%124 = sub i32 0, %123
+	%125 = icmp sgt i32 %115, %124
+	br i1 %125, label %b.15, label %b.14
+b.14:
+;precursors: b.11 b.13 b.15 
+;successors: b.16 b.17 
+;head_inst: %127 = icmp eq i32 %126, %55
+;tail_inst: %127 = icmp eq i32 %126, %55
+;terminate: br i1 %127, label %b.16, label %b.17
+	%126 = phi i32 [ %101, %b.11 ], [ %101, %b.13 ], [ %76, %b.15 ]
+	%127 = icmp eq i32 %126, %55
+	br i1 %127, label %b.16, label %b.17
+b.15:
+;precursors: b.13 
+;successors: b.14 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.14
+	br label %b.14
+b.16:
+;precursors: b.14 
+;successors: b.18 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.18
+	br label %b.18
+b.17:
+;precursors: b.14 
+;successors: b.18 
+;head_inst: %128 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+;tail_inst: call void @cls_Heap_Node_maxHeapify(%struct.Heap_Node* %0, i32 %126)
+;terminate: br label %b.18
+	%128 = getelementptr inbounds %struct.Heap_Node, %struct.Heap_Node* %0, i32 0, i32 0
+	%129 = load %struct.Array_Node*, %struct.Array_Node** %128, align 4
+	%130 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %129, i32 0, i32 0
+	%131 = load %struct.Node**, %struct.Node*** %130, align 4
+	%132 = getelementptr inbounds %struct.Node*, %struct.Node** %131, i32 %55
+	%133 = load %struct.Node*, %struct.Node** %132, align 4
+	%134 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %129, i32 0, i32 0
+	%135 = load %struct.Node**, %struct.Node*** %134, align 4
+	%136 = getelementptr inbounds %struct.Node*, %struct.Node** %135, i32 %55
+	%137 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %129, i32 0, i32 0
+	%138 = load %struct.Node**, %struct.Node*** %137, align 4
+	%139 = getelementptr inbounds %struct.Node*, %struct.Node** %138, i32 %126
+	%140 = load %struct.Node*, %struct.Node** %139, align 4
+	store %struct.Node* %140, %struct.Node** %136, align 4
+	%141 = getelementptr inbounds %struct.Array_Node, %struct.Array_Node* %129, i32 0, i32 0
+	%142 = load %struct.Node**, %struct.Node*** %141, align 4
+	%143 = getelementptr inbounds %struct.Node*, %struct.Node** %142, i32 %126
+	store %struct.Node* %133, %struct.Node** %143, align 4
+	call void @cls_Heap_Node_maxHeapify(%struct.Heap_Node* %0, i32 %126)
+	br label %b.18
+b.18:
+;precursors: b.16 b.17 
+;successors: b.9 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %b.9
+	br label %b.9
 }
