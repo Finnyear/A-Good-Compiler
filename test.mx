@@ -1,5 +1,42 @@
 int w = 0;
 
+int wpp () {
+    w++;
+    return ++w; // even
+}
+
+int wppp() {
+    wpp();
+    wpp();
+    wpp();
+    wpp();
+    wpp();
+    wpp();
+    wpp();
+    return wpp();
+}
+
+int wpppp() {
+    wppp();
+    wppp();
+    wppp();
+    wppp();
+    wppp();
+    wppp();
+    return wppp();
+}
+
+int block() {  // may be infinite loop in bad inline
+    return block();
+}
+
+int bblock() { // may be time-consuming
+    wpppp();
+    wpppp();
+    bblock();
+    return bblock();
+}
+
 int add1(int x) {
 	return x + 1;
 }
@@ -82,7 +119,11 @@ int wP() {
         N = N + isp;
         i = i + isp;
     }
-    return add524288(N) - 524288 - 4;
+    // N = 4
+    if ((N + wpppp()) % 2 == 0) return add524288(N) - 524288 - 4;
+    block(); block();
+    block(); block();
+    return bblock();
 }
 
 int sanity_check() {

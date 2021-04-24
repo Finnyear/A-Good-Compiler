@@ -6,6 +6,7 @@ import MIR.IROperand.*;
 import Util.*;
 import java.util.*;
 
+
 public class Finline{
 
     private Root irRoot;
@@ -14,7 +15,6 @@ public class Finline{
     private ArrayList<IRFunction> stack = new ArrayList<>();
     private HashSet<IRFunction> visited = new HashSet<>();
     private HashMap<IRFunction, HashSet<IRFunction>> caller = new HashMap<>();
-    private boolean newround = false, change = false;
     private boolean forceinline;
 
     public Finline(Root irRoot, boolean forceinline) {
@@ -35,15 +35,16 @@ public class Finline{
             if (!visited.contains(callee)) DFS(callee);
             caller.get(callee).add(it);
         });
+        if(!cannotInlineFun.contains(it)) inline(it);
         stack.remove(stack.size() - 1);
     }
 
 
-    private static int cnt = 0;
+//    private static int Cnt = 0;
 
     private void unfold(Call inst, IRFunction fn) {
-        if(cnt >= 256) return ;
-        cnt++;
+//        if(Cnt >= 256) return ;
+//        Cnt++;
 //        System.out.println(inst);
         IRMirror mirror = new IRMirror();
         HashMap<entity, entity> mirrorOpr = mirror.opMirror;
@@ -80,26 +81,55 @@ public class Finline{
         currentBlock.merge(mirEntry);
         if (fn.exitblock == currentBlock && mirEntry != exitBlock) fn.exitblock = exitBlock;
     }
-    private void checkInline(IRFunction fn) {
-//        System.out.println(fn.name);
+
+    private void inline(IRFunction fn) {
+
+        canUnFold.clear();
         fn.blocks.forEach(block -> {
             for (Inst inst = block.head_inst; inst != null; inst = inst.nxt)
-                if (inst instanceof Call && !cannotInlineFun.contains(((Call)inst).callee)) {
+                if (inst instanceof Call && !cannotInlineFun.contains(((Call)inst).callee))
                     canUnFold.put((Call) inst, fn);
-                    newround = true;
-                }
         });
-    }
+        canUnFold.forEach(this::unfold);
 
-    private void inline() {
-        do {
-            newround = false;
-            canUnFold.clear();
-            irRoot.functions.forEach((name, func) -> checkInline(func));
-            canUnFold.forEach(this::unfold);
-            change = change || newround;
-            if(cnt >= 256) break;
-        } while (newround);
+        fn.blocks.forEach(block -> {
+            for (Inst inst = block.gethead().nxt; inst != null; inst = inst.nxt) {
+                if (inst instanceof Binary && inst.pre instanceof Binary){
+                    if(((Binary) inst).opcode != Binary.Opcode.add) continue;
+                    if(((Binary) inst.pre).opcode != Binary.Opcode.add) continue;
+                    entity op1 = ((Binary) inst).op1;
+                    entity op2 = ((Binary) inst).op2;
+                    if(op1 instanceof intConst && op2 instanceof Register){
+                        op1 = ((Binary) inst).op2;
+                        op2 = ((Binary) inst).op1;
+                    }
+                    if(op1 instanceof Register && op2 instanceof intConst) {
+                        if (op1 != inst.pre.dest) continue;
+                        entity pop1 = ((Binary) inst.pre).op1;
+                        entity pop2 = ((Binary) inst.pre).op2;
+                        if (pop1 instanceof intConst) {
+                            pop1 = ((Binary) inst.pre).op2;
+                            pop2 = ((Binary) inst.pre).op1;
+                        }
+                        if (pop2 instanceof intConst) {
+                            Binary neww = new Binary(Binary.Opcode.add, pop1,
+                                    new intConst(((intConst) pop2).value() + ((intConst) op2).value(), 32), inst.dest, inst.block);
+                            neww.pre = inst.pre.pre;
+                            neww.nxt = inst.nxt;
+                            inst.removeself(true);
+                            inst.pre.removeself(true);
+                            if(neww.pre != null) neww.pre.nxt = neww;
+                            else neww.block.head_inst = neww;
+                            if(neww.nxt != null) neww.nxt.pre = neww;
+                            else neww.block.tail_inst = neww;
+                            inst = neww;
+                        }
+                    }
+                }
+            }
+        });
+
+
 //        for (Iterator<Map.Entry<String, IRFunction>> iter = irRoot.functions.entrySet().iterator(); iter.hasNext();) {
 //            Map.Entry<String, IRFunction> entry = iter.next();
 //            IRFunction fn = entry.getValue();
@@ -108,10 +138,8 @@ public class Finline{
 //        }
     }
 
-    public boolean run() {
-
+    public void run() {
         if(!forceinline) {
-            newround = change = false;
             cannotInlineFun.add(irRoot.getfun("main"));
             visited.addAll(irRoot.builtinfunc.values());
             cannotInlineFun.addAll(visited);
@@ -119,10 +147,8 @@ public class Finline{
             irRoot.functions.forEach((name, fn) -> {
                 if (!visited.contains(fn)) DFS(fn);
             });
-
-            inline();
             irRoot.functions.forEach((name, fn) -> new Domgen(fn).runforfn());
-            return change;
+            return ;
         } else {
             int bound = 150;
             HashMap<IRFunction, Integer> lineNumber = new HashMap<>();
@@ -148,7 +174,7 @@ public class Finline{
             }));
             canUnFold.forEach(this::unfold);
             irRoot.functions.forEach((name, fn) -> new Domgen(fn).runforfn());
-            return true;
+            return ;
         }
     }
 }
