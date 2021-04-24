@@ -22,6 +22,7 @@ public class IRFunction {
     public HashSet<Register> allocvars = new HashSet<>();
     public IRBlock entryblock = new IRBlock("entry"), exitblock = entryblock;
     public HashSet<IRFunction> callfunctions = new HashSet<>();
+    public boolean se = true;
 
 
     public IRFunction(String name){

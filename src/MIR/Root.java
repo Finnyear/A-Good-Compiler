@@ -53,42 +53,49 @@ public class Root {
         func.returnType = stringIR;
         func.params.add(new Param(stringIR, "a"));
         func.params.add(new Param(stringIR, "b"));
+        func.se = false;
         builtinfunc.put("g_stringadd", func);
 
         func = new IRFunction("g_stringlt");
         func.returnType = boolIR;
         func.params.add(new Param(stringIR, "a"));
         func.params.add(new Param(stringIR, "b"));
+        func.se = false;
         builtinfunc.put("g_stringlt", func);
 
         func = new IRFunction("g_stringle");
         func.returnType = boolIR;
         func.params.add(new Param(stringIR, "a"));
         func.params.add(new Param(stringIR, "b"));
+        func.se = false;
         builtinfunc.put("g_stringle", func);
 
         func = new IRFunction("g_stringgt");
         func.returnType = boolIR;
         func.params.add(new Param(stringIR, "a"));
         func.params.add(new Param(stringIR, "b"));
+        func.se = false;
         builtinfunc.put("g_stringgt", func);
 
         func = new IRFunction("g_stringge");
         func.returnType = boolIR;
         func.params.add(new Param(stringIR, "a"));
         func.params.add(new Param(stringIR, "b"));
+        func.se = false;
         builtinfunc.put("g_stringge", func);
 
         func = new IRFunction("g_stringeq");
         func.returnType = boolIR;
         func.params.add(new Param(stringIR, "a"));
         func.params.add(new Param(stringIR, "b"));
+        func.se = false;
         builtinfunc.put("g_stringeq", func);
 
         func = new IRFunction("g_stringne");
         func.returnType = boolIR;
         func.params.add(new Param(stringIR, "a"));
         func.params.add(new Param(stringIR, "b"));
+        func.se = false;
         builtinfunc.put("g_stringne", func);
 
         func = new IRFunction("malloc");

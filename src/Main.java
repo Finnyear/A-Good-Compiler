@@ -5,6 +5,7 @@ import Frontend.ClassCreator;
 import Frontend.SemanticCheck;
 import Frontend.SymbolCollector;
 import MIR.Root;
+import Optimize.ADCE;
 import Optimize.Finline;
 import Optimize.SCCP;
 import Parser.MxLexer;
@@ -67,9 +68,14 @@ public class Main {
 //                System.out.println("????????????????????????????");
                 new Finline(IRroot, false).run();
 //                System.out.println("????????????????????????????");
-                new SCCP(IRroot).run();
+                boolean change;
+                do{
+                    change = new ADCE(IRroot).run();
+                    change = new SCCP(IRroot).run() || change;
+                }
+                while (change);
                 new Finline(IRroot, true).run();
-                new SCCP(IRroot).run();
+//                new SCCP(IRroot).run();
 //                System.out.println("????????????????????????????");
             }
             new IRPrinter(new PrintStream("output.ll"), true).run(IRroot);

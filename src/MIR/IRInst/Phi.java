@@ -47,7 +47,7 @@ public class Phi extends Inst{
 
     @Override
     public HashSet<entity> uses() {
-        return null;
+        return new HashSet<>(entities);
     }
 
     public void addsrc(entity ent, IRBlock blo){entities.add(ent); ent.adduse(this); blocks.add(blo);}

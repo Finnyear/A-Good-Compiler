@@ -48,7 +48,7 @@ public class Cmp extends Inst{
     public HashSet<entity> uses() {
         HashSet<entity> ret = new HashSet<>();
         ret.add(op1); ret.add(op2);
-        return null;
+        return ret;
     }
 
     @Override
