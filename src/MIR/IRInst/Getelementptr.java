@@ -50,7 +50,7 @@ public class Getelementptr extends Inst{
     public HashSet<entity> uses() {
         HashSet<entity> ret = new HashSet<>();
         ret.add(pointer); ret.add(arrayindex);
-        return null;
+        return ret;
     }
 
     @Override
