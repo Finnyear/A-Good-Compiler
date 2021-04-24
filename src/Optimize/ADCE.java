@@ -21,6 +21,7 @@ public class ADCE {
     private boolean change;
     private HashSet<Inst> usefulinst = new HashSet<>();
     private HashSet<entity> usefulentity = new HashSet<>();
+    private HashSet<entity> tmp = new HashSet<>();
     private IRFnGraph fngraph;
 
 
@@ -38,20 +39,20 @@ public class ADCE {
             uses.forEach(inst -> {
                 if (inst instanceof Store && ((Store) inst).value.type instanceof IRpointerType) {
                     Store st = (Store) inst;
-                    if (!usefulentity.contains(st.addr)){
-                        usefulentity.add(st.addr);
+                    if (!usefulentity.contains(st.addr) && !tmp.contains(st.addr)){
+                        tmp.add(st.addr);
                         testOp(st.addr);
                     }
-                    if (!usefulentity.contains(st.value)){
-                        usefulentity.add(st.value);
+                    if (!usefulentity.contains(st.value) && !tmp.contains(st.value)){
+                        tmp.add(st.value);
                         testOp(st.value);
                     }
                 } else if (inst instanceof Bitcast || inst instanceof Getelementptr ||
                         (((inst instanceof Call && inst.dest != null) || (inst instanceof Load && inst.dest != null)) &&
                                 (inst.dest.type instanceof IRpointerType || inst.dest.type instanceof IRarrayType)) ||
                         (inst instanceof Phi)) {
-                    if (!usefulentity.contains(inst.dest)){
-                        usefulentity.add(inst.dest);
+                    if (!usefulentity.contains(inst.dest) && !tmp.contains(inst.dest)){
+                        tmp.add(inst.dest);
                         testOp(inst.dest);
                     }
                 }
@@ -81,6 +82,7 @@ public class ADCE {
         });
 
         usefulentity.forEach(op -> testOp(op));
+        usefulentity.addAll(tmp);
 
         IRroot.functions.forEach((name, fn) ->
                 fn.blocks.forEach(block -> {

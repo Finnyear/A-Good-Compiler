@@ -1,43 +1,30 @@
-int rng_seed = 19260817;
+int N = 15000;
+bool[] b = new bool[15001];
+int resultCount = 0;
 
-int unsigned_shl(int x, int k) {
-    return x << k;
-}
+int main()
+{
+  int i;
 
-int unsigned_shr(int x, int k) { // k should be (0, 31)
-    int INT_MIN = 1 << 31;
-    if (x >= 0) return x >> k;
-    else return (1 << (31 - k)) | ((x ^ INT_MIN) >> k);
-}
+  for (i = 1; i <= N; i++) b[i] = true;
 
-int rng() {
-    int rng_mask = 1073741823;
-    int x = rng_seed;
-    x = x ^ unsigned_shl(x, 13);
-    x = x ^ unsigned_shr(x, 17);
-    x = x ^ unsigned_shl(x, 5);
-    rng_seed = x;
-    return x & rng_mask;
-}
+  for (i = 2; i <= N; i++) if (b[i])
+  {
+    int count = 2;
 
-int main() {
-    while (rng_seed % 100 != 0) rng_seed--;
-    int a = rng(), i;
-    int n = (rng() & 127) + 100000;
-    for (i = 0; i < n; ++i) {
-        // dead code begin
-        a = a * 2;
-        a = a + 1;
-        a = a / 2;
-        a = a / 3;
-        a = a / (i + 1);
-        a = a + i;
-        a = a / 100;
-        a = a + i;
-        a = a * a;
-        a = a / 10000;
-        a = a + 1;
-        // dead code end
+    if (i>3 && b[i-2])
+    {
+      resultCount++;
+      println(toString(i-2) + " " + toString(i));
     }
-    return 0;
+
+    while (i*count <= N)
+    {
+      b[i*count] = false;
+      count++;
+    }
+  }
+
+  println("Total: " + toString(resultCount));
+  return 0;
 }
