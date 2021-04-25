@@ -9,6 +9,8 @@ import Util.IRMirror;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 
 public class Phi extends Inst{
     public ArrayList<IRBlock> blocks;
@@ -51,6 +53,18 @@ public class Phi extends Inst{
     }
 
     public void addsrc(entity ent, IRBlock blo){entities.add(ent); ent.adduse(this); blocks.add(blo);}
+
+    public void removeblock(IRBlock block){
+//        System.out.println("remove block " + block.name + " from " + this);
+        int size = blocks.size();
+        for (int i = 0;i < size;++i) {
+            if (blocks.get(i) == block) {
+                blocks.remove(i);
+                entities.remove(i);
+                break;
+            }
+        }
+    }
 
     @Override
     public String toString() {

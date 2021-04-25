@@ -6,6 +6,7 @@ import Frontend.SemanticCheck;
 import Frontend.SymbolCollector;
 import MIR.Root;
 import Optimize.ADCE;
+import Optimize.CFGsimplify;
 import Optimize.Finline;
 import Optimize.SCCP;
 import Parser.MxLexer;
@@ -68,18 +69,25 @@ public class Main {
 //                System.out.println("????????????????????????????");
                 new Finline(IRroot, false).run();
 //                System.out.println("????????????????????????????");
+//                System.out.println("......");
                 boolean change;
-                do{
+//                do{
                     change = new ADCE(IRroot).run();
                     change = new SCCP(IRroot).run() || change;
-                }
-                while (change);
+                    change = new CFGsimplify(IRroot, false).run() || change;
+//                    change = new ADCE(IRroot).run();
+//                    change = new SCCP(IRroot).run() || change;
+//                }
+//                while (change);
+//                System.out.println("......");
                 new Finline(IRroot, true).run();
 //                new SCCP(IRroot).run();
 //                System.out.println("????????????????????????????");
             }
             new IRPrinter(new PrintStream("output.ll"), true).run(IRroot);
+//            System.out.println("????????????????????????????");
             IRroot.resolvephi();
+//            System.out.println("????????????????????????????");
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();
             new AsmPrinter(lroot, output, true).run();

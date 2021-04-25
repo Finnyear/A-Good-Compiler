@@ -133,6 +133,7 @@ public class SCCP {
         ArrayList<entity> entities = inst.entities;
         entity trans = consttrans(entities.get(0));
         int size = entities.size();
+//        System.out.println(inst);
         if(size == 1){
             if(trans != null) inst.dest.replaceusewith(trans);
             else inst.dest.replaceusewith(entities.get(0));
@@ -193,7 +194,6 @@ public class SCCP {
             if (inst == block.terminate && inst instanceof Branch) {
                 if (isConst(((Branch) inst).cond)) {
                     entity src = ((Branch) inst).cond;
-                    assert src instanceof boolConst;
                     block.removeterminate();
                     if (((boolConst) src).value())
                         block.addterminate(new Jump(((Branch) inst).true_br_block, block));
@@ -232,6 +232,7 @@ public class SCCP {
         current_func = fn;
         boolean everChanged = false;
         do {
+//            System.out.println("begin a new round");
             visited.clear();
             changefn = false;
             visit(fn.entryblock);

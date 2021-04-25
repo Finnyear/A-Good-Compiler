@@ -56,6 +56,11 @@ public class IRBlock {
         }
     }
 
+    public void removepre(IRBlock block){
+        pre_block.remove(block);
+        Phis.forEach(((register, phi) -> phi.removeblock(block)));
+    }
+
     public void addheadinst(Inst inst){
         if(head_inst == null) head_inst = tail_inst = inst;
         else{
@@ -97,12 +102,13 @@ public class IRBlock {
     public void removeterminate(){
         if(terminate == null) throw new myError("remove terminate wrong!", new position(0, 0));
         if(terminate instanceof Jump){
-            ((Jump) terminate).destblock.pre_block.remove(this);
+            ((Jump) terminate).destblock.removepre(this);
             this.suc_block.remove(((Jump) terminate).dest);
         }
         if(terminate instanceof Branch){
-            ((Branch) terminate).true_br_block.pre_block.remove(this);
-            ((Branch) terminate).false_br_block.pre_block.remove(this);
+//            System.out.println("remove " + terminate);
+            ((Branch) terminate).true_br_block.removepre(this);
+            ((Branch) terminate).false_br_block.removepre(this);
             this.suc_block.remove(((Branch) terminate).true_br_block);
             this.suc_block.remove(((Branch) terminate).false_br_block);
         }
