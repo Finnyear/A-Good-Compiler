@@ -96,15 +96,18 @@ public class ADCE {
                             setse(fn);
                         } else if (inst instanceof Return) usefulinst.add(inst);
                 }));
+
         IRroot.functions.forEach((name, fn) -> fn.blocks.forEach(block -> {
             for (Inst inst = block.gethead(); inst != null; inst = block.getnxt(inst))
                 if (inst instanceof Call && ((Call)inst).callee.se)
                     usefulinst.add(inst);
         }));
+//        usefulinst.forEach(inst -> System.out.println(inst));
     }
 
 
     private void add(Inst inst) {
+//        System.out.println("add " + inst);
         inst.uses().forEach(opr -> {
             if (opr instanceof Register) {
                 Inst def = ((Register) opr).def;

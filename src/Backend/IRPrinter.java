@@ -41,12 +41,12 @@ public class IRPrinter {
         out.print(";successors: ");
         block.suc_block.forEach(suc -> out.print(suc.name + " "));
         out.print("\n");
-        out.print(";head_inst: ");
-        out.println(block.head_inst);
-        out.print(";tail_inst: ");
-        out.println(block.tail_inst);
-        out.print(";terminate: ");
-        out.println(block.terminate);
+//        out.print(";head_inst: ");
+//        out.println(block.head_inst);
+//        out.print(";tail_inst: ");
+//        out.println(block.tail_inst);
+//        out.print(";terminate: ");
+//        out.println(block.terminate);
         block.Phis.forEach((reg, phi) -> out.println("\t" + phi.toString()));
         for(Inst inst = block.gethead(); inst != null; inst = block.getnxt(inst)) {
             out.println("\t" + inst.toString());

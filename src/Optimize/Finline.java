@@ -84,6 +84,7 @@ public class Finline{
 
     private void inline(IRFunction fn) {
 
+//        System.out.println("inline " + fn.name);
         canUnFold.clear();
         fn.blocks.forEach(block -> {
             for (Inst inst = block.head_inst; inst != null; inst = inst.nxt)
@@ -105,6 +106,7 @@ public class Finline{
                     }
                     if(op1 instanceof Register && op2 instanceof intConst) {
                         if (op1 != inst.pre.dest) continue;
+                        if (op1.uses().size() > 1) continue;
                         entity pop1 = ((Binary) inst.pre).op1;
                         entity pop2 = ((Binary) inst.pre).op2;
                         if (pop1 instanceof intConst) {
@@ -147,6 +149,7 @@ public class Finline{
             irRoot.functions.forEach((name, fn) -> {
                 if (!visited.contains(fn)) DFS(fn);
             });
+            irRoot.functions.forEach((name, fn) -> inline(fn));
             irRoot.functions.forEach((name, fn) -> new Domgen(fn).runforfn());
             return ;
         } else {

@@ -12,17 +12,14 @@ import Util.Domgen;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.function.Function;
 
 public class CFGsimplify {
     
     private Root IRroot;
     private boolean change;
-    private boolean doStraightening;
 
-    public CFGsimplify(Root IRroot, boolean doStraightening) {
+    public CFGsimplify(Root IRroot) {
         this.IRroot = IRroot;
-        this.doStraightening = doStraightening;
     }
 
     private boolean isConst(entity src) {
@@ -32,7 +29,7 @@ public class CFGsimplify {
         ArrayList<IRBlock> precursors = block.pre_block;
         return precursors.isEmpty() || (precursors.size() == 1 && precursors.get(0) == block);
     }
-    private boolean removeBB(IRFunction fn) {
+    private boolean remove(IRFunction fn) {
         HashSet<IRBlock> removedCollection = new HashSet<>();
         boolean newChange, changed = false;
         do {
@@ -87,8 +84,8 @@ public class CFGsimplify {
         boolean newChange;
         boolean changed = false;
         do {
-            newChange = removeBB(fn);
-            if (doStraightening) newChange = merge(fn) || newChange;
+            newChange = remove(fn);
+            newChange = merge(fn) || newChange;
             changed = changed || newChange;
         } while(newChange);
         if (changed) new Domgen(fn).runforfn();

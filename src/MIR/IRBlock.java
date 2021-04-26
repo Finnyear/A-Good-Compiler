@@ -103,7 +103,7 @@ public class IRBlock {
         if(terminate == null) throw new myError("remove terminate wrong!", new position(0, 0));
         if(terminate instanceof Jump){
             ((Jump) terminate).destblock.removepre(this);
-            this.suc_block.remove(((Jump) terminate).dest);
+            this.suc_block.remove(((Jump) terminate).destblock);
         }
         if(terminate instanceof Branch){
 //            System.out.println("remove " + terminate);

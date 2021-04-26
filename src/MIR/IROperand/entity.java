@@ -9,7 +9,7 @@ public abstract class entity {
     public IRType type;
     public entity(IRType type){this.type = type;}
 
-    public abstract String toString();
+//    public abstract String toString();
 
     public abstract HashSet<Inst> uses();
     public abstract void adduse(Inst inst);

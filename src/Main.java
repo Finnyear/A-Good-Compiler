@@ -64,30 +64,23 @@ public class Main {
 
             new IRBuilder(global_scope, IRroot).visit(rt);
             new Mem2Reg(IRroot).run();
-//            IRroot.functions.forEach((s, irFunction) -> System.out.println(":::::::::::::::" + irFunction.name));
             {//optimize
-//                System.out.println("????????????????????????????");
                 new Finline(IRroot, false).run();
-//                System.out.println("????????????????????????????");
-//                System.out.println("......");
                 boolean change;
-//                do{
+                do{
                     change = new ADCE(IRroot).run();
                     change = new SCCP(IRroot).run() || change;
-                    change = new CFGsimplify(IRroot, false).run() || change;
-//                    change = new ADCE(IRroot).run();
-//                    change = new SCCP(IRroot).run() || change;
-//                }
-//                while (change);
-//                System.out.println("......");
+                    change = new CFGsimplify(IRroot).run() || change;
+                } while (change);
                 new Finline(IRroot, true).run();
-//                new SCCP(IRroot).run();
-//                System.out.println("????????????????????????????");
+                do{
+                    change = new ADCE(IRroot).run();
+                    change = new SCCP(IRroot).run() || change;
+                    change = new CFGsimplify(IRroot).run() || change;
+                } while (change);
             }
-            new IRPrinter(new PrintStream("output.ll"), true).run(IRroot);
-//            System.out.println("????????????????????????????");
+//            new IRPrinter(new PrintStream("output.ll"), true).run(IRroot);
             IRroot.resolvephi();
-//            System.out.println("????????????????????????????");
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();
             new AsmPrinter(lroot, output, true).run();

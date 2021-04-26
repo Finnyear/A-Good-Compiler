@@ -28,6 +28,8 @@ public class Cmp extends Inst{
 
     @Override
     public void addmirror(IRBlock block, IRMirror mirror) {
+//        System.out.println(op1 + " " + op2);
+//        System.out.println(mirror.opMir(op1) + " " + mirror.opMir(op2));
         block.addinst(new Cmp(condcode, mirror.opMir(op1), mirror.opMir(op2), (Register) mirror.opMir(dest), block));
     }
 
