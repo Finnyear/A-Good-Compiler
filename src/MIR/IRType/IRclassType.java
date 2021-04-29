@@ -34,4 +34,9 @@ public class IRclassType extends IRType{
     public String toString() {
         return "%struct." + name;
     }
+
+    @Override
+    public boolean sameas(IRType other) {
+        return other instanceof IRclassType && ((IRclassType) other).name.equals(name);
+    }
 }

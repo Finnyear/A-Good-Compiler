@@ -5,10 +5,7 @@ import Frontend.ClassCreator;
 import Frontend.SemanticCheck;
 import Frontend.SymbolCollector;
 import MIR.Root;
-import Optimize.ADCE;
-import Optimize.CFGsimplify;
-import Optimize.Finline;
-import Optimize.SCCP;
+import Optimize.*;
 import Parser.MxLexer;
 import Parser.MxParser;
 import Util.MxErrorListener;
@@ -71,15 +68,25 @@ public class Main {
                     change = new ADCE(IRroot).run();
                     change = new SCCP(IRroot).run() || change;
                     change = new CFGsimplify(IRroot).run() || change;
+//                    System.out.println("0000000000");
+                    AliasAnalysis alias = new AliasAnalysis(IRroot);
+                    alias.run();
+                    change = new LICM(IRroot, alias).run() || change;
                 } while (change);
+//                System.out.println("1111111111");
                 new Finline(IRroot, true).run();
                 do{
                     change = new ADCE(IRroot).run();
                     change = new SCCP(IRroot).run() || change;
                     change = new CFGsimplify(IRroot).run() || change;
-                } while (change);
+                    AliasAnalysis alias = new AliasAnalysis(IRroot);
+                    alias.run();
+                    change = new LICM(IRroot, alias).run() || change;
+                }
+
+                while (change);
             }
-//            new IRPrinter(new PrintStream("output.ll"), true).run(IRroot);
+            new IRPrinter(new PrintStream("output.ll"), false).run(IRroot);
             IRroot.resolvephi();
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();

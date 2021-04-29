@@ -13,4 +13,9 @@ public class IRboolType extends IRType{
     public String toString() {
         return "i1";
     }
+
+    @Override
+    public boolean sameas(IRType other) {
+        return other instanceof IRboolType;
+    }
 }

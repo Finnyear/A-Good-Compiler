@@ -35,6 +35,11 @@ public class Phi extends Inst{
     }
 
     @Override
+    public boolean nosideeffect() {
+        return false;
+    }
+
+    @Override
     public void removeself(boolean bo) {
         if(bo) block.removeinst(this);
         entities.forEach(val -> val.removeuse(this));

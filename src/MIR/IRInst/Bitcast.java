@@ -41,6 +41,11 @@ public class Bitcast extends Inst{
     }
 
     @Override
+    public boolean nosideeffect() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return dest.toString() + " = bitcast " + value.type.toString() + " " + value.toString() + " to " + dest.type.toString();
     }

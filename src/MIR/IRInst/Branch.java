@@ -44,6 +44,11 @@ public class Branch extends TerminalInst {
     }
 
     @Override
+    public boolean nosideeffect() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "br " + cond.type.toString() + " " + cond.toString() + ", label %" +
                 true_br_block.name + ", label %" + false_br_block.name;

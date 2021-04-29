@@ -43,6 +43,11 @@ public class Move extends Inst{
     }
 
     @Override
+    public boolean nosideeffect() {
+        return true;
+    }
+
+    @Override
     public String toString() {
 
 //        return dest.toString() + " = add " +

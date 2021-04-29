@@ -7,4 +7,6 @@ abstract public class IRType {
     public int dim(){return 0;};
     public abstract int size();
     public abstract String toString();
+
+    public abstract boolean sameas(IRType other);
 }

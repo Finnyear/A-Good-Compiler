@@ -17,4 +17,9 @@ public class IRvoidType extends IRType{
     public String toString() {
         return "void";
     }
+
+    @Override
+    public boolean sameas(IRType other) {
+        return other instanceof IRvoidType;
+    }
 }

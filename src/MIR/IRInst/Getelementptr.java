@@ -34,6 +34,11 @@ public class Getelementptr extends Inst{
     }
 
     @Override
+    public boolean nosideeffect() {
+        return true;
+    }
+
+    @Override
     public void removeself(boolean bo) {
         if(bo) block.removeinst(this);
         pointer.removeuse(this);

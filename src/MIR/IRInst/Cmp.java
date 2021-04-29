@@ -34,6 +34,11 @@ public class Cmp extends Inst{
     }
 
     @Override
+    public boolean nosideeffect() {
+        return true;
+    }
+
+    @Override
     public void removeself(boolean bo) {
         if(bo) block.removeinst(this);
         op1.removeuse(this);

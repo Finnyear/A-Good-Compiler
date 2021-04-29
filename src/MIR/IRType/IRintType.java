@@ -17,4 +17,9 @@ public class IRintType extends IRType{
     public String toString() {
         return "i" + size;
     }
+
+    @Override
+    public boolean sameas(IRType other) {
+        return other instanceof IRintType && other.size() == size;
+    }
 }

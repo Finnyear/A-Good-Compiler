@@ -18,6 +18,7 @@ abstract public class Inst {
     public abstract void replaceentity(entity old, entity neww);
     public abstract HashSet<entity> uses();
     public abstract void addmirror(IRBlock block, IRMirror mirror);
+    public abstract boolean nosideeffect();
 
     public abstract String toString();
 }

@@ -29,4 +29,12 @@ public class IRpointerType extends IRType{
     public String toString() {
         return pointeeType.toString() + "*";
     }
+
+
+    @Override
+    public boolean sameas(IRType other) {
+        return (other instanceof IRarrayType && other.sameas(this)) ||
+                (other instanceof IRpointerType && (((IRpointerType) other).pointeeType.sameas(pointeeType) ||
+                        ((IRpointerType) other).pointeeType instanceof IRvoidType));
+    }
 }

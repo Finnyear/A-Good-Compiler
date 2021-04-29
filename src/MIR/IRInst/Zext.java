@@ -41,6 +41,11 @@ public class Zext extends Inst{
     }
 
     @Override
+    public boolean nosideeffect() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return dest.toString()  + " = zext " + src.type.toString() + " " + src.toString() +
                 " to " + dest.type.toString();

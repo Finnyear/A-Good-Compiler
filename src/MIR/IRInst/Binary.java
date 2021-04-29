@@ -54,6 +54,11 @@ public class Binary extends Inst{
         block.addinst(new Binary(opcode, mirror.opMir(op1), mirror.opMir(op2), (Register) mirror.opMir(dest), block));
     }
 
+    @Override
+    public boolean nosideeffect() {
+        return true;
+    }
+
 
     @Override
     public String toString() {

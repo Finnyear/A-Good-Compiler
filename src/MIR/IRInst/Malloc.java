@@ -41,6 +41,11 @@ public class Malloc extends Inst{
     }
 
     @Override
+    public boolean nosideeffect() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return dest.toString() + " = call noalias i8* @malloc(" +
                 sz.type.toString() + " " + sz.toString() + ")";

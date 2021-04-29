@@ -43,6 +43,11 @@ public class Store extends Inst{
         block.addinst(new Store(mirror.opMir(value), mirror.opMir(addr), block));
     }
 
+    @Override
+    public boolean nosideeffect() {
+        return false;
+    }
+
 
     @Override
     public String toString() {

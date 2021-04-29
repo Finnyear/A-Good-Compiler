@@ -39,6 +39,11 @@ public class Return extends TerminalInst {
     }
 
     @Override
+    public boolean nosideeffect() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "ret" + (value == null ? " void" :
                 (" " + value.type.toString() + " " + value.toString()));

@@ -35,6 +35,11 @@ public class Call extends Inst{
     }
 
     @Override
+    public boolean nosideeffect() {
+        return false;
+    }
+
+    @Override
     public void removeself(boolean bo) {
         if(bo) block.removeinst(this);
         parameters.forEach(param -> param.removeuse(this));

@@ -2,6 +2,7 @@ package MIR;
 
 import MIR.IRInst.*;
 import MIR.IROperand.Register;
+import Util.IRLoop;
 import Util.error.myError;
 import Util.position;
 
@@ -16,6 +17,7 @@ public class IRBlock {
     public Inst head_inst = null, tail_inst = null;
     public Inst terminate = null;
     public String name;
+    public int loopdepth = 0;
 
     public IRBlock idom = null;
     public HashSet<IRBlock> domfrontiers = new HashSet<>();
@@ -183,5 +185,14 @@ public class IRBlock {
         tail_inst = inst.pre;
         if (tail_inst != null) tail_inst.nxt = null;
         if (head_inst == inst) head_inst = null;
+    }
+
+    public boolean isdomed(IRBlock block){
+        IRBlock dom = idom;
+        while(dom != null){
+            if(dom == block) return true;
+            dom = dom.idom;
+        }
+        return false;
     }
 }

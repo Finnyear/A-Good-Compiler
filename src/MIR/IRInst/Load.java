@@ -41,6 +41,11 @@ public class Load extends Inst{
     }
 
     @Override
+    public boolean nosideeffect() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "%" + dest.name + " = load " + dest.type.toString() + ", " +
                 addr.type.toString() + " " + addr.toString() + ", align " +

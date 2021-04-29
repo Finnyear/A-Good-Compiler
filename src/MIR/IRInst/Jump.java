@@ -34,6 +34,11 @@ public class Jump extends TerminalInst{
     }
 
     @Override
+    public boolean nosideeffect() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "br label %" + destblock.name;
     }
