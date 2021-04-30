@@ -188,7 +188,7 @@ public class Finline{
                 lineNumber.put(fn, cnt);
             });
             irRoot.functions.forEach((name, fn) -> {
-                for(int i = 1; i <= 5; i++) {
+                for(int i = 1; i <= 3; i++) {
                     fn.blocks.forEach(block -> {
                         for (Inst inst = block.head_inst; inst != null; inst = inst.nxt)
                             if (inst instanceof Call) {
