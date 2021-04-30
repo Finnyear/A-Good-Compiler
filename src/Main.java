@@ -63,7 +63,7 @@ public class Main {
             new Mem2Reg(IRroot).run();
             {//optimize
 //                new Finline(IRroot, false).run();
-                System.out.println("0000000000");
+//                System.out.println("0000000000");
                 boolean change;
                 do{
                     change = new SCCP(IRroot).run();
@@ -73,7 +73,7 @@ public class Main {
                     change = new LICM(IRroot, alias).run() || change;
                     change = new ADCE(IRroot).run() || change;
                 } while (change);
-                System.out.println("1111111111");
+//                System.out.println("1111111111");
                 new Finline(IRroot, true).run();
                 do{
                     change = new SCCP(IRroot).run();
@@ -83,7 +83,7 @@ public class Main {
                     change = new LICM(IRroot, alias).run() || change;
                     change = new ADCE(IRroot).run() || change;
                 } while (change);
-                System.out.println("2222222222");
+//                System.out.println("2222222222");
                 new IRPrinter(new PrintStream("output.ll"), false).run(IRroot);
             }
             IRroot.resolvephi();
