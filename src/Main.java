@@ -32,13 +32,13 @@ public class Main {
                     case "-ll": emitLLVM = true;break;
                     default: break;
                 }
-            }
+             }
         }
-        String name = "test.mx";
-        InputStream input = new FileInputStream(name);
-        PrintStream output = new PrintStream("output.s");
-//        InputStream input = System.in;//
-//        PrintStream output = System.out;
+//        String name = "test.mx";
+//        InputStream input = new FileInputStream(name);
+//        PrintStream output = new PrintStream("output.s");
+        InputStream input = System.in;//
+        PrintStream output = System.out;
         try{
             ProgramNode rt;
             globalScope global_scope = new globalScope(null);
