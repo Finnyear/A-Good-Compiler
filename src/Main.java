@@ -66,7 +66,7 @@ public class Main {
             new IRBuilder(global_scope, IRroot).visit(rt);
             new Mem2Reg(IRroot).run();
             {//optimize
-//                new Finline(IRroot, false).run();
+                new Finline(IRroot, false).run();
 //                System.out.println("0000000000");
                 boolean change;
                 do{
@@ -89,6 +89,7 @@ public class Main {
                     alias.run();
                     change = new LICM(IRroot, alias).run() || change;
                 } while (change);
+                new CFGsimplify(IRroot).run();
 //                System.out.println("2222222222");
                 new IRPrinter(new PrintStream("output.ll"), false).run(IRroot);
             }

@@ -93,7 +93,7 @@ public class LICM {
     }
 
     private void runforfn(IRFunction func){
-        Loopdetector loops = new Loopdetector(func);
+        Loopdetector loops = new Loopdetector(func, true);
         loops.runforfn();
         loops.rootloop.forEach(this :: runforloop);
 

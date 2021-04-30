@@ -13,6 +13,7 @@ import MIR.IRType.IRType;
 import MIR.IRType.IRclassType;
 import MIR.IRType.IRpointerType;
 import MIR.Root;
+import Optimize.Loopdetector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -404,6 +405,7 @@ public class InstSelection {
             fnmap.put(func, lFn);
         });
         IRroot.functions.forEach((name, func) -> {
+//            new Loopdetector(func, false).runforfn();
             func.blocks.forEach(block -> {
                 LBlock lBlock = new LBlock("." + func.name + "_" + block.name);
                 blockmap.put(block, lBlock);

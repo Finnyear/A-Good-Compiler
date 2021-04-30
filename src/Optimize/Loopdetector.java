@@ -16,8 +16,10 @@ public class Loopdetector {
     private HashMap<IRBlock, IRLoop> loopmap = new HashMap<>();
     private HashSet<IRBlock> vis = new HashSet<>();
     private Stack<IRLoop> loopStack = new Stack<>();
-    public Loopdetector(IRFunction func){
+    private boolean addpreheader;
+    public Loopdetector(IRFunction func, boolean addprehead){
         this.func = func;
+        this.addpreheader = addprehead;
     }
 
     public HashSet<IRLoop> rootloop = new HashSet<>();

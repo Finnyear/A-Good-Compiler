@@ -157,13 +157,17 @@ public class Finline{
 
     public void run() {
         if(!forceinline) {
+            visited.clear();
             cannotInlineFun.add(irRoot.getfun("main"));
+            IRFunction func = irRoot.getfun("main");
+//            System.out.println(func.name);
             visited.addAll(irRoot.builtinfunc.values());
             cannotInlineFun.addAll(visited);
             irRoot.functions.forEach((name, fn) -> caller.put(fn, new HashSet<>()));
             irRoot.functions.forEach((name, fn) -> {
                 if (!visited.contains(fn)) DFS(fn);
             });
+//            irRoot.cl
             irRoot.functions.forEach((name, fn) -> inline(fn));
             visited.clear();
             DFS1(irRoot.getfun("main"));
@@ -172,7 +176,7 @@ public class Finline{
             irRoot.functions.forEach((name, fn) -> new Domgen(fn).runforfn());
             return ;
         } else {
-            int bound = 150;
+            int bound = 300;
             HashMap<IRFunction, Integer> lineNumber = new HashMap<>();
             cannotInlineFun.addAll(irRoot.builtinfunc.values());
             cannotInlineFun.add(irRoot.getfun("main"));
@@ -183,18 +187,23 @@ public class Finline{
                 }
                 lineNumber.put(fn, cnt);
             });
-            irRoot.functions.forEach((name, fn) -> fn.blocks.forEach(block -> {
-                for (Inst inst = block.head_inst; inst != null; inst = inst.nxt)
-                    if (inst instanceof Call) {
-                        Call ca = (Call) inst;
-                        IRFunction callee = ca.callee;
-                        if (!cannotInlineFun.contains(callee) && lineNumber.get(callee) < bound){
-                            canUnFold.put(ca, fn);
-                            lineNumber.put(fn, lineNumber.get(fn) + lineNumber.get(callee));
-                        }
-                    }
-            }));
-            canUnFold.forEach(this::unfold);
+            irRoot.functions.forEach((name, fn) -> {
+                for(int i = 1; i <= 15; i++) {
+                    fn.blocks.forEach(block -> {
+                        for (Inst inst = block.head_inst; inst != null; inst = inst.nxt)
+                            if (inst instanceof Call) {
+                                Call ca = (Call) inst;
+                                IRFunction callee = ca.callee;
+                                if (!cannotInlineFun.contains(callee) && lineNumber.get(callee) < bound) {
+                                    canUnFold.put(ca, fn);
+                                    lineNumber.put(fn, lineNumber.get(fn) + lineNumber.get(callee));
+                                }
+                            }
+                    });
+                    canUnFold.forEach(this::unfold);
+                    canUnFold.clear();
+                }
+            });
             irRoot.functions.forEach((name, fn) -> new Domgen(fn).runforfn());
             return ;
         }
