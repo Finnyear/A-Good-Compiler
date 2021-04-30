@@ -62,30 +62,29 @@ public class Main {
             new IRBuilder(global_scope, IRroot).visit(rt);
             new Mem2Reg(IRroot).run();
             {//optimize
-                new Finline(IRroot, false).run();
-                new IRPrinter(new PrintStream("output.ll"), false).run(IRroot);
-//                System.out.println("0000000000");
+//                new Finline(IRroot, false).run();
+                System.out.println("0000000000");
                 boolean change;
                 do{
-                    change = new ADCE(IRroot).run();
-                    change = new SCCP(IRroot).run() || change;
+                    change = new SCCP(IRroot).run();
                     change = new CFGsimplify(IRroot).run() || change;
                     AliasAnalysis alias = new AliasAnalysis(IRroot);
                     alias.run();
                     change = new LICM(IRroot, alias).run() || change;
+                    change = new ADCE(IRroot).run() || change;
                 } while (change);
-//                System.out.println("1111111111");
+                System.out.println("1111111111");
                 new Finline(IRroot, true).run();
                 do{
-                    change = new ADCE(IRroot).run();
-                    change = new SCCP(IRroot).run() || change;
+                    change = new SCCP(IRroot).run();
                     change = new CFGsimplify(IRroot).run() || change;
                     AliasAnalysis alias = new AliasAnalysis(IRroot);
                     alias.run();
                     change = new LICM(IRroot, alias).run() || change;
-                }
-                while (change);
-//                System.out.println("2222222222");
+                    change = new ADCE(IRroot).run() || change;
+                } while (change);
+                System.out.println("2222222222");
+                new IRPrinter(new PrintStream("output.ll"), false).run(IRroot);
             }
             IRroot.resolvephi();
             LRoot lroot = new InstSelection(IRroot).run();

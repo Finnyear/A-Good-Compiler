@@ -104,7 +104,7 @@ public class ADCE {
 
 
     private void add(Inst inst) {
-//        System.out.println("add " + inst);
+//        System.out.println(inst.block.name);
         inst.uses().forEach(opr -> {
             if (opr instanceof Register) {
                 Inst def = ((Register) opr).def;

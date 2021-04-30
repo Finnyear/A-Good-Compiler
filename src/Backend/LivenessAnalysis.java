@@ -4,9 +4,11 @@ import Asm.LFn;
 import Asm.LBlock;
 import Asm.LOperand.Reg;
 import Asm.RiscInst.RiscInst;
+import MIR.IRBlock;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Stack;
 
 public class LivenessAnalysis {
     private LFn func;
@@ -31,6 +33,9 @@ public class LivenessAnalysis {
         block.liveIn.clear();
         block.liveout.clear();
     }
+
+    Stack<LBlock> stack = new Stack<>();
+
     public void LiveIO(LBlock block) {
         visited.add(block);
         HashSet<Reg> liveOut = new HashSet<>();
@@ -45,13 +50,16 @@ public class LivenessAnalysis {
             visited.removeAll(block.pres);
         }
         block.pres.forEach(pre -> {
-            if (!visited.contains(pre)) LiveIO(pre);
+            if (!visited.contains(pre)) stack.add(pre);
         });
     }
 
     public void runForFn() {
         func.blocks.forEach(this::runForBlock);
-        LiveIO(func.exitblock);
+        stack.add(func.exitblock);
+        while(!stack.empty())
+            LiveIO(stack.pop());
+//        LiveIO(func.exitblock);
     }
 
 }
