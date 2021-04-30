@@ -17,905 +17,211 @@ declare i1 @g_stringgt(i8* %a, i8* %b)
 declare i1 @g_stringeq(i8* %a, i8* %b)
 declare i8* @g_getString()
 declare i1 @g_stringlt(i8* %a, i8* %b)
-@N = global i32 zeroinitializer, align 4
-define i32 @fun_test(){
-entry:
-;precursors: 
-;successors: for_cond 
-	br label %for_cond
-for_cond:
-;precursors: entry for_body 
-;successors: for_body for_end 
-	%j_addr_phi = phi i32 [ 0, %entry ], [ %suf_tmp, %for_body ]
-	%i_addr_phi = phi i32 [ 0, %entry ], [ %suf_tmp, %for_body ]
-	%cmp_slt = icmp slt i32 %i_addr_phi, 200
-	br i1 %cmp_slt, label %for_body, label %for_end
-for_body:
-;precursors: for_cond 
-;successors: for_cond 
-	%suf_tmp = add i32 %i_addr_phi, 1
-	%suf_tmp = add i32 %j_addr_phi, 1
-	%suf_tmp = add i32 %suf_tmp, 1
-	br label %for_cond
-for_end:
-;precursors: for_cond 
-;successors: 
-	ret i32 %j_addr_phi
-}
-define void @__init(){
-entry:
-;precursors: 
-;successors: 
-	store i32 80, i32* @N, align 4
-	ret void
-}
+@n = global i32 zeroinitializer, align 4
+@a = global i32* zeroinitializer, align 4
+@i = global i32 zeroinitializer, align 4
 define i32 @main(){
 entry:
 ;precursors: 
-;successors: for_cond_inline 
-	store i32 80, i32* @N, align 4
-	br label %for_cond_inline
-for_cond_inline:
-;precursors: entry for_body_inline 
-;successors: for_body_inline for_end_inline 
-	%j_addr_phi = phi i32 [ 0, %entry ], [ %suf_tmp, %for_body_inline ]
-	%i_addr_phi = phi i32 [ 0, %entry ], [ %suf_tmp, %for_body_inline ]
-	%cmp_slt = icmp slt i32 %i_addr_phi, 200
-	br i1 %cmp_slt, label %for_body_inline, label %for_end_inline
-for_body_inline:
-;precursors: for_cond_inline 
-;successors: for_cond_inline 
-	%suf_tmp = add i32 %i_addr_phi, 1
-	%suf_tmp = add i32 %j_addr_phi, 1
-	%suf_tmp = add i32 %suf_tmp, 1
-	br label %for_cond_inline
-for_end_inline:
-;precursors: for_cond_inline 
-;successors: for_cond_inline 
-	br label %for_cond_inline
-for_cond_inline:
-;precursors: for_end_inline for_body_inline 
-;successors: for_body_inline for_end_inline 
-	%i_addr_phi = phi i32 [ 1, %for_end_inline ], [ %suf_tmp, %for_body_inline ]
-	%sum_addr_phi = phi i32 [ 0, %for_end_inline ], [ %binary_add, %for_body_inline ]
-	%cmp_sle = icmp sle i32 %i_addr_phi, 100
-	br i1 %cmp_sle, label %for_body_inline, label %for_end_inline
-for_body_inline:
-;precursors: for_cond_inline 
-;successors: for_cond_inline 
-	%binary_add = add i32 %sum_addr_phi, %i_addr_phi
-	%suf_tmp = add i32 %i_addr_phi, 1
-	br label %for_cond_inline
-for_end_inline:
-;precursors: for_cond_inline 
-;successors: for_cond_inline 
-	br label %for_cond_inline
-for_cond_inline:
-;precursors: for_end_inline for_body_inline 
-;successors: for_body_inline for_end_inline 
-	%i_addr_phi = phi i32 [ %i_addr_phi, %for_end_inline ], [ %suf_tmp, %for_body_inline ]
-	%sum_addr_phi = phi i32 [ %sum_addr_phi, %for_end_inline ], [ %binary_add, %for_body_inline ]
-	%cmp_sge = icmp sge i32 %i_addr_phi, 1
-	br i1 %cmp_sge, label %for_body_inline, label %for_end_inline
-for_body_inline:
-;precursors: for_cond_inline 
-;successors: for_cond_inline 
-	%binary_add = add i32 %sum_addr_phi, %i_addr_phi
-	%suf_tmp = sub i32 %i_addr_phi, 1
-	br label %for_cond_inline
-for_end_inline:
-;precursors: for_cond_inline 
-;successors: for_cond_inline 
-	%suf_tmp = add i32 %i_addr_phi, 1
-	br label %for_cond_inline
-for_cond_inline:
-;precursors: for_end_inline for_body_inline 
-;successors: for_body_inline for_end_inline 
-	%i_addr_phi = phi i32 [ %suf_tmp, %for_end_inline ], [ %suf_tmp, %for_body_inline ]
-	%prod_addr_phi = phi i32 [ 1, %for_end_inline ], [ %binary_mul, %for_body_inline ]
-	%cmp_sle = icmp sle i32 %i_addr_phi, 10
-	br i1 %cmp_sle, label %for_body_inline, label %for_end_inline
-for_body_inline:
-;precursors: for_cond_inline 
-;successors: for_cond_inline 
-	%binary_mul = mul i32 %prod_addr_phi, %i_addr_phi
-	%suf_tmp = add i32 %i_addr_phi, 1
-	br label %for_cond_inline
-for_end_inline:
-;precursors: for_cond_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_then_inline:
-;precursors: for_end_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline for_end_inline 
-;successors: for_cond_inline 
-	%binary_add = add i32 %j_addr_phi, 1919
-	br label %for_cond_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-for_cond_inline:
-;precursors: for_end_inline if_end_inline 
-;successors: for_body_inline for_end_inline 
-	%i_addr_phi = phi i32 [ 0, %if_end_inline ], [ %suf_tmp, %for_end_inline ]
-	%pointee_N = load i32, i32* @N, align 4
-	%cmp_slt = icmp slt i32 %i_addr_phi, %pointee_N
-	br i1 %cmp_slt, label %for_body_inline, label %for_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-for_body_inline:
-;precursors: for_cond_inline 
-;successors: for_cond_inline 
-	br label %for_cond_inline
-for_end_inline:
-;precursors: for_cond_inline 
-;successors: for_cond_inline 
-	br label %for_cond_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-for_cond_inline:
-;precursors: for_body_inline for_body_inline 
-;successors: for_body_inline for_end_inline 
-	%j_addr_phi = phi i32 [ 0, %for_body_inline ], [ %suf_tmp, %for_body_inline ]
-	%pointee_N = load i32, i32* @N, align 4
-	%cmp_slt = icmp slt i32 %j_addr_phi, %pointee_N
-	br i1 %cmp_slt, label %for_body_inline, label %for_end_inline
-for_cond_inline:
-;precursors: for_end_inline for_body_inline 
-;successors: for_body_inline for_end_inline 
-	%i_addr_phi = phi i32 [ 0, %for_end_inline ], [ %suf_tmp, %for_body_inline ]
-	%pointee_N = load i32, i32* @N, align 4
-	%cmp_slt = icmp slt i32 %i_addr_phi, %pointee_N
-	br i1 %cmp_slt, label %for_body_inline, label %for_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-for_body_inline:
-;precursors: for_cond_inline 
-;successors: for_cond_inline 
-	%suf_tmp = add i32 %j_addr_phi, 1
-	br label %for_cond_inline
-for_end_inline:
-;precursors: for_cond_inline 
-;successors: for_cond_inline 
-	%suf_tmp = add i32 %i_addr_phi, 1
-	br label %for_cond_inline
-for_body_inline:
-;precursors: for_cond_inline 
-;successors: for_cond_inline 
-	%suf_tmp = add i32 %i_addr_phi, 1
-	br label %for_cond_inline
-for_end_inline:
-;precursors: for_cond_inline 
-;successors: 
-	%binary_add = add i32 %binary_add, 114514
-	%binary_sub = sub i32 %binary_add, 50997
-	ret i32 %binary_sub
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %prod_addr_phi, 3628800
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_end_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_then_inline if_end_inline 
-	%eq = icmp eq i32 %prod_addr_phi, 3628800
-	br i1 %eq, label %if_then_inline, label %if_end_inline
-if_end_inline:
-;precursors: if_end_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_then_inline:
-;precursors: if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-if_end_inline:
-;precursors: if_then_inline if_then_inline 
-;successors: if_end_inline 
-	br label %if_end_inline
-}
-define i32 @fun_naivedce(){
-entry:
-;precursors: 
 ;successors: for_cond 
+;head_inst: %allocptr = call noalias i8* @malloc(i32 84)
+;tail_inst: %pointee_a = load i32*, i32** @a, align 4
+;terminate: br label %for_cond
+	%allocptr = call noalias i8* @malloc(i32 84)
+	%allocbitcast = bitcast i8* %allocptr to i32*
+	store i32 20, i32* %allocbitcast, align 4
+	%new_array = getelementptr inbounds i32, i32* %allocbitcast, i32 1
+	store i32* %new_array, i32** @a, align 4
+	%fun_cal_ret_val = call i32 @g_getInt()
+	store i32 %fun_cal_ret_val, i32* @n, align 4
+	store i32 0, i32* @i, align 4
+	%pointee_n = load i32, i32* @n, align 4
+	%pointee_a = load i32*, i32** @a, align 4
 	br label %for_cond
 for_cond:
 ;precursors: entry for_body 
 ;successors: for_body for_end 
-	%sum_addr_phi = phi i32 [ 0, %entry ], [ %binary_add, %for_body ]
-	%i_addr_phi = phi i32 [ 1, %entry ], [ %suf_tmp, %for_body ]
-	%cmp_sle = icmp sle i32 %i_addr_phi, 100
-	br i1 %cmp_sle, label %for_body, label %for_end
+;head_inst: %pointee_i = load i32, i32* @i, align 4
+;tail_inst: %cmp_slt = icmp slt i32 %pointee_i, %pointee_n
+;terminate: br i1 %cmp_slt, label %for_body, label %for_end
+	%pointee_i = load i32, i32* @i, align 4
+	%cmp_slt = icmp slt i32 %pointee_i, %pointee_n
+	br i1 %cmp_slt, label %for_body, label %for_end
 for_body:
 ;precursors: for_cond 
 ;successors: for_cond 
-	%binary_add = add i32 %sum_addr_phi, %i_addr_phi
-	%suf_tmp = add i32 %i_addr_phi, 1
+;head_inst: %pointee_i = load i32, i32* @i, align 4
+;tail_inst: store i32 %suf_tmp, i32* @i, align 4
+;terminate: br label %for_cond
+	%pointee_i = load i32, i32* @i, align 4
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %pointee_i
+	%fun_cal_ret_val = call i32 @g_getInt()
+	store i32 %fun_cal_ret_val, i32* %arrayptr, align 4
+	%pointee_i = load i32, i32* @i, align 4
+	%suf_tmp = add i32 %pointee_i, 1
+	store i32 %suf_tmp, i32* @i, align 4
 	br label %for_cond
 for_end:
 ;precursors: for_cond 
 ;successors: for_cond 
+;head_inst: %pointee_n = load i32, i32* @n, align 4
+;tail_inst: %pointee_n = load i32, i32* @n, align 4
+;terminate: br label %for_cond
+	%pointee_n = load i32, i32* @n, align 4
+	store i32 %pointee_n, i32* @i, align 4
+	%pointee_a = load i32*, i32** @a, align 4
+	%pointee_a = load i32*, i32** @a, align 4
+	%pointee_n = load i32, i32* @n, align 4
 	br label %for_cond
 for_cond:
-;precursors: for_end for_body 
+;precursors: for_end if_end 
 ;successors: for_body for_end 
-	%sum_addr_phi = phi i32 [ %sum_addr_phi, %for_end ], [ %binary_add, %for_body ]
-	%i_addr_phi = phi i32 [ %i_addr_phi, %for_end ], [ %suf_tmp, %for_body ]
-	%cmp_sge = icmp sge i32 %i_addr_phi, 1
-	br i1 %cmp_sge, label %for_body, label %for_end
+;head_inst: %pointee_i = load i32, i32* @i, align 4
+;tail_inst: %cmp_sgt = icmp sgt i32 %pointee_i, 0
+;terminate: br i1 %cmp_sgt, label %for_body, label %for_end
+	%pointee_i = load i32, i32* @i, align 4
+	%cmp_sgt = icmp sgt i32 %pointee_i, 0
+	br i1 %cmp_sgt, label %for_body, label %for_end
 for_body:
 ;precursors: for_cond 
-;successors: for_cond 
-	%binary_add = add i32 %sum_addr_phi, %i_addr_phi
-	%suf_tmp = sub i32 %i_addr_phi, 1
-	br label %for_cond
+;successors: for_cond_inline 
+;head_inst: %pointee_i = load i32, i32* @i, align 4
+;tail_inst: %binary_sdiv = sdiv i32 %pointee_n, %pointee_i
+;terminate: br label %for_cond_inline
+	%pointee_i = load i32, i32* @i, align 4
+	%binary_sub = sub i32 %pointee_i, 1
+	%binary_sdiv = sdiv i32 %pointee_n, %pointee_i
+	br label %for_cond_inline
 for_end:
 ;precursors: for_cond 
-;successors: for_cond 
-	%suf_tmp = add i32 %i_addr_phi, 1
-	br label %for_cond
-for_cond:
-;precursors: for_end for_body 
-;successors: for_body for_end 
-	%prod_addr_phi = phi i32 [ 1, %for_end ], [ %binary_mul, %for_body ]
-	%i_addr_phi = phi i32 [ %suf_tmp, %for_end ], [ %suf_tmp, %for_body ]
-	%cmp_sle = icmp sle i32 %i_addr_phi, 10
-	br i1 %cmp_sle, label %for_body, label %for_end
-for_body:
-;precursors: for_cond 
-;successors: for_cond 
-	%binary_mul = mul i32 %prod_addr_phi, %i_addr_phi
-	%suf_tmp = add i32 %i_addr_phi, 1
-	br label %for_cond
-for_end:
-;precursors: for_cond 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_then:
-;precursors: for_end 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_end for_end 
+;successors: rootReturn 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %rootReturn
+	br label %rootReturn
+for_cond_inline:
+;precursors: for_body if_end_inline 
+;successors: for_body_inline for_end_inline 
+;head_inst: %cmp_slt = icmp slt i32 %i_addr_phi, %binary_sdiv
+;tail_inst: %cmp_slt = icmp slt i32 %i_addr_phi, %binary_sdiv
+;terminate: br i1 %cmp_slt, label %for_body_inline, label %for_end_inline
+	%i_addr_phi = phi i32 [ 0, %for_body ], [ %suf_tmp, %if_end_inline ]
+	%cmp_slt = icmp slt i32 %i_addr_phi, %binary_sdiv
+	br i1 %cmp_slt, label %for_body_inline, label %for_end_inline
+rootReturn:
+;precursors: if_then for_end 
 ;successors: 
-	ret i32 1919
-if_then:
-;precursors: if_then 
+;head_inst: null
+;tail_inst: null
+;terminate: ret i32 0
+	ret i32 0
+for_body_inline:
+;precursors: for_cond_inline 
+;successors: for_cond_inline 
+;head_inst: %binary_mul = mul i32 %i_addr_phi, %pointee_i
+;tail_inst: %binary_mul = mul i32 %i_addr_phi, %pointee_i
+;terminate: br label %for_cond_inline
+	%binary_mul = mul i32 %i_addr_phi, %pointee_i
+	%binary_mul = mul i32 %i_addr_phi, %pointee_i
+	br label %for_cond_inline
+for_end_inline:
+;precursors: for_cond_inline 
+;successors: rootReturn_inline 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %rootReturn_inline
+	br label %rootReturn_inline
+for_cond_inline:
+;precursors: for_body_inline if_end_inline 
+;successors: for_body_inline for_end_inline 
+;head_inst: %cmp_slt = icmp slt i32 %j_addr_phi, %binary_sub
+;tail_inst: %cmp_slt = icmp slt i32 %j_addr_phi, %binary_sub
+;terminate: br i1 %cmp_slt, label %for_body_inline, label %for_end_inline
+	%j_addr_phi = phi i32 [ 0, %for_body_inline ], [ %suf_tmp, %if_end_inline ]
+	%flag_addr_phi = phi i8 [ 0, %for_body_inline ], [ %flag_addr_phi, %if_end_inline ]
+	%cmp_slt = icmp slt i32 %j_addr_phi, %binary_sub
+	br i1 %cmp_slt, label %for_body_inline, label %for_end_inline
+rootReturn_inline:
+;precursors: if_then_inline for_end_inline 
 ;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
+;head_inst: %cmp_sgt = icmp sgt i32 %rootRet, 0
+;tail_inst: %cmp_sgt = icmp sgt i32 %rootRet, 0
+;terminate: br i1 %cmp_sgt, label %if_then, label %if_end
+	%rootRet = phi i32 [ 1, %if_then_inline ], [ 0, %for_end_inline ]
+	%cmp_sgt = icmp sgt i32 %rootRet, 0
+	br i1 %cmp_sgt, label %if_then, label %if_end
+for_body_inline:
+;precursors: for_cond_inline 
+;successors: if_then_inline if_end_inline 
+;head_inst: %binary_add = add i32 %binary_mul, %j_addr_phi
+;tail_inst: %cmp_sgt = icmp sgt i32 %pointee_arrayptr, %pointee_arrayptr
+;terminate: br i1 %cmp_sgt, label %if_then_inline, label %if_end_inline
+	%binary_add = add i32 %binary_mul, %j_addr_phi
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %binary_add
+	%binary_add = add i32 %binary_mul, %j_addr_phi
+	%binary_add = add i32 %binary_add, 1
+	%arrayptr = getelementptr inbounds i32, i32* %pointee_a, i32 %binary_add
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%pointee_arrayptr = load i32, i32* %arrayptr, align 4
+	%cmp_sgt = icmp sgt i32 %pointee_arrayptr, %pointee_arrayptr
+	br i1 %cmp_sgt, label %if_then_inline, label %if_end_inline
+for_end_inline:
+;precursors: for_cond_inline 
+;successors: if_end_inline if_then_inline 
+;head_inst: %zext_pointee_flag_addr = zext i8 %flag_addr_phi to i1
+;tail_inst: %zext_pointee_flag_addr = zext i8 %flag_addr_phi to i1
+;terminate: br i1 %zext_pointee_flag_addr, label %if_end_inline, label %if_then_inline
+	%zext_pointee_flag_addr = zext i8 %flag_addr_phi to i1
+	br i1 %zext_pointee_flag_addr, label %if_end_inline, label %if_then_inline
 if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
+;precursors: rootReturn_inline 
+;successors: rootReturn 
+;head_inst: %pointee_i = load i32, i32* @i, align 4
+;tail_inst: call void @g_print(i8* %fun_cal_ret_val)
+;terminate: br label %rootReturn
+	%pointee_i = load i32, i32* @i, align 4
+	%fun_cal_ret_val = call i8* @g_toString(i32 %pointee_i)
+	call void @g_print(i8* %fun_cal_ret_val)
+	br label %rootReturn
 if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_end if_then 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %prod_addr_phi, 3628800
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_then if_end 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %sum_addr_phi, 10100
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_end if_then 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_then if_end 
-	%eq = icmp eq i32 %prod_addr_phi, 3628800
-	br i1 %eq, label %if_then, label %if_end
-if_end:
-;precursors: if_end if_then 
-;successors: if_end 
-	br label %if_end
-if_then:
-;precursors: if_then 
-;successors: if_end 
-	br label %if_end
-if_end:
-;precursors: if_then if_then 
-;successors: if_end 
-	br label %if_end
-}
-define i32 @fun_dceconst(){
-entry:
-;precursors: 
+;precursors: rootReturn_inline 
 ;successors: for_cond 
+;head_inst: %pointee_i = load i32, i32* @i, align 4
+;tail_inst: store i32 %binary_sdiv, i32* @i, align 4
+;terminate: br label %for_cond
+	%pointee_i = load i32, i32* @i, align 4
+	%binary_sdiv = sdiv i32 %pointee_i, 2
+	store i32 %binary_sdiv, i32* @i, align 4
 	br label %for_cond
-for_cond:
-;precursors: entry for_end 
-;successors: for_body for_end 
-	%i_addr_phi = phi i32 [ 0, %entry ], [ %suf_tmp, %for_end ]
-	%pointee_N = load i32, i32* @N, align 4
-	%cmp_slt = icmp slt i32 %i_addr_phi, %pointee_N
-	br i1 %cmp_slt, label %for_body, label %for_end
-for_body:
-;precursors: for_cond 
-;successors: for_cond 
-	br label %for_cond
-for_end:
-;precursors: for_cond 
-;successors: for_cond 
-	br label %for_cond
-for_cond:
-;precursors: for_body for_body 
-;successors: for_body for_end 
-	%j_addr_phi = phi i32 [ 0, %for_body ], [ %suf_tmp, %for_body ]
-	%pointee_N = load i32, i32* @N, align 4
-	%cmp_slt = icmp slt i32 %j_addr_phi, %pointee_N
-	br i1 %cmp_slt, label %for_body, label %for_end
-for_cond:
-;precursors: for_end for_body 
-;successors: for_body for_end 
-	%i_addr_phi = phi i32 [ 0, %for_end ], [ %suf_tmp, %for_body ]
-	%pointee_N = load i32, i32* @N, align 4
-	%cmp_slt = icmp slt i32 %i_addr_phi, %pointee_N
-	br i1 %cmp_slt, label %for_body, label %for_end
-for_body:
-;precursors: for_cond 
-;successors: for_cond 
+if_then_inline:
+;precursors: for_body_inline 
+;successors: if_end_inline 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %if_end_inline
+	br label %if_end_inline
+if_end_inline:
+;precursors: for_body_inline if_then_inline 
+;successors: for_cond_inline 
+;head_inst: %suf_tmp = add i32 %j_addr_phi, 1
+;tail_inst: %suf_tmp = add i32 %j_addr_phi, 1
+;terminate: br label %for_cond_inline
+	%flag_addr_phi = phi i8 [ %flag_addr_phi, %for_body_inline ], [ 1, %if_then_inline ]
 	%suf_tmp = add i32 %j_addr_phi, 1
-	br label %for_cond
-for_end:
-;precursors: for_cond 
-;successors: for_cond 
+	br label %for_cond_inline
+if_end_inline:
+;precursors: for_end_inline 
+;successors: for_cond_inline 
+;head_inst: %suf_tmp = add i32 %i_addr_phi, 1
+;tail_inst: %suf_tmp = add i32 %i_addr_phi, 1
+;terminate: br label %for_cond_inline
 	%suf_tmp = add i32 %i_addr_phi, 1
-	br label %for_cond
-for_body:
-;precursors: for_cond 
-;successors: for_cond 
-	%suf_tmp = add i32 %i_addr_phi, 1
-	br label %for_cond
-for_end:
-;precursors: for_cond 
-;successors: 
-	ret i32 114514
+	br label %for_cond_inline
+if_then_inline:
+;precursors: for_end_inline 
+;successors: rootReturn_inline 
+;head_inst: null
+;tail_inst: null
+;terminate: br label %rootReturn_inline
+	br label %rootReturn_inline
 }

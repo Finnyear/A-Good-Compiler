@@ -30,9 +30,6 @@ public class ADCE {
         fngraph = new IRFnGraph(IRroot);
     }
 
-
-
-
     private void testOp(entity op) {
         HashSet<Inst> uses = op.uses();
         if (uses != null) {

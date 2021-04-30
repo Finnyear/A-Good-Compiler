@@ -50,12 +50,17 @@ public class IRBlock {
     }
 
     public void addinst(Inst inst){
-        if(head_inst == null) head_inst = tail_inst = inst;
+        if(head_inst == null) {
+            head_inst = tail_inst = inst;
+            inst.pre = inst.nxt = null;
+        }
         else{
             tail_inst.nxt = inst;
             inst.pre = tail_inst;
+            inst.nxt = null;
             tail_inst = inst;
         }
+        inst.block = this;
     }
 
     public void removepre(IRBlock block){

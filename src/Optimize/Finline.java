@@ -39,7 +39,12 @@ public class Finline{
         stack.remove(stack.size() - 1);
     }
 
-
+    private void DFS1(IRFunction it) {
+        visited.add(it);
+        it.callfunctions.forEach(callee -> {
+            if (!visited.contains(callee)) DFS1(callee);
+        });
+    }
 //    private static int Cnt = 0;
 
     private void unfold(Call inst, IRFunction fn) {
@@ -86,10 +91,14 @@ public class Finline{
 
 //        System.out.println("inline " + fn.name);
         canUnFold.clear();
+        fn.callfunctions.clear();
         fn.blocks.forEach(block -> {
-            for (Inst inst = block.head_inst; inst != null; inst = inst.nxt)
-                if (inst instanceof Call && !cannotInlineFun.contains(((Call)inst).callee))
+            for (Inst inst = block.head_inst; inst != null; inst = inst.nxt)if (inst instanceof Call) {
+                if(!cannotInlineFun.contains(((Call) inst).callee))
                     canUnFold.put((Call) inst, fn);
+                else if(irRoot.functions.containsKey(((Call) inst).callee.name))
+                    fn.addcalleefunction(((Call) inst).callee);
+            }
         });
         canUnFold.forEach(this::unfold);
 
@@ -150,6 +159,10 @@ public class Finline{
                 if (!visited.contains(fn)) DFS(fn);
             });
             irRoot.functions.forEach((name, fn) -> inline(fn));
+            visited.clear();
+            DFS1(irRoot.getfun("main"));
+            irRoot.functions.clear();
+            visited.forEach(irFunction -> irRoot.functions.put(irFunction.name, irFunction));
             irRoot.functions.forEach((name, fn) -> new Domgen(fn).runforfn());
             return ;
         } else {

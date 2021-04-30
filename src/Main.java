@@ -63,12 +63,12 @@ public class Main {
             new Mem2Reg(IRroot).run();
             {//optimize
                 new Finline(IRroot, false).run();
+//                System.out.println("0000000000");
                 boolean change;
                 do{
                     change = new ADCE(IRroot).run();
                     change = new SCCP(IRroot).run() || change;
                     change = new CFGsimplify(IRroot).run() || change;
-//                    System.out.println("0000000000");
                     AliasAnalysis alias = new AliasAnalysis(IRroot);
                     alias.run();
                     change = new LICM(IRroot, alias).run() || change;
@@ -85,6 +85,7 @@ public class Main {
                 }
 
                 while (change);
+//                System.out.println("2222222222");
             }
             new IRPrinter(new PrintStream("output.ll"), false).run(IRroot);
             IRroot.resolvephi();

@@ -63,11 +63,29 @@ public class LICM {
         change = change || !canhoist.isEmpty();
         while (!canhoist.isEmpty()) {
             Inst inst = canhoist.poll();
+//            System.out.println("inst = " + inst);
+//            System.out.println("pre = " + pre.name);
+//            if(pre.tail_inst != null)
+//            System.out.println("tail = " + pre.tail_inst);
+//            else System.out.println("tail = null");
             if(inst.nxt != null) inst.nxt.pre = inst.pre;
             else inst.block.tail_inst = inst.pre;
             if(inst.pre != null) inst.pre.nxt = inst.nxt;
             else inst.block.head_inst = inst.nxt;
             pre.addinst(inst);
+//            System.out.println("-----");
+//            Inst tmp = pre.head_inst;
+//            while(tmp != null){
+//                System.out.println(tmp);
+//                tmp = tmp.nxt;
+//            }
+//            System.out.println("-----");
+//            tmp = pre.head_inst;
+//            while(tmp != null){
+//                System.out.println(tmp);
+//                tmp = tmp.pre;
+//            }
+//            System.out.println("-----");
             inst.dest.uses().forEach(useInst -> {
                 if (reginloop.contains(useInst.dest)) hoist(useInst, reginloop, canhoist);
             });
