@@ -66,7 +66,7 @@ public class Main {
             new IRBuilder(global_scope, IRroot).visit(rt);
             new Mem2Reg(IRroot).run();
             {//optimize
-//                new Finline(IRroot, false).run();
+                new Finline(IRroot, false).run();
 //                System.out.println("0000000000");
                 boolean change;
                 do{
