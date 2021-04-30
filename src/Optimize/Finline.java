@@ -176,7 +176,7 @@ public class Finline{
             irRoot.functions.forEach((name, fn) -> new Domgen(fn).runforfn());
             return ;
         } else {
-            int bound = 300;
+            int bound = 150;
             HashMap<IRFunction, Integer> lineNumber = new HashMap<>();
             cannotInlineFun.addAll(irRoot.builtinfunc.values());
             cannotInlineFun.add(irRoot.getfun("main"));
@@ -188,7 +188,7 @@ public class Finline{
                 lineNumber.put(fn, cnt);
             });
             irRoot.functions.forEach((name, fn) -> {
-                for(int i = 1; i <= 15; i++) {
+                for(int i = 1; i <= 5; i++) {
                     fn.blocks.forEach(block -> {
                         for (Inst inst = block.head_inst; inst != null; inst = inst.nxt)
                             if (inst instanceof Call) {

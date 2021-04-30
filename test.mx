@@ -1,14 +1,15 @@
+// NTT, source: https://blog.csdn.net/wu_tongtong/article/details/77620709
 class taskNTT {
     int N;
     int mod;
     int[] a, b;
-    int n, fn, m;
+    int n, fn, m; 
     taskNTT () {
         N = 999;
         mod = 998244353;
         a = new int [N];
         b = new int [N];
-    }
+    } 
     int mulmod(int a, int b, int MOD) {
         int ret = 0;
         a = a % MOD;
@@ -19,7 +20,7 @@ class taskNTT {
             a = a % MOD;
         }
         return ret;
-    }
+    } 
     int KSM(int a,int b) {
         int t = 1;
         while (b != 0) {
@@ -30,7 +31,7 @@ class taskNTT {
             a = mulmod(a, a, mod);
         }
         return t;
-    }
+    } 
     void reverse(int[] a, int s, int t) {
         while ( s < t ) {
             t--;
@@ -39,7 +40,7 @@ class taskNTT {
             a[t] = tmp;
             s++;
         }
-    }
+    } 
     void NTT(int n,int[] a,int opt) {
         int i,j=0,k,l;
         for (i=0;i<n;i++) {
@@ -67,9 +68,9 @@ class taskNTT {
                     w=mulmod(w, wn, mod);
                 }
             }
-        }
+        } 
         if (opt==-1) reverse(a,1,n);
-    }
+    } 
     int main() {
         n=getInt();
         m=getInt();
@@ -81,7 +82,7 @@ class taskNTT {
         while (fn<=n+m) fn=fn<<1;
         NTT(fn,a,1); NTT(fn,b,1);
         for (i=0;i<=fn;i++) a[i]=mulmod(a[i], b[i], mod) ;
-        NTT(fn,a,-1);
+        NTT(fn,a,-1); 
         int t=KSM(fn,mod-2);
         for (i=0;i<fn;i++) a[i]=mulmod(a[i], t, mod);
 
@@ -111,7 +112,7 @@ class taskStress {
     int main() {
         printlnInt(ret);
     }
-};
+}; 
 
 class taskInline {
     int rng_seed;
@@ -197,6 +198,15 @@ class taskConst {
 
 
 int main() {
-    taskInline inl = new taskInline();
+    taskNTT ntt = new taskNTT(); // normal hard numerical task
+    ntt.main();
+    taskStress str = new taskStress(); // hard to build IR, slow in DomTree builder
+    str.main();
+    taskInline inl = new taskInline(); 
     if (inl.main() != 0) return -1;
+    taskSSA ssa = new taskSSA(); 
+    if (ssa.main() != 0) return -1;
+    taskConst con = new taskConst(); 
+    if (con.main() != 0) return -1;
+    return 0;
 }
