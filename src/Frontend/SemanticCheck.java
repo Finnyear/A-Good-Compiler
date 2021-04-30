@@ -21,12 +21,14 @@ import Util.type.funType;
 import Util.varentity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class SemanticCheck implements ASTVisitor {
 
     public globalScope global_scope;
     public Scope current_scope;
     public classType current_class;
+    public suiteNode current_suite;
     public Type return_type;
     public fundefNode current_func;
     public int loopnum;
@@ -218,7 +220,18 @@ public class SemanticCheck implements ASTVisitor {
             throw new SemanticError("assign type not match", it.pos);
         it.type = it.lv.type;
     }
+    private boolean flag = false;
     @Override public void visit(binaryExprNode it){
+        boolean now = false;
+        if(it.op == binaryExprNode.binaryop.land || it.op == binaryExprNode.binaryop.lor) {
+            if(!flag) {
+                flag = true;
+                now = true;
+                exprs.add(it);
+            }
+        }
+        it.bel = current_func;
+        it.suite = current_suite;
         it.lhs.accept(this);
         it.rhs.accept(this);
 //        System.out.println(it.lhs.type.tp);
@@ -245,6 +258,9 @@ public class SemanticCheck implements ASTVisitor {
             default -> {
                 it.type = it.lhs.type;
             }
+        }
+        if(now){
+            flag = false;
         }
     }
     @Override public void visit(blockNode it){
@@ -421,8 +437,12 @@ public class SemanticCheck implements ASTVisitor {
     }
     @Override public void visit(suiteNode it){
         current_scope = new Scope(current_scope);
+        suiteNode tmp = current_suite;
+        current_suite = it;
+        it.scope = current_scope;
         it.stmts.forEach(stmtNode -> {if(stmtNode != null)stmtNode.accept(this);});
         current_scope = current_scope.getParentScope();
+        current_suite = tmp;
     }
     @Override public void visit(thisExprNode it){
         if(current_class == null)
@@ -437,18 +457,7 @@ public class SemanticCheck implements ASTVisitor {
 
     }
     @Override public void visit(varExprNode it) {
-        varentity varent;
-//        if(current_scope.con != null && current_scope.parentScope != global_scope)
-//            varent = current_scope.parentScope.getentity(it.name, true);
-//        else
-            varent = current_scope.getentity(it.name, true);
-//        if(varent == null){
-//            System.out.println(it.name);
-//        }
-        it.varent = varent;
-//        if(varent == null){
-//            System.out.println("???");
-//        }
+        it.varent = current_scope.getentity(it.name, true);
         if(!current_scope.qryvar(it.name, true))
             throw new SemanticError("no such variable", it.pos);
         it.type = current_scope.getvarType(it.name, true);
@@ -466,5 +475,130 @@ public class SemanticCheck implements ASTVisitor {
 //        loopnum--;
         current_loop = up_loop;
         current_scope = current_scope.getParentScope();
+    }
+
+    
+    public ArrayList<ExprNode> exprs = new ArrayList<>();
+
+    private boolean check(ExprNode a, ExprNode b){
+        if(a instanceof varExprNode && b instanceof varExprNode){
+            if(((varExprNode) a).varent == ((varExprNode) b).varent) return true;
+            else return false;
+        }
+        if(a instanceof binaryExprNode && b instanceof binaryExprNode){
+            if(((binaryExprNode) a).op != ((binaryExprNode) b).op) return false;
+            if(a.bel != b.bel) return false;
+            return check(((binaryExprNode) a).lhs, ((binaryExprNode) b).lhs) && check(((binaryExprNode) a).rhs, ((binaryExprNode) b).rhs);
+        }
+        return false;
+    }
+
+
+    private boolean ck(Scope scope,ExprNode a){
+        if(a instanceof varExprNode)
+            return scope.qryvar(((varExprNode) a).name, true);
+        if(a instanceof binaryExprNode)
+            return ck(scope, ((binaryExprNode) a).lhs) && ck(scope, ((binaryExprNode) a).rhs);
+        return false;
+    }
+
+    private boolean find(StmtNode stmtnode, ExprNode expr, int i, suiteNode Suite, int Pos){
+
+        if(stmtnode instanceof forStmtNode){
+            if(((forStmtNode) stmtnode).forcon == expr) {
+                position pos = new position(0, 0);
+                vardefStmtNode vardef = new vardefStmtNode(pos, new vardefNode(pos, new typeNode(pos, "bool", 0)));
+                variableNode variableNode = new variableNode(pos, "my_cse_flag" + i, expr);
+                vardef.vardef.variables.add(variableNode);
+                Type var_type = vardef.vardef.type.getnewType(global_scope);
+                varentity varent = new varentity(variableNode.name, var_type, variableNode.isglobal);
+                IRType IRtype = IRroot.getIRtype(var_type, true);
+                Register reg = new Register(new IRpointerType(IRtype, true), variableNode.name + "_addr");
+                varent.operand = reg;
+                variableNode.varent = varent;
+                Suite.stmts.add(Pos, vardef);
+                Suite.scope.addvar(variableNode.name, var_type, variableNode.pos);
+                Suite.scope.addentity(varent.name, varent);
+                return true;
+            }
+            return find(((forStmtNode) stmtnode).forbody, expr, i, Suite, Pos);
+        }
+
+
+        if(stmtnode instanceof suiteNode) {
+            suiteNode suite = (suiteNode) stmtnode;
+            for (int k = 0; k < suite.stmts.size(); k++) {
+                StmtNode stmt = suite.stmts.get(k);
+                if (stmt instanceof forStmtNode)
+                    if(find(stmt, expr, i, suite, k)) return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void replaceexpr(ExprNode exprnode, ExprNode expr, int i, suiteNode Suite){
+        if(exprnode instanceof binaryExprNode){
+            if(check(((binaryExprNode) exprnode).lhs, expr)){
+                varExprNode varexpr = new varExprNode(exprnode.pos, "my_cse_flag" + i);
+                varexpr.varent = Suite.scope.getentity(varexpr.name, true);
+                varexpr.type = Suite.scope.getvarType(varexpr.name, true);
+                ((binaryExprNode) exprnode).lhs = varexpr;
+            }
+            else if(check(((binaryExprNode) exprnode).rhs, expr)){
+                varExprNode varexpr = new varExprNode(exprnode.pos, "my_cse_flag" + i);
+                varexpr.varent = Suite.scope.getentity(varexpr.name, true);
+                varexpr.type = Suite.scope.getvarType(varexpr.name, true);
+                ((binaryExprNode) exprnode).rhs = varexpr;
+            }
+            else {
+                replaceexpr(((binaryExprNode) exprnode).lhs, expr, i, Suite);
+                replaceexpr(((binaryExprNode) exprnode).rhs, expr, i, Suite);
+            }
+        }
+    }
+
+    private void replace(StmtNode stmtnode, ExprNode expr, int i, suiteNode Suite){
+        if(stmtnode instanceof forStmtNode){
+//            System.out.println(stmtnode);
+            if(check(((forStmtNode) stmtnode).forcon, expr)){
+                varExprNode varexpr = new varExprNode(stmtnode.pos, "my_cse_flag" + i);
+                varexpr.varent = Suite.scope.getentity(varexpr.name, true);
+                varexpr.type = Suite.scope.getvarType(varexpr.name, true);
+                ((forStmtNode) stmtnode).forcon = varexpr;
+            }
+            replaceexpr(((forStmtNode) stmtnode).forcon, expr, i, Suite);
+            replace(((forStmtNode) stmtnode).forbody, expr, i, Suite);
+        }
+        if(stmtnode instanceof suiteNode) {
+            suiteNode suite = ((suiteNode) stmtnode);
+            for (int k = 0; k < suite.stmts.size(); k++) {
+                StmtNode stmt = suite.stmts.get(k);
+                if (stmt instanceof forStmtNode) {
+                    replace(stmt, expr, i, Suite);
+                }
+            }
+        }
+    }
+
+    public void CSE(){
+//        System.out.println(exprs.size());
+        int[] flag = new int[exprs.size()];
+        for(int i = 0; i < exprs.size(); i++) flag[i] = 0;
+        for(int i = 0; i < exprs.size(); i++)if(flag[i] == 0){
+            flag[i] = i;
+            boolean bo = false;
+            for(int j = i + 1; j < exprs.size(); j++)if(flag[j] == 0){
+                if(check(exprs.get(i), exprs.get(j))) {flag[j] = i; bo = true;}
+            }
+            ExprNode expr = exprs.get(i);
+            if(bo){
+                suiteNode suite = expr.suite;
+                if(ck(suite.scope, expr)) {
+                    bo = find(suite, expr, i, suite, 0);
+                    if(bo) replace(suite, expr, i, suite);
+                }
+            }
+        }
     }
 }

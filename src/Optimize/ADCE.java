@@ -14,6 +14,7 @@ import Util.IRFnGraph;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Stack;
 
 public class ADCE {
 
@@ -110,7 +111,7 @@ public class ADCE {
                 Inst def = ((Register) opr).def;
                 if(def != null && !usefulinst.contains(def)) {
                     usefulinst.add(((Register) opr).def);
-                    add(((Register) opr).def);
+                    stack.add(((Register) opr).def);
                 }
             }
             if (opr.type instanceof IRpointerType || opr.type instanceof IRarrayType)
@@ -119,7 +120,7 @@ public class ADCE {
                             use instanceof Phi || (use instanceof Load && use.dest.type instanceof IRpointerType))
                             && !usefulinst.contains(use)) {
                         usefulinst.add(use);
-                        add(use);
+                        stack.add(use);
                     }
                 });
         });
@@ -129,26 +130,30 @@ public class ADCE {
                         use instanceof Phi || (use instanceof Load && use.dest.type instanceof IRpointerType))
                         && !usefulinst.contains(use)) {
                     usefulinst.add(use);
-                    add(use);
+                    stack.add(use);
                 }
             });
         }
         inst.block.pre_block.forEach(pre -> {
             if (!usefulinst.contains(pre.terminate)) {
                 usefulinst.add(pre.terminate);
-                add(pre.terminate);
+                stack.add(pre.terminate);
             }
         });
     }
 
+    Stack<Inst> stack = new Stack<>();
+
     private void collect() {
         IRroot.functions.forEach((name, fn) -> fn.blocks.forEach(block -> {
             for (Inst inst = block.gethead(); inst != null; inst = block.getnxt(inst)) {
-                if (usefulinst.contains(inst)) add(inst);
+                if (usefulinst.contains(inst)) stack.add(inst);
             }
             block.Phis.forEach(((reg, inst) -> {
-                if (usefulinst.contains(inst)) add(inst);
+                if (usefulinst.contains(inst)) stack.add(inst);
             }));
+            while(!stack.empty())
+                add(stack.pop());
         }));
     }
 

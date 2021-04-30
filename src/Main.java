@@ -34,11 +34,11 @@ public class Main {
                 }
             }
         }
-//        String name = "test.mx";
-//        InputStream input = new FileInputStream(name);
-//        PrintStream output = new PrintStream("output.s");
-        InputStream input = System.in;//
-        PrintStream output = System.out;
+        String name = "test.mx";
+        InputStream input = new FileInputStream(name);
+        PrintStream output = new PrintStream("output.s");
+//        InputStream input = System.in;//
+//        PrintStream output = System.out;
         try{
             ProgramNode rt;
             globalScope global_scope = new globalScope(null);
@@ -55,9 +55,13 @@ public class Main {
             Root IRroot = new Root();
             new SymbolCollector(global_scope, IRroot).visit(rt);
             new ClassCreator(global_scope, IRroot).visit(rt);
-            new SemanticCheck(global_scope, IRroot).visit(rt);
+            SemanticCheck semanticCheck = new SemanticCheck(global_scope, IRroot);
+
+            semanticCheck.visit(rt);
 
             if(SemanticOnly) return;
+
+            semanticCheck.CSE();
 
             new IRBuilder(global_scope, IRroot).visit(rt);
             new Mem2Reg(IRroot).run();
@@ -66,22 +70,24 @@ public class Main {
 //                System.out.println("0000000000");
                 boolean change;
                 do{
-                    change = new SCCP(IRroot).run();
+                    change = false;
+                    change = new ADCE(IRroot).run() || change;
+                    change = new SCCP(IRroot).run() || change;
                     change = new CFGsimplify(IRroot).run() || change;
                     AliasAnalysis alias = new AliasAnalysis(IRroot);
                     alias.run();
                     change = new LICM(IRroot, alias).run() || change;
-                    change = new ADCE(IRroot).run() || change;
                 } while (change);
 //                System.out.println("1111111111");
                 new Finline(IRroot, true).run();
                 do{
-                    change = new SCCP(IRroot).run();
+                    change = false;
+                    change = new ADCE(IRroot).run() || change;
+                    change = new SCCP(IRroot).run() || change;
                     change = new CFGsimplify(IRroot).run() || change;
                     AliasAnalysis alias = new AliasAnalysis(IRroot);
                     alias.run();
                     change = new LICM(IRroot, alias).run() || change;
-                    change = new ADCE(IRroot).run() || change;
                 } while (change);
 //                System.out.println("2222222222");
                 new IRPrinter(new PrintStream("output.ll"), false).run(IRroot);

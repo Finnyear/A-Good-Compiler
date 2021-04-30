@@ -1,3 +1,4 @@
+// NTT, source: https://blog.csdn.net/wu_tongtong/article/details/77620709
 class taskNTT {
     int N;
     int mod;

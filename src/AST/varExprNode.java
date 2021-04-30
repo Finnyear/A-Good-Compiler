@@ -21,4 +21,10 @@ public class varExprNode extends ExprNode{
     public boolean isAssignable() {
         return true;
     }
+
+
+    @Override
+    public String toString(){
+        return "var(" + name + ")";
+    }
 }
