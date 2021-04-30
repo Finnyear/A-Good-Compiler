@@ -1,24 +1,65 @@
 int n;
-int[] a = new int[20];
-int jud(int x){
-	int i,j;
-	for(i=0;i<n/x;i++){
-		bool flag=false;
-		for(j=0;j<x-1;j++){
-			if(a[i*x+j]>a[i*x+j+1])flag=true;
-		}
-		if(!flag)return 1;
-	}
-	return 0;
+
+void init() {
+    n = getInt();
 }
-int i;
-int main(){
-	n = getInt();
-	for(i=0;i<n;i++) a[i] = getInt();
-	for(i=n; i > 0;i = i / 2)
-        if(jud(i) > 0){
-            print(toString(i));
-            return 0;
+
+bool is_prime(int x) {
+    if (x == 1) {
+        return false;
+    }
+    int i;
+    for (i = 2; i * i <= x; i ++) {
+        if (x % i == 0) {
+            return false;
         }
-	return 0;
+    }
+    return true;
+}
+
+void find(int x, int pre) {
+    if (is_prime(x)) {
+        if (pre > 0) {
+            //printf("2\n");
+            println("2");
+            //printf("%d %d\n", pre, x);
+            println(toString(pre) + " " + toString(x));
+        } else {
+            //printf("1\n%d\n", x);
+            println("1");
+            println(toString(x));
+        }
+        return ;
+    }
+    int i = 5;
+    if (pre == -1) {
+        int i = 6;
+        for (i = x - 2; ; i --) {
+            if (is_prime(i)) {
+                find(x - i, i);
+                return ;
+            }
+        }
+    } else {
+        for (i = x - 1; ; i --) {
+            if (is_prime(i) && is_prime(x - i)) {
+                //printf("3\n%d %d %d\n", pre, i, x - i);
+                println("3");
+                println(toString(pre) + " " + toString(i) + " " + toString(x - i));
+                return ;
+            }
+        }
+    }
+}
+
+void work() {
+    find(n, -1);
+}
+
+int main() {
+
+    init();
+    work();
+
+    return 0;
 }

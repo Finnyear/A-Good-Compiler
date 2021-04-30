@@ -40,6 +40,7 @@ public class Finline{
     }
 
     private void DFS1(IRFunction it) {
+//        System.out.println("dfs : " + it.name);
         visited.add(it);
         it.callfunctions.forEach(callee -> {
             if (!visited.contains(callee)) DFS1(callee);
@@ -96,8 +97,6 @@ public class Finline{
             for (Inst inst = block.head_inst; inst != null; inst = inst.nxt)if (inst instanceof Call) {
                 if(!cannotInlineFun.contains(((Call) inst).callee))
                     canUnFold.put((Call) inst, fn);
-                else if(irRoot.functions.containsKey(((Call) inst).callee.name))
-                    fn.addcalleefunction(((Call) inst).callee);
             }
         });
         canUnFold.forEach(this::unfold);
@@ -140,7 +139,14 @@ public class Finline{
             }
         });
 
+        fn.blocks.forEach(block -> {
+            for (Inst inst = block.head_inst; inst != null; inst = inst.nxt)if (inst instanceof Call) {
+                if(!(irRoot.isbuiltin(((Call)inst).callee.name)))
+                    fn.addcalleefunction(((Call) inst).callee);
+            }
+        });
 
+//        fn.callfunctions.forEach(irFunction -> System.out.println(irFunction.name));
 //        for (Iterator<Map.Entry<String, IRFunction>> iter = irRoot.functions.entrySet().iterator(); iter.hasNext();) {
 //            Map.Entry<String, IRFunction> entry = iter.next();
 //            IRFunction fn = entry.getValue();

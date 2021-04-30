@@ -63,6 +63,7 @@ public class Main {
             new Mem2Reg(IRroot).run();
             {//optimize
                 new Finline(IRroot, false).run();
+                new IRPrinter(new PrintStream("output.ll"), false).run(IRroot);
 //                System.out.println("0000000000");
                 boolean change;
                 do{
@@ -83,11 +84,9 @@ public class Main {
                     alias.run();
                     change = new LICM(IRroot, alias).run() || change;
                 }
-
                 while (change);
 //                System.out.println("2222222222");
             }
-            new IRPrinter(new PrintStream("output.ll"), false).run(IRroot);
             IRroot.resolvephi();
             LRoot lroot = new InstSelection(IRroot).run();
             new RegAlloc(lroot).run();

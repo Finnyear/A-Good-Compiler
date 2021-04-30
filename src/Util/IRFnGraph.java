@@ -24,7 +24,9 @@ public class IRFnGraph {
                 for(Inst inst = block.gethead(); inst != null; inst = block.getnxt(inst)){
                     if(inst instanceof Call && !(IRroot.isbuiltin(((Call)inst).callee.name))){
                         func.addcalleefunction(((Call)inst).callee);
-                        if(callercollect) caller.get(((Call)inst).callee).add(func);
+                        if(callercollect) {
+                            caller.get(((Call) inst).callee).add(func);
+                        }
                     }
                 }
             });
